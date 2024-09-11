@@ -2,7 +2,7 @@ import { Button, Form, Input } from "antd"
 import FormItem from "antd/es/form/FormItem"
 import "./index.scss"
 import { useForm } from "antd/es/form/Form"
-import axios from "axios";
+
 
 function Footer() {
     const [form] = useForm();
@@ -24,9 +24,11 @@ function Footer() {
         
         
         <div className="icon">
-            <img src="https://workflow.com.vn/wp-content/themes/workflow/assets/img/fb.png" alt="" />
-            <img src="https://workflow.com.vn/wp-content/themes/workflow/assets/img/instagram.png" alt="" />
-            <img src="https://workflow.com.vn/wp-content/themes/workflow/assets/img/in.png" alt="" />
+              <a href="https://www.facebook.com/workflowspacevn"><img src="https://workflow.com.vn/wp-content/themes/workflow/assets/img/fb.png" alt="" /></a>
+              <a href="https://www.instagram.com/workflowspace/"><img src="https://workflow.com.vn/wp-content/themes/workflow/assets/img/instagram.png" alt="" /></a>
+              <a href="https://www.linkedin.com/uas/login?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Fcompany%2Fworkflowvietnam%2Fmycompany%2Fverification%2F"><img src="https://workflow.com.vn/wp-content/themes/workflow/assets/img/in.png" alt="" /></a>
+            
+            
         </div>
         </div>
         </div>

@@ -2,7 +2,7 @@
     background-color: rgb(40, 19, 19);
     
     &__tren{
-        margin-left: 25px;
+        margin-left: 10px;
         display: flex;
         color: #fff;
         justify-content: center;
@@ -33,31 +33,34 @@
                     color: #fff;
                 }
                 Input{
-                    width: 420px;
+                    width: 450px;
                     border: none;
                     border-radius: 0;
                 }
-                .gui{
-                    border: none;
-                    border-radius: 0;
-                    width: 100px;
-                }
+                
+            }
+            .gui{
+                border: none;
+                border-radius: 0;
+                font-weight: 600;
+                width: 100px;
+                
             }
         }
        
     }
     &__line{
         height: 2px;
-        width: 80%;
+        width: 82%;
         background-color: #fff;
-        margin-left: 150px;
+        margin-left: 130px;
         // margin-bottom: 40px;
     }
     &__content{
      color: #fff;
      display: flex;
      gap: 50px;
-     padding: 40px 150px ;
+     padding: 40px 130px ;
 
      a{
         color: #fff;
