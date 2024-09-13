@@ -12,18 +12,20 @@ function Cards({location}:CardProps) {
     const { Meta } = Card;
     const navigate = useNavigate();
   return (
-    <div >
+    <div className="Card" >
     <Card className="card"
     hoverable
-    style={{ width: 401, height:350 }}
-    cover={<a onClick={()=> navigate(`location/${location.id}`)}><img alt="example" src={location?.image} width={400} /></a>}
+    style={{ width: 380, height:320,  }}
+    cover={<a onClick={()=> navigate(`location/${location.id}`)}><img alt="example" src={location?.image} /></a>}
   >
     <Meta/>
-    <p>{location?.name}</p>
-    <p><EnvironmentOutlined />{location?.address}</p>
+    <div className="description">
+      <strong>{location?.name}</strong>
+    <p><EnvironmentOutlined /> {location?.address}</p></div>
   </Card>
     </div>
   )
 }
 
-export default Cards
+export default Cards;
+

@@ -25,7 +25,7 @@ export default function Carousel() {
         }}
         // navigation={true}
         modules={[Autoplay, Pagination, Navigation]}
-        className="mySwiper"
+        className="swiper"
       >
         <SwiperSlide><img src="https://i.postimg.cc/Vk42Rk7B/Screenshot-2024-09-11-202817.png" alt="" /></SwiperSlide>
         <SwiperSlide><img src="https://i.postimg.cc/7PGDZ0Bv/Screenshot-2024-09-11-20-21-45-319.png" alt="" /></SwiperSlide>

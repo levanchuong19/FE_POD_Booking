@@ -1,4 +1,12 @@
-.card{
-    display: flex;
-    flex-direction: column;
+.Card{
+    width: 80%;
+    .card{
+        margin: 30px 50px;
+        background-color: rgb(241, 243, 245);
+        .description{
+            display: flex;
+            flex-direction: column;
+            font-size: 20px;
+        }
+    }
 }
