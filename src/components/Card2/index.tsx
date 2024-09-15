@@ -1,4 +1,4 @@
-import { Card } from "antd"
+import { Button, Card } from "antd"
 import { Device } from "../modal/device"
 import { useNavigate } from "react-router-dom"
 import { MinusSquareOutlined } from "@ant-design/icons";
@@ -15,14 +15,17 @@ function Card2({device}: Card2Props) {
     <div>
         <Card className="card2"
     hoverable
-    style={{ width: 300,   }}
+    style={{ width: 350,  }}
     cover={<a onClick={()=> Navigate(`device/${device.deviceID}`)}><img alt="example" src={device?.imageDevice} /></a>}
   >
     <Meta/>
-    <strong>{device?.nameDevice}</strong>
-    <div >
-      
-    <p><MinusSquareOutlined /> {device?.deviceQuantity}  device</p></div>
+  <div style={{display:"flex", justifyContent:"space-between", alignItems:"center"}}>
+  <div className="desc">
+   <strong>{device?.nameDevice}</strong>
+   <p><MinusSquareOutlined /> {device?.deviceQuantity}  device</p>
+   </div>
+   <Button type="primary" danger>Đặt chỗ</Button>
+  </div>
   </Card>
      
     </div>

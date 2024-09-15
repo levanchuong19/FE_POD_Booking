@@ -7,7 +7,7 @@ function Home() {
   return (
     <div>
         <Carousel/>
-        <PodBooking/>
+        <PodBooking numberOfSlides={3}/>
         <DeviceList/>
     </div>
   )

@@ -1,18 +1,12 @@
 import { useEffect, useState } from "react";
 import { Location } from "../modal/location";
 import api from "../config/api";
-import Cards from "../Card";
 import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
-import 'swiper/css/pagination';
-import "./index.scss";
-
-
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
-import { EnvironmentOutlined } from "@ant-design/icons";
+import Card1 from "../Card1";
 
-export default function PodBooking({
-  numberOfSlides = 1,
+export default function ListDevice({
+  numberOfSlides = 4,
   autoplay = false,
 }) {
   const [location, setLocation] = useState<Location[]>();
@@ -30,8 +24,8 @@ export default function PodBooking({
      },[]);
   return (
     <div style={{backgroundColor:"#fff"}}>
-    <div className="line1"></div>
-    <h3><EnvironmentOutlined /> Địa điểm</h3>
+
+   
       <Swiper
         slidesPerView={numberOfSlides}
         // spaceBetween={20}
@@ -45,9 +39,9 @@ export default function PodBooking({
         
       >
        
-       {location?.map((locationItem : Location) => (<SwiperSlide className="slide"><Cards key={locationItem.id} location={locationItem}/></SwiperSlide>))}
+       {location?.map((locationItem : Location) => (<SwiperSlide className="slide"><Card1 key={locationItem.id} location={locationItem}/></SwiperSlide>))}
       </Swiper>
-      <div className="line2"></div>
+   
     </div>
   );
 }
