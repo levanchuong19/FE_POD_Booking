@@ -8,6 +8,7 @@ import Reservation from "./pages/reservation";
 import Menu from "./pages/menu";
 import Device from "./pages/device";
 import Login from "./pages/login";
+import LocationDetails from "./pages/locationDetails";
 
 function App() {
   const router = createBrowserRouter([
@@ -20,6 +21,7 @@ function App() {
         { path: "/menu", element: <Menu /> },
         { path: "/device", element: <Device /> },
         { path: "/login", element: <Login /> },
+        { path: "/locationDetails/:id", element: <LocationDetails /> },
       ],
     },
   ]);
