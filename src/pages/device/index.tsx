@@ -1,7 +1,8 @@
+import DeviceList from "../../components/device_list"
 
 function Device() {
   return (
-    <div>Device</div>
+    <div><DeviceList/></div>
   )
 }
 

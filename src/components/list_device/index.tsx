@@ -4,12 +4,15 @@ import api from "../config/api";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import Card1 from "../Card1";
+import { Device } from "../modal/device";
+import Card2 from "../Card2";
+import { BarsOutlined } from "@ant-design/icons";
 
 export default function ListDevice({
   numberOfSlides = 4,
   autoplay = false,
 }) {
-  const [location, setLocation] = useState<Location[]>();
+  const [locations, setLocation] = useState<Location[]>();
     const fetchLocation = async () =>{
         try{
             const response = await api.get("podbooking");
@@ -22,10 +25,32 @@ export default function ListDevice({
      useEffect(() =>{
         fetchLocation();
      },[]);
+     const [device, setDevice] = useState<Device[]>();
+    
+     const fetchDevice = async () =>{
+         try{
+             const response = await api.get("podbooking");
+                console.log(response.data);
+                setDevice(response.data);
+                setFilteredDevices(response.data);
+         }catch(err){
+             console.log(err);
+         }
+     }
+      useEffect(() =>{
+         fetchDevice();
+      },[]);
+     
+      const [filteredDevices, setFilteredDevices] = useState<Device[]>([]);
+     const handleLocationClick = (address:string) => {
+      const filtered = device?.filter((device) => device.deviceAddress === address);
+      setFilteredDevices(filtered);
+    };
   return (
+    
     <div style={{backgroundColor:"#fff"}}>
-
-   
+     <h3 style={{marginBottom:"30px"}}> <BarsOutlined />     Các loại thiết bị</h3>
+     <div style={{border:" 2px solid black", width:"83%", marginLeft:"125px", marginBottom:"20px"}}>
       <Swiper
         slidesPerView={numberOfSlides}
         // spaceBetween={20}
@@ -38,10 +63,18 @@ export default function ListDevice({
         className={`carousel ${numberOfSlides > 1 ? "multi-item" : ""}`}
         
       >
+        
        
-       {location?.map((locationItem : Location) => (<SwiperSlide className="slide"><Card1 key={locationItem.id} location={locationItem}/></SwiperSlide>))}
+       {locations?.map((locationItem : Location) => 
+        (<SwiperSlide className="slide"><div onClick={() => handleLocationClick(locationItem.address)}><Card1 key={locationItem.id} location={locationItem}/> </div></SwiperSlide>))}
+       
+       
+       
       </Swiper>
-   
+      </div>
+      <div style={{display:"flex", flexWrap:"wrap", gap:"90px", width:"100%", justifyContent:"center", marginBottom:"50px" }}>
+        {filteredDevices?.map((deviceItem : Device) => (<Card2 key={deviceItem.id} device={deviceItem}/>))}
+        </div>
     </div>
   );
 }

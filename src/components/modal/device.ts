@@ -4,6 +4,7 @@ export type Device ={
     memberSize : number;
     size : number;
     price : number;
+    imageDevice:string;
     deviceQuantity: number;
-
+    deviceAddress: string;
 }

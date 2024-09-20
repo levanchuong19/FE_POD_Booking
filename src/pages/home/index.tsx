@@ -1,5 +1,6 @@
 import Carousel from "../../components/carousel"
-import DeviceList from "../../components/device_list"
+import ListDevice from "../../components/list_device"
+
 import PodBooking from "../../components/pod_list"
 
 
@@ -8,7 +9,8 @@ function Home() {
     <div>
         <Carousel/>
         <PodBooking numberOfSlides={3}/>
-        <DeviceList/>
+        {/* <DeviceList/> */}
+        <ListDevice/>
     </div>
   )
 }
