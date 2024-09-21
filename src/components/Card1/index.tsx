@@ -15,7 +15,7 @@ function Card1({location}:CardProps) {
     <div className="card1" >
      <Card 
     hoverable
-    style={{ width: 250, border:"none", fontSize:"18px" ,    }}
+    style={{ width: 255, border:"none", fontSize:"18px" ,    }}
     // cover={<a onClick={()=> navigate(`location/${location.id}`)}><img alt="example" src={location?.image} /></a>}
   >
     <Meta/>

@@ -7,4 +7,5 @@ export type Device ={
     imageDevice:string;
     deviceQuantity: number;
     deviceAddress: string;
+    floor: number;
 }

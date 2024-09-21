@@ -5,8 +5,10 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import Card1 from "../Card1";
 import { Device } from "../modal/device";
-import { BarsOutlined } from "@ant-design/icons";
+import { BarsOutlined, EnvironmentOutlined } from "@ant-design/icons";
 import Card3 from "../Card3";
+import { Select } from "antd";
+import "./index.scss"
 
 export default function DeviceList({
   numberOfSlides = 4,
@@ -44,12 +46,22 @@ export default function DeviceList({
       const [filteredDevices, setFilteredDevices] = useState<Device[]>([]);
      const handleLocationClick = (address:string) => {
       const filtered = device?.filter((device) => device.deviceAddress === address);
-      setFilteredDevices(filtered);
+      setFilteredDevices(filtered || []);
+    };
+    const uniqueAddresses = Array.from(new Set(device?.map((device) => device.name)));
+    const uniqueFloor = Array.from(new Set(device?.map((device) => device.floor)));
+    const handleAddressChange = (value: string) => {
+      console.log(value)
+      handleLocationClick(value);  
+    };
+    const onSearch = (value: string) => {
+      console.log('search:', value);
     };
   return (
     
     <div style={{backgroundColor:"#fff"}}>
-     <h3 style={{marginBottom:"30px"}}> <BarsOutlined />     Các loại thiết bị</h3>
+     <h3 style={{marginBottom:"20px", marginTop:"20px"}} onClick={()=>fetchDevice()}> <BarsOutlined />     Các loại thiết bị</h3>
+     
      <div style={{border:" 2px solid black", width:"83%", marginLeft:"125px", marginBottom:"20px"}}>
       <Swiper
         slidesPerView={numberOfSlides}
@@ -72,6 +84,19 @@ export default function DeviceList({
        
       </Swiper>
       </div>
+      <div className="select">
+      <Select className="Select" options={uniqueAddresses.map((name) => ({
+            value: name,
+            label:(<><EnvironmentOutlined />   {name}</>),
+          }))} onChange={(value)=>handleAddressChange(value)} onSearch={onSearch} placeholder="Chọn địa điểm"/>
+       <Select className="Select2" options={uniqueFloor.map((floor) => ({
+            value:"Tầng "+ floor,
+            label:"Tầng "+ floor,
+          }))} placeholder="Chọn tầng"/>
+      
+
+     </div>
+
       <div style={{display:"flex", flexWrap:"wrap", gap:"90px", width:"100%", justifyContent:"center", marginBottom:"50px" }}>
         {filteredDevices?.map((deviceItem : Device) => (<Card3 key={deviceItem.id} device={deviceItem}/>))}
         </div>

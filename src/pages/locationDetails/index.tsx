@@ -7,7 +7,7 @@ import "./index.scss"
 import { Button } from "antd";
 
 function LocationDetails() {
-    const naviagte = useNavigate();
+    const navigate = useNavigate();
     const [locations, setLocation] = useState<Location>();
     const {id} = useParams();
     const fetchLocation = async () =>{
@@ -30,7 +30,7 @@ function LocationDetails() {
         <p><EnvironmentOutlined /> {locations?.address}</p>
         <p><ClockCircleOutlined /> Mở cửa : 07:00 - 22:00</p>
         <p><MailOutlined />  info@workflow.com.vn</p>
-        <Button type="primary" danger onClick={()=> naviagte(``)}> Xem Thiết Bị</Button>
+        <Button type="primary" danger onClick={()=> navigate(`device/${id}`)}> Xem Thiết Bị</Button>
       </div>
     </div>
   )

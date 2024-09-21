@@ -44,12 +44,12 @@ export default function ListDevice({
       const [filteredDevices, setFilteredDevices] = useState<Device[]>([]);
      const handleLocationClick = (address:string) => {
       const filtered = device?.filter((device) => device.deviceAddress === address);
-      setFilteredDevices(filtered);
+      setFilteredDevices(filtered || []);
     };
   return (
     
     <div style={{backgroundColor:"#fff"}}>
-     <h3 style={{marginBottom:"30px"}}> <BarsOutlined />     Các loại thiết bị</h3>
+     <h3 style={{marginBottom:"30px"}} onClick={()=>fetchDevice()}> <BarsOutlined />     Các loại thiết bị</h3>
      <div style={{border:" 2px solid black", width:"83%", marginLeft:"125px", marginBottom:"20px"}}>
       <Swiper
         slidesPerView={numberOfSlides}
@@ -66,7 +66,7 @@ export default function ListDevice({
         
        
        {locations?.map((locationItem : Location) => 
-        (<SwiperSlide className="slide"><div onClick={() => handleLocationClick(locationItem.address)}><Card1 key={locationItem.id} location={locationItem}/> </div></SwiperSlide>))}
+        (<SwiperSlide className="slide2"><div onClick={() => handleLocationClick(locationItem.address)}><Card1 key={locationItem.id} location={locationItem}/> </div></SwiperSlide>))}
        
        
        

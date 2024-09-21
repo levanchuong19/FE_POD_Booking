@@ -2,7 +2,8 @@ import { Button, Card } from "antd"
 import { Device } from "../modal/device"
 import { useNavigate } from "react-router-dom"
 import { LayoutOutlined, UserOutlined } from "@ant-design/icons";
-
+import formatVND from "../../utils/currency";
+import "./index.scss"
 
 
 interface Card2Props{
@@ -13,14 +14,14 @@ function Card3({device}: Card2Props) {
     const { Meta } = Card;
   return (
     <div>
-        <Card className="card2"
+        <Card className="card3"
     hoverable
     style={{ width: 350,  }}
     cover={<a onClick={()=> Navigate(`device/${device?.id}`)}><img alt="example" src={device?.imageDevice} /></a> }
     
   >
     <Meta/>
-    <p>{device?.price}</p>
+    <p className="price">{formatVND(device?.price)}/giờ</p>
   <div style={{display:"flex", justifyContent:"space-between", alignItems:"center"}}>
   <div className="desc">
    <strong>{device?.name}</strong>
@@ -30,7 +31,7 @@ function Card3({device}: Card2Props) {
    </div>
 
    </div>
-   <Button type="primary" danger>Đặt chỗ</Button>
+   <Button type="primary" danger onClick={()=> Navigate(`booking/${device.id}`)}>Đặt chỗ</Button>
   </div>
   </Card>
      
