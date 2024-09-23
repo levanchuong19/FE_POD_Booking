@@ -18,7 +18,7 @@ export default function PodBooking({
   const [location, setLocation] = useState<Location[]>();
     const fetchLocation = async () =>{
         try{
-            const response = await api.get("podbooking");
+            const response = await api.get("locations");
                console.log(response.data);
                setLocation(response.data);
         }catch(err){
