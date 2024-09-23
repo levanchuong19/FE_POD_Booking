@@ -28,10 +28,7 @@ function App() {
     },
   ]);
   return (
-    <React.StrictMode>
       <RouterProvider router={router} />
-      <ToastContainer />
-    </React.StrictMode>
   );
 }
 

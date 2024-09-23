@@ -3,16 +3,30 @@ import FormItem from "antd/es/form/FormItem";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import api from "../../components/config/api";
+import { useDispatch } from "react-redux";
+import { login } from "../../redux/features/userSlice";
 
 function Login() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleLogin = async (values) => {
     try {
-      await api.post("podbooking", values);
-      toast.success("Login success");
+      const response = await api.post("authentication/login",values);
+      const {token ,role } = response.data;
+      localStorage.setItem("token",token);
+      toast.success("Login success!");
+      
       navigate("/");
+      if(role === "ADMIN"){
+        navigate("/dashboard");
+        
+      }
+      // lưu trữ thông tin của user
+      // dispatch action
+      dispatch(login(response.data));
     } catch (error) {
+      console.log(error)
       toast.error(error.response.data);
     }
   };
@@ -33,8 +47,8 @@ function Login() {
         <Col span={12}>
           <Form labelCol={{ span: 24 }} onFinish={handleLogin}>
             <FormItem
-              label="Phonenumber"
-              name="phonenumber"
+              label="Email"
+              name="email"
               rules={[
                 {
                   required: true,

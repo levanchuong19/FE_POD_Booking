@@ -10,6 +10,7 @@ interface CardProps {
 
 function Cards({location}:CardProps) {
     const { Meta } = Card;
+    console.log(location.image)
     const navigate = useNavigate();
   return (
     <div className="Card" >
@@ -18,8 +19,10 @@ function Cards({location}:CardProps) {
     style={{ width: 335, height:320,   }}
     cover={<a onClick={()=> navigate(`/locationDetails/${location.id}`)}><img alt="example" src={location?.image} /></a>}
   >
+    
     <Meta/>
     <div className="description">
+   
       <strong>{location?.name}</strong>
     <p><EnvironmentOutlined /> {location?.address}</p></div>
   </Card>

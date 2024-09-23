@@ -15,7 +15,7 @@ export default function ListDevice({
   const [locations, setLocation] = useState<Location[]>();
     const fetchLocation = async () =>{
         try{
-            const response = await api.get("podbooking");
+            const response = await api.get("locations");
                console.log(response.data);
                setLocation(response.data);
         }catch(err){
@@ -29,7 +29,7 @@ export default function ListDevice({
     
      const fetchDevice = async () =>{
          try{
-             const response = await api.get("podbooking");
+             const response = await api.get("devices");
                 console.log(response.data);
                 setDevice(response.data);
                 setFilteredDevices(response.data);
