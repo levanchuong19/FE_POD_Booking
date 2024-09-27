@@ -16,13 +16,13 @@ function Card2({device}: Card2Props) {
         <Card className="card2"
     hoverable
     style={{ width: 350,  }}
-    cover={<a onClick={()=> navigate(`/${device?.id}`)}><img alt="example" src={device?.imageDevice} /></a>}
+    cover={<a onClick={()=> navigate(`/${device?.id}`)}><img alt="example" src={device?.imageUrl} /></a>}
   >
     <Meta/>
   <div style={{display:"flex", justifyContent:"space-between", alignItems:"center"}}>
   <div className="desc">
-   <strong>{device?.name}</strong>
-   <p><MinusSquareOutlined /> {device?.deviceQuantity}  device</p>
+   <strong>{device?.roomType}</strong>
+   <p><MinusSquareOutlined /> {device?.status}  device</p>
    </div>
    <Button type="primary" danger onClick={()=> navigate(`booking/${device.id}`)}>Đặt chỗ</Button>
   </div>

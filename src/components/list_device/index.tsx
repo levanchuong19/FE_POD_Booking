@@ -3,21 +3,23 @@ import { Location } from "../modal/location";
 import api from "../config/api";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
-import Card1 from "../Card1";
 import { Device } from "../modal/device";
 import Card2 from "../Card2";
 import { BarsOutlined } from "@ant-design/icons";
+import "./index.scss"
 
 export default function ListDevice({
-  numberOfSlides = 4,
+  numberOfSlides = 3,
   autoplay = false,
 }) {
   const [locations, setLocation] = useState<Location[]>();
+  const [selectedSlide, setSelectedSlide] = useState(); 
     const fetchLocation = async () =>{
         try{
             const response = await api.get("locations");
                console.log(response.data);
                setLocation(response.data);
+               setSelectedSlide(null);
         }catch(err){
             console.log(err);
         }
@@ -33,6 +35,7 @@ export default function ListDevice({
                 console.log(response.data);
                 setDevice(response.data);
                 setFilteredDevices(response.data);
+                setSelectedSlide(null);
          }catch(err){
              console.log(err);
          }
@@ -42,15 +45,16 @@ export default function ListDevice({
       },[]);
      
       const [filteredDevices, setFilteredDevices] = useState<Device[]>([]);
-     const handleLocationClick = (address:string) => {
-      const filtered = device?.filter((device) => device.deviceAddress === address);
+     const handleLocationClick = (id:string) => {
+      const filtered = device?.filter((device) => device.id === id);
       setFilteredDevices(filtered || []);
+      setSelectedSlide(id);
     };
   return (
     
     <div style={{backgroundColor:"#fff"}}>
      <h3 style={{marginBottom:"30px"}} onClick={()=>fetchDevice()}> <BarsOutlined />     Các loại thiết bị</h3>
-     <div style={{border:" 2px solid black", width:"83%", marginLeft:"125px", marginBottom:"20px"}}>
+     <div className="slideLocation">
       <Swiper
         slidesPerView={numberOfSlides}
         // spaceBetween={20}
@@ -66,7 +70,9 @@ export default function ListDevice({
         
        
        {locations?.map((locationItem : Location) => 
-        (<SwiperSlide className="slide2"><div onClick={() => handleLocationClick(locationItem.address)}><Card1 key={locationItem.id} location={locationItem}/> </div></SwiperSlide>))}
+        (<SwiperSlide  ><div onClick={() => handleLocationClick(locationItem.address)}
+        className={selectedSlide === locationItem?.id ? 'active-slide' : ''}
+        >{locationItem.name} </div></SwiperSlide>))}
        
        
        
