@@ -19,8 +19,8 @@ export default function PodBooking({
     const fetchLocation = async () =>{
         try{
             const response = await api.get("locations");
-              //  console.log(response.data.filter((item : Location) => item.isDelete ===  false));
-              //  setLocation(response.data.filter((item : Location) => item.isDelete ===  true));
+               console.log(response.data.filter((item : Location) => item.isDelete ===  false));
+               setLocation(response.data.filter((item : Location) => item.isDelete ===  true));
               console.log(response.data)
               setLocation(response.data)
         }catch(err){
