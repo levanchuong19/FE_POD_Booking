@@ -1,6 +1,7 @@
 .locationDetails{
-    display: flex;
-    background-color: rgb(173, 173, 173);
+    display: block;
+    // background-color: rgb(194, 191, 191);
+    background-color: rgb(235, 235, 235);
     justify-content: center;
     margin: 50px 125px;
     padding: 50px;
@@ -10,17 +11,19 @@
     gap: 55px;
     &__reight{
         font-size: 20px;
-        background-color: rgb(202, 202, 202);;
+        padding-left: 20px;
+        padding-right: 40px;
+        background-color: rgb(235, 235, 235);
         color: rgb(43, 43, 43);
         display: flex;
         flex-direction: column;
-       width: 41%;
+       width: 100%;
        border: 0px solid black;
        border-radius: 15px;
        gap: 15px;
        .lineItem{
         margin-left: 35px;
-        width: 85%;
+        width: 96%;
         height: 2px;
          background-color:rgb(43, 43, 43); ;
        }
@@ -38,8 +41,9 @@
         border-top-right-radius: 15px;
        }
        Button{
-        margin-left: 140px;
+        margin-left: 41%;
         margin-top: 20px;
+        // margin-bottom: 20px;
         padding: 20px;
         width: 200px;
         font-weight: 600;

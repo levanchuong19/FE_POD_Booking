@@ -1,6 +1,7 @@
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
+import { UnorderedListOutlined } from '@ant-design/icons';
 
 export default function Reservation({
   numberOfSlides = 1,
@@ -8,6 +9,7 @@ export default function Reservation({
 }) {
   return (
     <div className='bookingPage'>
+      <h3 style={{marginTop:"30px", marginBottom:"20px",cursor: "pointer"}}><UnorderedListOutlined />  My Booking</h3>
       <Swiper style={{border: "2px solid black",  padding:"10px", fontWeight:"600"}}
         slidesPerView={numberOfSlides}
         autoplay={{
