@@ -17,14 +17,14 @@ function Card3({device}: Card2Props) {
         <Card className="card3"
     hoverable
     style={{ width: 350,  }}
-    cover={<a onClick={()=> Navigate(`device/${device?.id}`)}><img alt="example" src={device?.imageDevice} /></a> }
+    cover={<a onClick={()=> Navigate(`device/${device?.id}`)}><img alt="example" src={device?.imageUrl} /></a> }
     
   >
     <Meta/>
     <p className="price">{formatVND(device?.price)}/giờ</p>
   <div style={{display:"flex", justifyContent:"space-between", alignItems:"center"}}>
   <div className="desc">
-   <strong>{device?.name}</strong>
+   <strong>{device?.roomType}</strong>
    <div style={{display:"flex",gap:"20px"}}>
    <p><UserOutlined /> {device?.memberSize}</p>
    <p><LayoutOutlined /> {device?.size} m </p>

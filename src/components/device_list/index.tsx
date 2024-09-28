@@ -3,7 +3,6 @@ import { Location } from "../modal/location";
 import api from "../config/api";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
-import Card1 from "../Card1";
 import { Device } from "../modal/device";
 import { BarsOutlined, EnvironmentOutlined } from "@ant-design/icons";
 import Card3 from "../Card3";
@@ -35,6 +34,7 @@ export default function DeviceList({
                 console.log(response.data);
                 setDevice(response.data);
                 setFilteredDevices(response.data);
+                setSelectedSlide(null);
          }catch(err){
              console.log(err);
          }
@@ -44,17 +44,20 @@ export default function DeviceList({
       },[]);
      
       const [filteredDevices, setFilteredDevices] = useState<Device[]>([]);
-     const handleLocationClick = (address:string) => {
-      const filtered = device?.filter((device) => device.deviceAddress === address);
+     const handleLocationClick = (id:string) => {
+      const filtered = device?.filter((device) => device.id === id);
       setFilteredDevices(filtered || []);
+      setSelectedSlide(id); 
     };
-    const uniqueAddresses = Array.from(new Set(device?.map((device) => device.name)));
+    const uniqueAddresses = Array.from(new Set(locations?.map((location) => location.name)));
     const uniqueFloor = Array.from(new Set(device?.map((device) => device.floor)));
+    const [selectedSlide, setSelectedSlide] = useState(); 
     const handleAddressChange = (value: string) => {
       console.log(value)
       handleLocationClick(value);  
     };
     const onSearch = (value: string) => {
+      setFilteredDevices(value);
       console.log('search:', value);
     };
   return (
@@ -62,7 +65,7 @@ export default function DeviceList({
     <div style={{backgroundColor:"#fff"}}>
      <h3 style={{marginBottom:"20px", marginTop:"20px"}} onClick={()=>fetchDevice()}> <BarsOutlined />     Các loại thiết bị</h3>
      
-     <div style={{border:" 2px solid black", width:"83%", marginLeft:"125px", marginBottom:"20px"}}>
+     <div className="slideDevice" >
       <Swiper
         slidesPerView={numberOfSlides}
         // spaceBetween={20}
@@ -77,8 +80,10 @@ export default function DeviceList({
       >
         
        
-       {locations?.map((locationItem : Location) => 
-        (<SwiperSlide className="slide"><div onClick={() => handleLocationClick(locationItem.address)}><Card1 key={locationItem.id} location={locationItem}/> </div></SwiperSlide>))}
+       {device?.map((deviceItem : Device) => 
+        (<SwiperSlide ><div onClick={() => handleLocationClick(deviceItem.id)}
+        className={selectedSlide === deviceItem.id ? 'active-slide' : ''}
+        >{deviceItem.roomType} </div></SwiperSlide>))}
        
        
        
@@ -90,8 +95,8 @@ export default function DeviceList({
             label:(<><EnvironmentOutlined />   {name}</>),
           }))} onChange={(value)=>handleAddressChange(value)} onSearch={onSearch} placeholder="Chọn địa điểm"/>
        <Select className="Select2" options={uniqueFloor.map((floor) => ({
-            value:"Tầng "+ floor,
-            label:"Tầng "+ floor,
+            value: floor,
+            label:floor,
           }))} placeholder="Chọn tầng"/>
       
 
