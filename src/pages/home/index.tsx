@@ -9,7 +9,6 @@ function Home() {
     <div>
         <Carousel/>
         <PodBooking numberOfSlides={3}/>
-        {/* <DeviceList/> */}
         <ListDevice/>
     </div>
   )

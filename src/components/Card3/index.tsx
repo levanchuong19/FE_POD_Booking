@@ -1,37 +1,37 @@
 import { Button, Card } from "antd"
-import { Device } from "../modal/device"
 import { useNavigate } from "react-router-dom"
 import { LayoutOutlined, UserOutlined } from "@ant-design/icons";
 import formatVND from "../../utils/currency";
 import "./index.scss"
+import { POD } from "../modal/pod";
 
 
 interface Card2Props{
-    device : Device
+    pod : POD
 }
-function Card3({device}: Card2Props) {
+function Card3({pod}: Card2Props) {
     const Navigate = useNavigate();
     const { Meta } = Card;
   return (
     <div>
         <Card className="card3"
     hoverable
-    style={{ width: 350,  }}
-    cover={<a onClick={()=> Navigate(`device/${device?.id}`)}><img alt="example" src={device?.imageUrl} /></a> }
+    style={{ width: 350,objectFit:"cover"  }}
+    cover={<a ><img alt="example" src={pod?.imageUrl} /></a> }
     
   >
     <Meta/>
-    <p className="price">{formatVND(device?.price)}/giờ</p>
+    <p className="price">{formatVND(pod?.pricePerHour)}/giờ</p>
   <div style={{display:"flex", justifyContent:"space-between", alignItems:"center"}}>
   <div className="desc">
-   <strong>{device?.roomType}</strong>
+   <strong>{pod?.podName}</strong>
    <div style={{display:"flex",gap:"20px"}}>
-   <p><UserOutlined /> {device?.memberSize}</p>
-   <p><LayoutOutlined /> {device?.size} m </p>
+   <p><UserOutlined /> {pod?.capacity}</p>
+   <p><LayoutOutlined /> {pod?.area} m </p>
    </div>
 
    </div>
-   <Button type="primary" danger onClick={()=> Navigate(`booking/${device.id}`)}>Đặt chỗ</Button>
+   <Button type="primary" danger onClick={()=> Navigate(`booking/${pod.id}`)}>Đặt chỗ</Button>
   </div>
   </Card>
      

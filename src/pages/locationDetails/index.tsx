@@ -5,7 +5,6 @@ import { ClockCircleOutlined, EnvironmentOutlined, MailOutlined } from "@ant-des
 import "./index.scss"
 import { Button } from "antd";
 import { Location } from "../../components/modal/location";
-import { autoBatchEnhancer } from "@reduxjs/toolkit";
 
 function LocationDetails() {
     const navigate = useNavigate();

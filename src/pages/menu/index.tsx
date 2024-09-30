@@ -1,8 +1,9 @@
-import React from 'react'
+import ServiceDetails from "../../components/serviceDetails"
+
 
 function Menu() {
   return (
-    <div>Menu</div>
+    <div><ServiceDetails/></div>
   )
 }
 
