@@ -8,12 +8,20 @@ import { BarsOutlined, EnvironmentOutlined } from "@ant-design/icons";
 import Card3 from "../Card3";
 import { Select } from "antd";
 import "./index.scss"
+import { POD } from "../modal/pod";
 
 export default function DeviceList({
   numberOfSlides = 4,
   autoplay = false,
 }) {
   const [locations, setLocation] = useState<Location[]>();
+  const [device, setDevice] = useState<Device[]>();
+  const [pod, setPod] = useState<POD[]>();
+  const [filteredPods, setFilteredPods] = useState<POD[]>([]);
+  const [selectedSlide, setSelectedSlide] = useState(); 
+  const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
+  const [selectedLocationId, setSelectedLocationId] = useState<string | null>(null);
+  const [selectedFloor, setSelectedFloor] = useState<string | null>(null);
     const fetchLocation = async () =>{
         try{
             const response = await api.get("locations");
@@ -26,14 +34,13 @@ export default function DeviceList({
      useEffect(() =>{
         fetchLocation();
      },[]);
-     const [device, setDevice] = useState<Device[]>();
-    
+     
      const fetchDevice = async () =>{
          try{
              const response = await api.get("devices");
                 console.log(response.data);
                 setDevice(response.data);
-                setFilteredDevices(response.data);
+                setFilteredPods(response.data);
                 setSelectedSlide(null);
          }catch(err){
              console.log(err);
@@ -43,37 +50,58 @@ export default function DeviceList({
          fetchDevice();
       },[]);
      
-      const [filteredDevices, setFilteredDevices] = useState<Device[]>([]);
-     const handleLocationClick = (id:string) => {
-      const filtered = device?.filter((device) => device.id === id);
-      setFilteredDevices(filtered || []);
-      setSelectedSlide(id); 
+      const fetchPod = async () =>{
+        try{
+            const response = await api.get("pods");
+               console.log(response.data);
+               setPod(response.data);
+               setFilteredPods(response.data);
+        }catch(err){
+            console.log(err);
+        }
+    }
+     useEffect(() =>{
+        fetchPod();
+     },[]);
+      
+     const handleLocationClick = (deviceId:string) => {
+      const filtered = pod?.filter((pod) => pod.deviceId === deviceId);
+      console.log(filtered)
+      setFilteredPods(filtered || []);
+      setSelectedDeviceId(deviceId);
+      setSelectedSlide(deviceId); 
     };
     const uniqueAddresses = Array.from(new Set(locations?.map((location) => location.name)));
     const uniqueFloor = Array.from(new Set(device?.map((device) => device.floor)));
-    const [selectedSlide, setSelectedSlide] = useState(); 
-    const handleAddressChange = (value: string) => {
-      console.log(value)
-      handleLocationClick(value);  
+    
+    const handleAddressChange = (locationID: string) => {
+      setSelectedLocationId(locationID);
+      const filtered = pod?.filter((pod) => pod.locationId === locationID && pod.deviceId === selectedDeviceId );
+      console.log(filtered)
+      setFilteredPods(filtered || []);
+      setSelectedSlide(locationID); 
+      
     };
-    const onSearch = (value: string) => {
-      setFilteredDevices(value);
-      console.log('search:', value);
+    const handleFloorChange = (floor: string) => {
+      setSelectedFloor(floor);
+      const filtered = pod?.filter((pod) => pod.floor === floor && pod.deviceId === selectedDeviceId  && pod.locationId === selectedLocationId);
+      console.log(filtered)
+      setFilteredPods(filtered || []);
+      setSelectedSlide(floor); 
+      
     };
   return (
     
     <div style={{backgroundColor:"#fff"}}>
-     <h3 style={{marginBottom:"20px", marginTop:"20px"}} onClick={()=>fetchDevice()}> <BarsOutlined />     Các loại thiết bị</h3>
+     <h3 style={{marginBottom:"20px", marginTop:"20px"}} onClick={()=>fetchPod()}> <BarsOutlined />     Các loại thiết bị</h3>
      
      <div className="slideDevice" >
       <Swiper
         slidesPerView={numberOfSlides}
-        // spaceBetween={20}
         autoplay={{
           delay: 2000,
           disableOnInteraction: false,
         }}
-        // navigation={true}
         modules={autoplay ? [Autoplay, Navigation] : [Pagination]}
         className={`carousel ${numberOfSlides > 1 ? "multi-item" : ""}`}
         
@@ -91,9 +119,9 @@ export default function DeviceList({
       </div>
       <div className="select">
       <Select className="Select" options={uniqueAddresses.map((name) => ({
-            value: name,
+            value: locations?.find(loc => loc.name === name)?.id || '',
             label:(<><EnvironmentOutlined />   {name}</>),
-          }))} onChange={(value)=>handleAddressChange(value)} onSearch={onSearch} placeholder="Chọn địa điểm"/>
+          }))} onChange={(value)=>handleAddressChange(value)}placeholder="Chọn địa điểm"/>
        <Select className="Select2" options={uniqueFloor.map((floor) => ({
             value: floor,
             label:floor,
@@ -103,7 +131,7 @@ export default function DeviceList({
      </div>
 
       <div style={{display:"flex", flexWrap:"wrap", gap:"90px", width:"100%", justifyContent:"center", marginBottom:"50px" }}>
-        {filteredDevices?.map((deviceItem : Device) => (<Card3 key={deviceItem.id} device={deviceItem}/>))}
+        {filteredPods?.map((podItem : POD) => (<Card3 key={podItem.id} pod={podItem}/>))}
         </div>
     </div>
   );

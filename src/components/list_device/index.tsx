@@ -45,10 +45,11 @@ export default function ListDevice({
       },[]);
      
       const [filteredDevices, setFilteredDevices] = useState<Device[]>([]);
-     const handleLocationClick = (id:string) => {
-      const filtered = device?.filter((device) => device.id === id);
+     const handleLocationClick = (deviceId:string) => {
+      const filtered = device?.filter((device) => device.id === deviceId);
+      console.log(filtered)
       setFilteredDevices(filtered || []);
-      setSelectedSlide(id);
+      setSelectedSlide(deviceId);
     };
   return (
     
@@ -70,7 +71,7 @@ export default function ListDevice({
         
        
        {locations?.map((locationItem : Location) => 
-        (<SwiperSlide  ><div onClick={() => handleLocationClick(locationItem.address)}
+        (<SwiperSlide  ><div onClick={() => handleLocationClick(locationItem.id)}
         className={selectedSlide === locationItem?.id ? 'active-slide' : ''}
         >{locationItem.name} </div></SwiperSlide>))}
        
