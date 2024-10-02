@@ -1,6 +1,6 @@
 export type POD ={
     id: string;
-    podName : string;
+    name : string;
     capacity: number;
     area: number;
     description: string;

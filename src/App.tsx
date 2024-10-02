@@ -9,6 +9,7 @@ import Login from "./pages/login";
 import LocationDetails from "./pages/locationDetails";
 import Register from "./pages/register";
 import ConfirmCode from "./components/ConfirmRegister";
+import Booking from "./pages/booking";
 
 function App() {
   const router = createBrowserRouter([
@@ -24,6 +25,7 @@ function App() {
         { path: "/register", element: <Register /> },
         { path: "/ConfirmRegister", element: <ConfirmCode /> },
         { path: "/locationDetails/:id", element: <LocationDetails /> },
+        { path: "/booking/:id", element: <Booking/> },
       ],
     },
   ]);

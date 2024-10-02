@@ -6,10 +6,9 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import "./index.scss";
-
-
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import { EnvironmentOutlined } from "@ant-design/icons";
+
 
 export default function PodBooking({
   numberOfSlides = 1,
@@ -19,9 +18,7 @@ export default function PodBooking({
     const fetchLocation = async () =>{
         try{
             const response = await api.get("locations");
-               console.log(response.data.filter((item : Location) => item.isDelete ===  false));
                setLocation(response.data.filter((item : Location) => item.isDelete ===  true));
-              console.log(response.data)
               setLocation(response.data)
         }catch(err){
             console.log(err);

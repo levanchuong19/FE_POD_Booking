@@ -24,14 +24,14 @@ function Card3({pod}: Card2Props) {
     <p className="price">{formatVND(pod?.pricePerHour)}/giờ</p>
   <div style={{display:"flex", justifyContent:"space-between", alignItems:"center"}}>
   <div className="desc">
-   <strong>{pod?.podName}</strong>
+   <strong>{pod?.name}</strong>
    <div style={{display:"flex",gap:"20px"}}>
    <p><UserOutlined /> {pod?.capacity}</p>
    <p><LayoutOutlined /> {pod?.area} m </p>
    </div>
-
+         
    </div>
-   <Button type="primary" danger onClick={()=> Navigate(`booking/${pod.id}`)}>Đặt chỗ</Button>
+   <Button type="primary" danger onClick={()=> Navigate(`/booking/${pod.id}`)}>Đặt chỗ</Button>
   </div>
   </Card>
      
