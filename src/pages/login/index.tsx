@@ -1,22 +1,18 @@
 import { Button, Form, Input } from "antd";
-import FormItem from "antd/es/form/FormItem";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../../components/config/api";
-import { useDispatch } from "react-redux";
-import { login } from "../../redux/features/userSlice";
 import AuthenLayout from "../../components/auth-layout";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth, Ggprovider } from "../../components/config/firebase";
+import "./index.scss"; // Create and import a CSS file for better management
 
 function Login() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const handleLoginGoogle = () => {
     signInWithPopup(auth, Ggprovider)
       .then((result) => {
-        // This gives you a Google Access Token. You can use it to access the Google API.
         const credential = GoogleAuthProvider.credentialFromResult(result);
         console.log(credential);
       })
@@ -26,7 +22,7 @@ function Login() {
   };
 
   const handleRegisterRedirect = () => {
-    navigate("/register"); // Điều hướng đến trang đăng ký
+    navigate("/register");
   };
 
   const handleLogin = async (values) => {
@@ -35,103 +31,62 @@ function Login() {
       const { token, role } = response.data;
       localStorage.setItem("token", token);
       toast.success("Login success!");
-
-      navigate("/");
-      if (role === "ADMIN") {
-        navigate("/dashboard");
-      }
-      // lưu trữ thông tin của user
-      // dispatch action
-      dispatch(login(response.data));
+      navigate(role === "ADMIN" ? "/dashboard" : "/");
     } catch (error) {
-      console.log(error);
       toast.error(error.response.data);
     }
   };
+
   return (
-    <div
-      style={{
-        width: "100%",
-        marginLeft: "165px",
-      }}
-    >
-      <AuthenLayout>
-        <Form labelCol={{ span: 24 }} onFinish={handleLogin}>
-          <FormItem
+    <AuthenLayout>
+      <div className="login-container">
+        <h2 className="login-title">Sign In</h2>
+        <Form
+          labelCol={{ span: 24 }}
+          onFinish={handleLogin}
+          className="login-form"
+        >
+          <Form.Item
             label="Email"
             name="email"
-            rules={[
-              {
-                required: true,
-                message: "Please enter Email",
-              },
-            ]}
+            rules={[{ required: true, message: "Please enter Email" }]}
           >
-            <Input placeholder="Email" />
-          </FormItem>
-          <FormItem
+            <Input placeholder="Email" className="login-input" />
+          </Form.Item>
+          <Form.Item
             label="Password"
             name="password"
-            rules={[
-              {
-                required: true,
-                message: "Please enter password",
-              },
-            ]}
+            rules={[{ required: true, message: "Please enter password" }]}
           >
-            <Input.Password placeholder="Password" />
-          </FormItem>
+            <Input.Password placeholder="Password" className="login-input" />
+          </Form.Item>
 
-          <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
+          <Button type="primary" htmlType="submit" className="login-button">
             Login
           </Button>
 
-          <Button
-            onClick={handleLoginGoogle}
-            style={{
-              width: "100%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "10px",
-              marginTop: "20px",
-              border: "1px solid #4285F4",
-              color: "#4285F4",
-              backgroundColor: "#fff",
-              padding: "10px 0",
-              borderRadius: "5px",
-              fontSize: "16px",
-              fontWeight: "500",
-            }}
-          >
+          <p className="forgot_password">
+            <Link to={"/Forgot_Password"}>Forgot password?</Link>
+          </p>
+
+          <Button onClick={handleLoginGoogle} className="google-button">
             <img
               src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/480px-Google_%22G%22_logo.svg.png"
               width={25}
-              alt=""
+              alt="Google logo"
             />
             <span>Login with Google</span>
           </Button>
 
-          <div style={{ textAlign: "center", marginTop: "20px" }}>
-            <span style={{ fontSize: "16px", color: "#888" }}>
-              Do you have an account yet?
-            </span>
-            <Button
-              type="default"
-              style={{
-                width: "100%",
-                marginTop: "10px",
-                borderColor: "#1890ff",
-                color: "#1890ff",
-              }}
-              onClick={handleRegisterRedirect}
-            >
+          <div className="register-section">
+            <span className="register-text">Do you have an account yet?</span>
+            <a onClick={handleRegisterRedirect} className="register-link">
               Register
-            </Button>
+            </a>
           </div>
         </Form>
-      </AuthenLayout>
-    </div>
+      </div>
+    </AuthenLayout>
   );
 }
 

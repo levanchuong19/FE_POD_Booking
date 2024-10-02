@@ -10,36 +10,71 @@ function ConfirmCode() {
   const handleConfirmCode = async (values) => {
     try {
       const response = await api.get("authentication/email/verify", values); // API xác thực OTP
-      toast.success("Xác thực thành công!");
+      toast.success("Confirm Success!");
 
       navigate("/login"); // Điều hướng đến trang login
     } catch (error) {
       console.log(error);
-      toast.error("Xác thực thất bại, vui lòng thử lại.");
+      toast.error("Confirm Failed, Try again!!.");
     }
   };
 
   return (
-    <AuthenLayout>
-      <Form labelCol={{ span: 24 }} onFinish={handleConfirmCode}>
-        <Form.Item
-          label="Mã xác nhận"
-          name="code"
-          rules={[
-            {
-              required: true,
-              message: "Vui lòng nhập mã xác nhận!",
-            },
-          ]}
-        >
-          <Input placeholder="Nhập mã xác nhận từ email" />
-        </Form.Item>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        width: "100%",
 
-        <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
-          Confirm
-        </Button>
-      </Form>
-    </AuthenLayout>
+        backgroundColor: "#f0f2f5",
+      }}
+    >
+      <AuthenLayout>
+        <div
+          style={{
+            maxWidth: "400px",
+            width: "100%",
+            background: "#fff",
+            padding: "30px",
+            borderRadius: "8px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+          }}
+        >
+          <h2 style={{ textAlign: "center", marginBottom: "20px" }}>
+            Xác nhận mã OTP
+          </h2>
+          <Form labelCol={{ span: 24 }} onFinish={handleConfirmCode}>
+            <Form.Item
+              label="Mã xác nhận"
+              name="code"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng nhập mã xác nhận!",
+                },
+              ]}
+            >
+              <Input placeholder="Nhập mã xác nhận từ email" />
+            </Form.Item>
+
+            <Button
+              type="primary"
+              htmlType="submit"
+              style={{
+                width: "100%",
+                backgroundColor: "#1890ff",
+                borderColor: "#1890ff",
+                height: "40px",
+                fontSize: "16px",
+              }}
+            >
+              Confirm
+            </Button>
+          </Form>
+        </div>
+      </AuthenLayout>
+    </div>
   );
 }
 
