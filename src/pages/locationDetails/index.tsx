@@ -53,7 +53,7 @@ function LocationDetails() {
         <p><ClockCircleOutlined /> Mở cửa : 07:00 - 22:00 </p>
         <p><MailOutlined />  info@workflow.com.vn</p>
         
-        <Button type="primary" danger onClick={()=> navigate(`device/${id}`)}> Xem Thiết Bị</Button>
+        <Button type="primary" danger onClick={()=> navigate("/device")}> Xem Thiết Bị</Button>
       </div>
     </div>
   )

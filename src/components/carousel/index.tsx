@@ -13,7 +13,7 @@ import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 export default function Carousel() {
   return (
     <>
-       <div className='session'>Xin chào ",,,"</div>
+       <div className='session'></div>
       <div className="line"></div>
       <Swiper
         spaceBetween={30}

@@ -7,6 +7,7 @@ import { Device } from "../modal/device";
 import Card2 from "../Card2";
 import { BarsOutlined } from "@ant-design/icons";
 import "./index.scss"
+import { POD } from "../modal/pod";
 
 export default function ListDevice({
   numberOfSlides = 3,
@@ -43,19 +44,33 @@ export default function ListDevice({
       useEffect(() =>{
          fetchDevice();
       },[]);
+
+      const [pod, setPod] = useState<POD[]>();
+     const fetchPod = async () =>{
+         try{
+             const response = await api.get("pods");
+               console.log(response.data);
+               setPod(response.data) 
+         }catch(err){
+             console.log(err);
+         }
+     }
+      useEffect(() =>{
+         fetchPod();
+      },[]);
      
       const [filteredDevices, setFilteredDevices] = useState<Device[]>([]);
-     const handleLocationClick = (deviceId:string) => {
-      const filtered = device?.filter((device) => device.id === deviceId);
-      console.log(filtered)
+     const handleLocationClick = (locationId:string) => {
+      const filteredPods = pod?.filter((pod) => pod.locationId === locationId);
+      const filtered = device?.filter((device) => filteredPods?.some((pod) => pod.deviceId === device.id ));
       setFilteredDevices(filtered || []);
-      setSelectedSlide(deviceId);
+      setSelectedSlide(locationId);
     };
   return (
     
     <div style={{backgroundColor:"#fff"}}>
      <h3 style={{marginBottom:"30px"}} onClick={()=>fetchDevice()}> <BarsOutlined />     Các loại thiết bị</h3>
-     <div className="slideLocation">
+     <div  className="slideLocation">
       <Swiper
         slidesPerView={numberOfSlides}
         // spaceBetween={20}
