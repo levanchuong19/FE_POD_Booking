@@ -9,16 +9,13 @@ import Login from "./pages/login";
 import LocationDetails from "./pages/locationDetails";
 import Register from "./pages/register";
 import ConfirmCode from "./components/ConfirmRegister";
-<<<<<<< HEAD
 import Booking from "./pages/booking";
-=======
 import ForgotPassword from "./components/Forgot_Password";
 import ResetPassword from "./components/reset_Password";
 import Dashboard from "./components/dashboard";
 import ManageLocation from "./pages/admin/manage-location";
 import ManagePod from "./pages/admin/manage-pod";
 import ManageService from "./pages/admin/manage-service";
->>>>>>> fearture/nam
 
 function App() {
   const router = createBrowserRouter([
@@ -27,7 +24,7 @@ function App() {
       element: <Layout />,
       children: [
         { path: "/", element: <Home /> },
-        { path: "/reservation", element: <Reservation numberOfSlides={4}/> },
+        { path: "/reservation", element: <Reservation numberOfSlides={4} /> },
         { path: "/menu", element: <Menu /> },
         { path: "/device", element: <Device /> },
         { path: "/login", element: <Login /> },
@@ -36,7 +33,7 @@ function App() {
         { path: "/reset_Password/:id", element: <ResetPassword /> },
         { path: "/ConfirmRegister", element: <ConfirmCode /> },
         { path: "/locationDetails/:id", element: <LocationDetails /> },
-        { path: "/booking/:id", element: <Booking/> },
+        { path: "/booking/:id", element: <Booking /> },
       ],
     },
 
