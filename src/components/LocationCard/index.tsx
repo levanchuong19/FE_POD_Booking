@@ -8,12 +8,12 @@ type CardProps = {
     location : Location
 }
 
-function Cards({location}:CardProps) {
+function LocationCard({location}:CardProps) {
     const { Meta } = Card;
     const navigate = useNavigate();
   return (
     <div className="Card" >
-    <Card className="card"
+    <Card className="locationCard"
     hoverable
     style={{ width: 345, height:320,   }}
     cover={<a onClick={()=> navigate(`/locationDetails/${location.id}`)}><img alt="example" src={location?.imageUrl} /></a>}
@@ -28,5 +28,5 @@ function Cards({location}:CardProps) {
   )
 }
 
-export default Cards;
+export default LocationCard;
 

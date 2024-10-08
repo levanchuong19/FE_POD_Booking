@@ -38,7 +38,7 @@
 // }
 
 .active-slide {
-  color: #a3a3a3; 
+  color: black; 
   &:hover{
     &::after{
         width: 100%;
@@ -49,7 +49,7 @@
     display: block;
     width: 100%;
     height: 2px;
-    background-color: #a3a3a3;
+    background-color: black;
     transition: all 0.3s;
     
 }

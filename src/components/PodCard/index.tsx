@@ -9,7 +9,7 @@ import { POD } from "../modal/pod";
 interface Card2Props{
     pod : POD
 }
-function Card3({pod}: Card2Props) {
+function PodCard({pod}: Card2Props) {
     const Navigate = useNavigate();
     const { Meta } = Card;
   return (
@@ -39,4 +39,4 @@ function Card3({pod}: Card2Props) {
   )
 }
 
-export default Card3
+export default PodCard

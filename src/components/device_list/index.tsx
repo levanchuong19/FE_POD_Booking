@@ -5,13 +5,14 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import { Device } from "../modal/device";
 import { BarsOutlined, EnvironmentOutlined } from "@ant-design/icons";
-import Card3 from "../Card3";
 import { Select } from "antd";
 import "./index.scss"
 import { POD } from "../modal/pod";
+import PodCard from "../PodCard";
+
 
 export default function DeviceList({
-  numberOfSlides = 4,
+  numberOfSlides = 3,
   autoplay = false,
 }) {
   const [locations, setLocation] = useState<Location[]>();
@@ -25,7 +26,6 @@ export default function DeviceList({
     const fetchLocation = async () =>{
         try{
             const response = await api.get("locations");
-               console.log(response.data);
                setLocation(response.data);
         }catch(err){
             console.log(err);
@@ -38,7 +38,6 @@ export default function DeviceList({
      const fetchDevice = async () =>{
          try{
              const response = await api.get("devices");
-                console.log(response.data);
                 setDevice(response.data);
                 setFilteredPods(response.data);
                 setSelectedSlide(null);
@@ -53,7 +52,6 @@ export default function DeviceList({
       const fetchPod = async () =>{
         try{
             const response = await api.get("pods");
-               console.log(response.data);
                setPod(response.data);
                setFilteredPods(response.data);
         }catch(err){
@@ -66,7 +64,6 @@ export default function DeviceList({
       
      const handleLocationClick = (deviceId:string) => {
       const filtered = pod?.filter((pod) => pod.deviceId === deviceId);
-      console.log(filtered)
       setFilteredPods(filtered || []);
       setSelectedDeviceId(deviceId);
       setSelectedSlide(deviceId); 
@@ -74,22 +71,21 @@ export default function DeviceList({
     const uniqueAddresses = Array.from(new Set(locations?.map((location) => location.name)));
     const uniqueFloor = Array.from(new Set(device?.map((device) => device.floor)));
     
-    const handleAddressChange = (locationID: string) => {
+    const handleAddressChange = (locationID) => {
       setSelectedLocationId(locationID);
       const filtered = pod?.filter((pod) => pod.locationId === locationID && pod.deviceId === selectedDeviceId );
-      console.log(filtered)
       setFilteredPods(filtered || []);
       setSelectedSlide(locationID); 
       
     };
-    const handleFloorChange = (floor: string) => {
+    const handleFloorChange = (floor) => {
       setSelectedFloor(floor);
       const filtered = pod?.filter((pod) => pod.floor === floor && pod.deviceId === selectedDeviceId  && pod.locationId === selectedLocationId);
-      console.log(filtered)
       setFilteredPods(filtered || []);
       setSelectedSlide(floor); 
       
     };
+    
   return (
     
     <div style={{backgroundColor:"#fff"}}>
@@ -125,14 +121,15 @@ export default function DeviceList({
        <Select className="Select2" options={uniqueFloor.map((floor) => ({
             value: floor,
             label:floor,
-          }))} placeholder="Chọn tầng"/>
+          }))}onChange={(value)=>handleFloorChange(value)} placeholder="Chọn tầng"/>
       
 
      </div>
 
       <div style={{display:"flex", flexWrap:"wrap", gap:"90px", width:"100%", justifyContent:"center", marginBottom:"50px" }}>
-        {filteredPods?.map((podItem : POD) => (<Card3 key={podItem.id} pod={podItem}/>))}
+        {filteredPods?.map((podItem : POD) => (<PodCard key={podItem.id} pod={podItem}/>))}
         </div>
+       
     </div>
   );
 }

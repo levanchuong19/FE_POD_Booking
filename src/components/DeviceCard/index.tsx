@@ -8,7 +8,7 @@ import "./index.scss"
 interface Card2Props{
     device : Device
 }
-function Card2({device}: Card2Props) {
+function DeviceCard({device}: Card2Props) {
     const navigate = useNavigate();
     const { Meta } = Card;
   return (
@@ -32,4 +32,4 @@ function Card2({device}: Card2Props) {
   )
 }
 
-export default Card2
+export default DeviceCard
