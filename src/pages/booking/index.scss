@@ -10,21 +10,24 @@
         border-radius: 20px;
         background-color:rgb(235, 235, 235); 
         display: flex;
-         gap: 50px;
+        align-items: center;
+        flex-wrap: wrap;
+         gap: 55px;
         .img{
             display: flex;
-            text-align: center;
-            align-items: center;
+            
             justify-content: center;
+            width: 50%;
             img{
                 border-radius: 10px;
                 object-fit: cover;
             }
         }
         &__content{
+            margin-top: -40px;
             display: flex;
             flex-direction: column;
-            width: 40%;
+            width: 45%;
             gap: 15px;
         }
         
@@ -33,11 +36,12 @@
             align-items: center;
             gap: 150px;
             .price{
-                width: 100px;
+                width: 140px;
                 background-color: rgb(224, 224, 224);
                 align-items: center;
                 text-align: center;
-                font-weight: 450;
+                font-weight: 550;
+                font-size: 20px;
                 border-radius: 4px;
                 padding: 5px 2px;
                 color: rgb(186, 2, 2);
@@ -47,7 +51,7 @@
             display: flex;
             align-items: center;
             gap: 20px;
-            font-size: 18px;
+            font-size: 15px;
         }
     }
 }

@@ -3,6 +3,7 @@ export type POD ={
     name : string;
     capacity: number;
     area: number;
+    floor: string;
     description: string;
     imageUrl: string;
     pricePerHour: number;

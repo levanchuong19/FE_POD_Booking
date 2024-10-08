@@ -4,10 +4,10 @@ import api from "../config/api";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import { Device } from "../modal/device";
-import Card2 from "../Card2";
 import { BarsOutlined } from "@ant-design/icons";
 import "./index.scss"
 import { POD } from "../modal/pod";
+import DeviceCard from "../DeviceCard";
 
 export default function ListDevice({
   numberOfSlides = 3,
@@ -95,7 +95,7 @@ export default function ListDevice({
       </Swiper>
       </div>
       <div style={{display:"flex", flexWrap:"wrap", gap:"90px", width:"100%", justifyContent:"center", marginBottom:"50px" }}>
-        {filteredDevices?.map((deviceItem : Device) => (<Card2 key={deviceItem.id} device={deviceItem}/>))}
+        {filteredDevices?.map((deviceItem : Device) => (<DeviceCard key={deviceItem.id} device={deviceItem}/>))}
         </div>
     </div>
   );

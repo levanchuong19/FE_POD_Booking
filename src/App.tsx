@@ -16,6 +16,7 @@ import Dashboard from "./components/dashboard";
 import ManageLocation from "./pages/admin/manage-location";
 import ManagePod from "./pages/admin/manage-pod";
 import ManageService from "./pages/admin/manage-service";
+import Profile from "./pages/profile/inde";
 
 function App() {
   const router = createBrowserRouter([
@@ -30,10 +31,11 @@ function App() {
         { path: "/login", element: <Login /> },
         { path: "/register", element: <Register /> },
         { path: "/Forgot_Password", element: <ForgotPassword /> },
-        { path: "/reset_Password/:id", element: <ResetPassword /> },
+        { path: "/reset_Password", element: <ResetPassword /> },
         { path: "/ConfirmRegister", element: <ConfirmCode /> },
         { path: "/locationDetails/:id", element: <LocationDetails /> },
         { path: "/booking/:id", element: <Booking /> },
+        { path: "/profile/:id", element: <Profile /> },
       ],
     },
 
