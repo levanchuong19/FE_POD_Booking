@@ -121,6 +121,56 @@ export default function Booking({
     <div className="Booking">
         <div className="booking">
         <div className="img"><img width={600}  src={pods?.imageUrl} alt="" />
+        <div style={{display:"flex", alignItems:"center", gap:"50px",cursor: "pointer"}}>
+        <Flex gap="middle" vertical>
+        <Rate tooltips={desc} value={highestRating} />
+      <ul>
+        {ratings.map((rating, index) => (
+          <li key={index}>
+            {rating.ratingValue}
+          </li>
+        ))}
+      </ul>
+         </Flex>
+         <a onClick={toggleRatings}>Review</a>
+                </div>{showRatings && <div> <Ratings podId={id} /> </div>} 
+    </div>
+
+       <div className="booking__content"> 
+        
+        <div className="booking__content1">
+        <h1>{pods?.name}</h1>
+        <p className="price">{formatVND(pods?.pricePerHour)}/giờ</p>
+        </div>
+        
+        <div className="booking__content2">
+        <p><UserOutlined /> {pods?.capacity}</p>
+        <p><LayoutOutlined /> {pods?.area} m </p>
+        </div>
+        
+        <Form form={form} style={{display:"flex", gap:"70px",marginBottom:"-30px"}}>
+          <FormItem name="date" rules={[{required:true,message:"Vui lòng lựa chọn ngày phù hợp"}]}>
+          <DatePicker style={{width:"120px"}} onChange={onChange} needConfirm />
+          </FormItem>
+          <FormItem name="time" rules={[{required:true,message:"Vui lòng lựa chọn thời gian phù hợp"}]}>
+          <TimePicker.RangePicker />
+          </FormItem>
+        </Form>
+        
+        <h2>Giới thiệu</h2>
+        <p>
+                    {showFullDescription
+                        ? pods?.description 
+                        : pods?.description.substring(0, 260)} 
+                    {pods?.description && pods?.description.length > 265 && (
+                        <span
+                            onClick={toggleDescription}
+                            style={{ color: 'rgb(194, 191, 191)', cursor: 'pointer' }}
+                        >
+                            {showFullDescription ? " Thu gọn" : "... Xem thêm"}
+                        </span>
+                    )}
+                </p>
         <h2>Tiện ích</h2>
         <div style={{width:"100%", backgroundColor:"rgb(235, 235, 235)", height:"90px"}}>
         <Swiper
@@ -186,56 +236,6 @@ export default function Booking({
       </Swiper>
       
     </div>
-    </div>
-
-       <div className="booking__content"> 
-        
-        <div className="booking__content1">
-        <h1>{pods?.name}</h1>
-        <p className="price">{formatVND(pods?.pricePerHour)}/giờ</p>
-        </div>
-        <div style={{display:"flex", alignItems:"center", gap:"50px",cursor: "pointer"}}>
-        <Flex gap="middle" vertical>
-        <Rate tooltips={desc} value={highestRating} />
-      <ul>
-        {ratings.map((rating, index) => (
-          <li key={index}>
-            {rating.ratingValue}
-          </li>
-        ))}
-      </ul>
-         </Flex>
-         <a onClick={toggleRatings}>Review</a>
-                </div>{showRatings && <div> <Ratings podId={id} /> </div>} 
-        <div className="booking__content2">
-        <p><UserOutlined /> {pods?.capacity}</p>
-        <p><LayoutOutlined /> {pods?.area} m </p>
-        </div>
-        
-        <Form form={form} style={{display:"flex", gap:"70px",marginBottom:"-30px"}}>
-          <FormItem name="date" rules={[{required:true,message:"Vui lòng lựa chọn ngày phù hợp"}]}>
-          <DatePicker style={{width:"120px"}} onChange={onChange} needConfirm />
-          </FormItem>
-          <FormItem name="time" rules={[{required:true,message:"Vui lòng lựa chọn thời gian phù hợp"}]}>
-          <TimePicker.RangePicker />
-          </FormItem>
-        </Form>
-        
-        <h2>Giới thiệu</h2>
-        <p>
-                    {showFullDescription
-                        ? pods?.description 
-                        : pods?.description.substring(0, 260)} 
-                    {pods?.description && pods?.description.length > 265 && (
-                        <span
-                            onClick={toggleDescription}
-                            style={{ color: 'rgb(194, 191, 191)', cursor: 'pointer' }}
-                        >
-                            {showFullDescription ? " Thu gọn" : "... Xem thêm"}
-                        </span>
-                    )}
-                </p>
-
         
     <Checkbox style={{marginTop:"15px"}} onChange={handleCheckboxChange}>Sử dụng thêm dịch vụ đi kèm</Checkbox>
        </div>
