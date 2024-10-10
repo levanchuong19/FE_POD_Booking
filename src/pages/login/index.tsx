@@ -6,12 +6,16 @@ import AuthenLayout from "../../components/auth-layout";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth, Ggprovider } from "../../components/config/firebase";
 import "./index.scss"; // Create and import a CSS file for better management
+import { useDispatch } from "react-redux";
+import { login } from "../../redux/features/userSlice";
+import { jwtDecode } from "jwt-decode";
 import { login } from "../../redux/features/userSlice";
 import { useDispatch } from "react-redux";
 import { jwtDecode } from "jwt-decode";
 
 function Login() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const dispatch = useDispatch();
 
   const handleLoginGoogle = () => {
@@ -34,6 +38,8 @@ function Login() {
       const response = await api.post("authentication/login", values);
       const { accessToken } = response.data.data;
       localStorage.setItem("accessToken", accessToken);
+      const { accessToken } = response.data.data;
+      localStorage.setItem("accessToken", accessToken);
       toast.success("Login success!");
 
       const decodedToken = jwtDecode(accessToken);
@@ -47,7 +53,21 @@ function Login() {
         navigate("/dashboard");
       }
       dispatch(login(response.data));
+
+      const decodedToken = jwtDecode(accessToken);
+      const roles =
+        decodedToken[
+          "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+        ];
+      if (roles === "Customer") {
+        navigate("/");
+      } else {
+        navigate("/dashboard");
+      }
+      dispatch(login(response.data));
     } catch (error) {
+      console.log(error);
+      toast.error("Email or Password Invalid");
       console.log(error);
       toast.error("Email or Password Invalid");
     }

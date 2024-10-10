@@ -1,6 +1,7 @@
-export type SERVICE={
-    id:string;
+export type  Service ={
+    id: string;
     name:string;
-    description: string;
+    description:string;
     unitPrice:number;
+    imageUrl: string;
 }

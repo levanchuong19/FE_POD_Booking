@@ -8,10 +8,19 @@ import formatVND from "../../utils/currency";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import type { DatePickerProps } from 'antd';
-import { Button, DatePicker, Form,TimePicker  } from 'antd';
+import { Button, DatePicker, Form,Modal,TimePicker  } from 'antd';
 import type { Dayjs } from 'dayjs';
 import FormItem from "antd/es/form/FormItem";
 import { useForm } from "antd/es/form/Form";
+import { Checkbox } from 'antd';
+import type { CheckboxProps } from 'antd';
+import { Service } from "../../components/modal/service";
+import ServiceCard from "../../components/ServiceCard";
+import { Flex, Rate } from 'antd';
+import Ratings from "../../components/rating";
+
+
+
 
 export default function Booking({
   numberOfSlides = 4,
@@ -19,8 +28,48 @@ export default function Booking({
 }) {
     const [pods, setPod] = useState<POD>();
     const {id} = useParams();
+    const {Ratingid} = useParams();
     const [showFullDescription, setShowFullDescription] = useState(false);
     const [form] = useForm();
+    const [service, setService] = useState<Service[]>();
+    const [showModal, setShowModal] = useState(false);
+    const [selectedServices, setSelectedServices] = useState<Service[]>([]);
+    const desc = ['terrible', 'bad', 'normal', 'good', 'wonderful'];
+    const [showRatings, setShowRatings] = useState(false); 
+    const [highestRating, setHighestRating] = useState(1);
+  const [ratings, setRatings] = useState([]);
+
+    const handleContinue = () => {
+      if (selectedServices.length === 0) {
+          form.setFieldsValue({ service: false });
+        }
+      setShowModal(false);
+  };
+
+  const handleServiceSelection = (serviceItem: Service) => {
+    setSelectedServices((prev) => {
+      if (prev.includes(serviceItem)) {
+        return prev.filter(item => item !== serviceItem);
+      } else {
+        return [...prev, serviceItem];
+      }
+    });
+  };
+
+  const fetchService = async () =>{
+    try{
+        const response = await api.get("services");
+        console.log(response.data)
+           setService(response.data);
+    }catch(err){
+        console.log(err);
+    }
+}
+ useEffect(() =>{
+    fetchService();
+ },[]);
+
+
      const fetchPod = async () =>{
          try{
              const response = await api.get(`pods/${id}`);
@@ -33,51 +82,47 @@ export default function Booking({
       useEffect(() =>{
          fetchPod();
       },[]);
+
+      const handleCheckboxChange: CheckboxProps['onChange'] = (e) => {
+        if (e.target.checked) {
+            setShowModal(true); // Mở modal khi checkbox được chọn
+        }
+    };
       const toggleDescription = () => {
         setShowFullDescription(!showFullDescription);
     };
     const onChange: DatePickerProps<Dayjs[]>['onChange'] = (date, dateString) => {
       console.log(date, dateString);
     };
+    const toggleRatings = () => {
+      setShowRatings(!showRatings); 
+  };
+  
+    // Gọi API để lấy danh sách đánh giá
+    const fetchRatings = async () => {
+      try {
+        const response = await api.get(`ratings/${Ratingid}`); // Thay thế bằng URL API của bạn
+        console.log(response.data)
+        const ratingsData = response.data; // Dữ liệu đánh giá từ API
+        setRatings(ratingsData);
+
+        // Tính toán tỷ lệ cao nhất
+        const maxRating = Math.max(...ratingsData.map(rating => rating.ratingValue));
+        setHighestRating(maxRating);
+      } catch (error) {
+        console.error('Error fetching ratings:', error);
+      }
+    };
+    
+    useEffect(() => {
+    fetchRatings(id);
+  }, []);
   return (
     <div className="Booking">
         <div className="booking">
-        <div className="img"><img width={620}  src={pods?.imageUrl} alt="" /></div>
-       <div className="booking__content"> 
-        
-        <div className="booking__content1">
-        <h1>{pods?.name}</h1>
-        <p className="price">{formatVND(pods?.pricePerHour)}/giờ</p>
-        </div>
-        <div className="booking__content2">
-        <p><UserOutlined /> {pods?.capacity}</p>
-        <p><LayoutOutlined /> {pods?.area} m </p>
-        </div>
-        <Form form={form} style={{display:"flex", gap:"70px"}}>
-          <FormItem name="date" rules={[{required:true,message:"Vui lòng lựa chọn ngày phù hợp"}]}>
-          <DatePicker style={{width:"120px"}} onChange={onChange} needConfirm />
-          </FormItem>
-          <FormItem name="time" rules={[{required:true,message:"Vui lòng lựa chọn thời gian phù hợp"}]}>
-          <TimePicker.RangePicker />
-          </FormItem>
-        </Form>
-        <h2>Giới thiệu</h2>
-        <p>
-                    {showFullDescription
-                        ? pods?.description // Hiển thị đầy đủ
-                        : pods?.description.substring(0, 260)} {/* Hiển thị 100 ký tự đầu nếu không xem đầy đủ */}
-                    {pods?.description && pods?.description.length > 265 && (
-                        <span
-                            onClick={toggleDescription}
-                            style={{ color: 'rgb(194, 191, 191)', cursor: 'pointer' }}
-                        >
-                            {showFullDescription ? " Thu gọn" : "... Xem thêm"}
-                        </span>
-                    )}
-                </p>
-
+        <div className="img"><img width={600}  src={pods?.imageUrl} alt="" />
         <h2>Tiện ích</h2>
-        <div style={{width:"100%", backgroundColor:"rgb(235, 235, 235)"}}>
+        <div style={{width:"100%", backgroundColor:"rgb(235, 235, 235)", height:"90px"}}>
         <Swiper
         slidesPerView={numberOfSlides}
         // spaceBetween={20}
@@ -91,7 +136,7 @@ export default function Booking({
         
       >
         <SwiperSlide style={{width:"60px"}}>
-          <div style={{fontSize:"13px", width:"75px",boder:"1px soli"}}>
+          <div style={{fontSize:"13px", width:"75px"}}>
           <svg xmlns="http://www.w3.org/2000/svg" height="34px" viewBox="0 -960 960 960" width="50px" fill="#5f6368"><path d="M340-720q-33 0-56.5-23.5T260-800q0-33 23.5-56.5T340-880q33 0 56.5 23.5T420-800q0 33-23.5 56.5T340-720Zm220 560H302q-33 0-60.5-23.5T207-240l-87-440h82l88 440h270v80Zm220 80L664-280H386q-29 0-50.5-17.5T308-344l-44-214q-11-48 22.5-85t81.5-37q35 0 63.5 21t36.5 57l44 202h130q21 0 39 11t29 29l140 240-70 40Z"/></svg><br></br>
           Bàn cao cấp & Ghế công thái học
           </div>
@@ -139,11 +184,75 @@ export default function Booking({
           </div>
         </SwiperSlide>
       </Swiper>
-      <Button type="primary" danger htmlType="submit">Thanh Toán</Button>
+      
     </div>
-       </div>
+    </div>
 
+       <div className="booking__content"> 
+        
+        <div className="booking__content1">
+        <h1>{pods?.name}</h1>
+        <p className="price">{formatVND(pods?.pricePerHour)}/giờ</p>
+        </div>
+        <div style={{display:"flex", alignItems:"center", gap:"50px",cursor: "pointer"}}>
+        <Flex gap="middle" vertical>
+        <Rate tooltips={desc} value={highestRating} />
+      <ul>
+        {ratings.map((rating, index) => (
+          <li key={index}>
+            {rating.ratingValue}
+          </li>
+        ))}
+      </ul>
+         </Flex>
+         <a onClick={toggleRatings}>Review</a>
+                </div>{showRatings && <div> <Ratings podId={id} /> </div>} 
+        <div className="booking__content2">
+        <p><UserOutlined /> {pods?.capacity}</p>
+        <p><LayoutOutlined /> {pods?.area} m </p>
+        </div>
+        
+        <Form form={form} style={{display:"flex", gap:"70px",marginBottom:"-30px"}}>
+          <FormItem name="date" rules={[{required:true,message:"Vui lòng lựa chọn ngày phù hợp"}]}>
+          <DatePicker style={{width:"120px"}} onChange={onChange} needConfirm />
+          </FormItem>
+          <FormItem name="time" rules={[{required:true,message:"Vui lòng lựa chọn thời gian phù hợp"}]}>
+          <TimePicker.RangePicker />
+          </FormItem>
+        </Form>
+        
+        <h2>Giới thiệu</h2>
+        <p>
+                    {showFullDescription
+                        ? pods?.description 
+                        : pods?.description.substring(0, 260)} 
+                    {pods?.description && pods?.description.length > 265 && (
+                        <span
+                            onClick={toggleDescription}
+                            style={{ color: 'rgb(194, 191, 191)', cursor: 'pointer' }}
+                        >
+                            {showFullDescription ? " Thu gọn" : "... Xem thêm"}
+                        </span>
+                    )}
+                </p>
+
+        
+    <Checkbox style={{marginTop:"15px"}} onChange={handleCheckboxChange}>Sử dụng thêm dịch vụ đi kèm</Checkbox>
+       </div>
+       <Button style={{marginLeft:"42%", width:"200px", fontSize:"18px", padding:"20px"}}  type="primary" danger htmlType="submit">Xác Nhận</Button>
     </div>
+    <Modal width={"83%"} open={showModal} onCancel={() => setShowModal(false)} onOk={handleContinue}>
+          <div style={{display:"grid",gridTemplateColumns: "repeat(3, 1fr)", gap:"16px"}}>
+          {service?.map((serviceItem: Service) => (
+            <ServiceCard 
+              key={serviceItem.id} 
+              service={serviceItem}
+              onSelect={handleServiceSelection} 
+            />
+          ))}
+            </div> 
+        </Modal>
+        
     </div>
   )
 }

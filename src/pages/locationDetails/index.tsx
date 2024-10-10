@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import api from "../../components/config/api";
 import { ClockCircleOutlined, EnvironmentOutlined, MailOutlined } from "@ant-design/icons";
 import "./index.scss"
-import { Button } from "antd";
+import { Button, Collapse, CollapseProps } from "antd";
 import { Location } from "../../components/modal/location";
 
 function LocationDetails() {
@@ -24,8 +24,30 @@ function LocationDetails() {
          fetchLocation();
       },[]);
       const toggleDescription = () => {
-        setShowFullDescription(!showFullDescription); // Đổi trạng thái giữa xem ngắn và xem đầy đủ
+        setShowFullDescription(!showFullDescription); 
     };
+    const text = `Mở web Work Flow -> Đăng Nhập bằng tài khoản của bạn -> Chọn đặt chỗ -> Chọn On Going -> Cung cấp thông tin này cho nhân viên`;
+
+  const text1 = `Mở web Work Flow  ->  Chọn đặt chỗ -> Chọn Up Coming -> Chọn Booking muốn thay đổi thời gian đặt phòng -> kéo xuống dưới cùng, chọn dời lịch -> Chọn khung thời gian mới và hệ thống sẽ gửi thông báo dời lịch thành công -> Bạn có thể xem lại thao tác ở mục thông báo`;
+  const text2 = `Bạn có thể liên hệ trực tiếp các barista ở quầy bar hoặc Gọi +84 333 68 0099 - Email infor@workflowcafe.com`;
+    const items: CollapseProps['items'] = [
+      {
+        key: '1',
+        label: 'Làm sao để check-in ?',
+        children: <p>{text}</p>,
+      },
+      {
+        key: '2',
+        label: 'Làm sao để thay đổi thời gian đặt phòng ?',
+        children: <p>{text1}</p>,
+      },
+      {
+        key: '3',
+        label: 'Làm sao liên hệ nhân viên hỗ trợ ?',
+        children: <p>{text2 }</p>,
+      },
+    ];
+    
   return (
     <div className="locationDetails" >
       {/* <div className="locationDetails__left">
@@ -36,6 +58,7 @@ function LocationDetails() {
       <img style={{borderRadius:"15px", marginLeft:"30px", marginTop:"20px",objectFit:"cover" }} width={1020} height={450}  src={locations?.imageUrl} alt="" />
         <strong>{locations?.name}</strong>
         <p className="lineItem"></p>
+        <h4 style={{paddingLeft: "30px"}}>Giới thiệu</h4>
         <p>
                     {showFullDescription
                         ? locations?.description // Hiển thị đầy đủ
@@ -52,7 +75,8 @@ function LocationDetails() {
         <p ><EnvironmentOutlined /> {locations?.address }</p>
         <p><ClockCircleOutlined /> Mở cửa : 07:00 - 22:00 </p>
         <p><MailOutlined />  info@workflow.com.vn</p>
-        
+        <p>Câu hỏi thường gặp</p>
+        <p><Collapse style={{border:"none",}} accordion items={items} /></p>
         <Button type="primary" danger onClick={()=> navigate("/device")}> Xem Thiết Bị</Button>
       </div>
     </div>
