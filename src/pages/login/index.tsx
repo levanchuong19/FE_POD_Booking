@@ -6,9 +6,13 @@ import AuthenLayout from "../../components/auth-layout";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth, Ggprovider } from "../../components/config/firebase";
 import "./index.scss"; // Create and import a CSS file for better management
+import { login } from "../../redux/features/userSlice";
+import { useDispatch } from "react-redux";
+import { jwtDecode } from "jwt-decode";
 
 function Login() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleLoginGoogle = () => {
     signInWithPopup(auth, Ggprovider)
@@ -28,12 +32,24 @@ function Login() {
   const handleLogin = async (values) => {
     try {
       const response = await api.post("authentication/login", values);
-      const { token, role } = response.data;
-      localStorage.setItem("token", token);
+      const { accessToken } = response.data.data;
+      localStorage.setItem("accessToken", accessToken);
       toast.success("Login success!");
-      navigate(role === "ADMIN" ? "/dashboard" : "/");
+
+      const decodedToken = jwtDecode(accessToken);
+      const roles =
+        decodedToken[
+          "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+        ];
+      if (roles === "Customer") {
+        navigate("/");
+      } else {
+        navigate("/dashboard");
+      }
+      dispatch(login(response.data));
     } catch (error) {
-      toast.error(error.response.data);
+      console.log(error);
+      toast.error("Email or Password Invalid");
     }
   };
 

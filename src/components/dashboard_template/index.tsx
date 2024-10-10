@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useForm } from "antd/es/form/Form";
 import api from "../config/api";
+import moment from "moment";
 
 export interface Column {
   title: string;
@@ -28,13 +29,14 @@ function DashboardTemplate({
   const [showModal, setShowModal] = useState(false);
   const [form] = useForm();
   const [loading, setLoading] = useState(false);
-  const [isUpdate, setIsUpdate] = useState(false);
+  const [fetching, setFetching] = useState(true);
 
   //GET
   const fetchData = async () => {
     try {
       const response = await api.get(apiURI);
       setDatas(response.data);
+      setFetching(false);
     } catch (error) {
       toast.error(`Error fetching ${title}`);
     }
@@ -42,10 +44,16 @@ function DashboardTemplate({
 
   //CREATE OR UPDATE
   const handleSubmit = async (values) => {
+    const dateFormatted = moment(values.dateOfBirthday.$d).format(
+      "DD-MM-YYYY, HH:mm"
+    );
+    values.dateOfBirthday = dateFormatted;
     try {
       setLoading(true);
 
       if (values.id) {
+        console.log(values.id);
+
         await api.put(`${apiURI}/${values.id}`, values);
         toast.success("Update successfully");
       } else {
@@ -80,15 +88,22 @@ function DashboardTemplate({
     ...columns,
     {
       title: "Action",
-      key: "action",
-      render: (record) => (
+      dataIndex: "id",
+      key: "id",
+      render: (id, record) => (
         <>
           <Button
             type="primary"
             onClick={() => {
+              const recordValiDate = {
+                ...record,
+                dateOfBirthday: record.dateOfBirth
+                  ? moment(record.dateOfBirth, "DD-MM-YYYY HH:mm")
+                  : null,
+              };
+              form.setFieldsValue(recordValiDate);
               setShowModal(true);
-              setIsUpdate(true);
-              form.setFieldsValue(locations);
+              // form.resetFields();
             }}
           >
             Update
@@ -113,13 +128,12 @@ function DashboardTemplate({
         onClick={() => {
           form.resetFields();
           setShowModal(true);
-          setIsUpdate(false);
         }}
         type="primary"
       >
         Create new {title}
       </Button>
-      <Table dataSource={datas} columns={tableColumn} />
+      <Table loading={fetching} dataSource={datas} columns={tableColumn} />
       <Modal
         open={showModal}
         onCancel={() => setShowModal(false)}
