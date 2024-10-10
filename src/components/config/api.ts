@@ -41,6 +41,18 @@ api.interceptors.response.use(
         }
         return Promise.reject(error);
     }
+  });
+   api.interceptors.request.use(
+    function (config){
+      const token = localStorage.getItem("accessToken");
+      config.headers.Authorization = `Bearer ${token}`;
+      return config;
+    }
+    
+  , function (error) {
+    // Do something with request error
+    return Promise.reject(error);
+  },
 );
 
 export default api;

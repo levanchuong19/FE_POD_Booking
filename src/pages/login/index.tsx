@@ -9,7 +9,6 @@ import "./index.scss"; // Create and import a CSS file for better management
 import { useDispatch } from "react-redux";
 import { login } from "../../redux/features/userSlice";
 import { jwtDecode } from "jwt-decode";
-
 function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -34,17 +33,20 @@ function Login() {
       const { accessToken } = response.data.data;
       localStorage.setItem("accessToken", accessToken);
       toast.success("Login success!");
-      
-      const decodedToken = jwtDecode(accessToken); 
-      const roles = decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]; 
+
+      const decodedToken = jwtDecode(accessToken);
+      const roles =
+        decodedToken[
+          "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+        ];
       if (roles === "Customer") {
-        navigate("/"); 
+        navigate("/");
       } else {
-        navigate("/dashboard"); 
+        navigate("/dashboard");
       }
       dispatch(login(response.data));
     } catch (error) {
-      console.log(error)
+      console.log(error);
       toast.error("Email or Password Invalid");
     }
   };
@@ -62,7 +64,7 @@ function Login() {
             label="Email"
             name="email"
             rules={[{ required: true, message: "Please enter Email" }]}
-          >                     
+          >
             <Input placeholder="Email" className="login-input" />
           </Form.Item>
           <Form.Item

@@ -26,6 +26,8 @@ const items: MenuItem[] = [
   getItem("ManageLocation", "locations", <PieChartOutlined />),
   getItem("ManagePod", "pods", <PieChartOutlined />),
   getItem("ManageService", "services", <PieChartOutlined />),
+  getItem("ManageDevice", "devices", <PieChartOutlined />),
+  getItem("ManageUser", "accounts", <PieChartOutlined />),
 ];
 
 const Dashboard: React.FC = () => {

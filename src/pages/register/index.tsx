@@ -2,13 +2,23 @@ import { Button, DatePicker, Form, Input, Select, Row, Col } from "antd";
 import api from "../../components/config/api";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import moment from "moment";
 import "./index.scss";
 
 function Register() {
   const navigate = useNavigate();
+
   const handleRegister = async (values) => {
+    // set ngày tháng năm đúng form
+    const formattedValues = {
+      ...values,
+      dateOfBirth: values.dateOfBirth
+        ? moment(values.dateOfBirth).format("DD-MM-YYYY")
+        : null,
+    };
+
     try {
-      const response = await api.post("authentication/register", values);
+      await api.post("authentication/register", formattedValues);
       toast.success("Register Success!!");
       navigate("/ConfirmRegister");
     } catch (error) {
@@ -22,9 +32,6 @@ function Register() {
       <Form
         name="register"
         onFinish={handleRegister}
-        initialValues={{
-          role: "ADMIN",
-        }}
         layout="vertical"
         className="register-form"
       >
