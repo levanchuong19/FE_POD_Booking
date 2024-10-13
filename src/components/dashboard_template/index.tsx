@@ -45,7 +45,7 @@ function DashboardTemplate({
   //CREATE OR UPDATE
   const handleSubmit = async (values) => {
     const dateFormatted = moment(values.dateOfBirthday.$d).format(
-      "DD-MM-YYYY, HH:mm"
+      "DD-MM-YYYY"
     );
     values.dateOfBirthday = dateFormatted;
     try {
@@ -64,6 +64,8 @@ function DashboardTemplate({
       form.resetFields();
       setShowModal(false);
     } catch (error) {
+      console.log(error );
+
       toast.error(error.response.data);
     } finally {
       setLoading(false);
