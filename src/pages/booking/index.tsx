@@ -1,59 +1,116 @@
 import { useEffect, useState } from "react";
 import { POD } from "../../components/modal/pod";
 import api from "../../components/config/api";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "./index.scss"
 import { LayoutOutlined, UserOutlined } from "@ant-design/icons";
 import formatVND from "../../utils/currency";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
-import type { DatePickerProps } from 'antd';
+import type {CheckboxProps } from 'antd';
 import { Button, DatePicker, Form,Modal,TimePicker  } from 'antd';
 import type { Dayjs } from 'dayjs';
 import FormItem from "antd/es/form/FormItem";
 import { useForm } from "antd/es/form/Form";
-import { Checkbox } from 'antd';
-import type { CheckboxProps } from 'antd';
 import { Service } from "../../components/modal/service";
 import ServiceCard from "../../components/ServiceCard";
-import { Flex, Rate } from 'antd';
+import { Flex, Rate,Checkbox } from 'antd';
 import Ratings from "../../components/rating";
+import { jwtDecode } from "jwt-decode";
+import { toast } from "react-toastify";
 
-
-
-
-export default function Booking({
+export default function Bookings({
   numberOfSlides = 4,
   autoplay = false,
 }) {
     const [pods, setPod] = useState<POD>();
-    const {id} = useParams();
-    const {Ratingid} = useParams();
+    const {id,Ratingid} = useParams();
     const [showFullDescription, setShowFullDescription] = useState(false);
     const [form] = useForm();
     const [service, setService] = useState<Service[]>();
     const [showModal, setShowModal] = useState(false);
-    const [selectedServices, setSelectedServices] = useState<Service[]>([]);
+    const [selectedServices, setSelectedServices] = useState([]);
     const desc = ['terrible', 'bad', 'normal', 'good', 'wonderful'];
     const [showRatings, setShowRatings] = useState(false); 
     const [highestRating, setHighestRating] = useState(1);
-  const [ratings, setRatings] = useState([]);
+    const [ratings, setRatings] = useState([]);
+    const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
+    const [startTime, setStartTime] = useState<Dayjs | null>(null);
+    const [endTime, setEndTime] = useState<Dayjs | null>(null);
+    const navigate = useNavigate();
 
-    const handleContinue = () => {
-      if (selectedServices.length === 0) {
-          form.setFieldsValue({ service: false });
-        }
-      setShowModal(false);
+    const handleDateChange = (date: Dayjs | null) => {
+      setSelectedDate(date);
+    };
+
+    const handleTimeChange = (timeRange: [Dayjs, Dayjs] | null) => {
+      if (timeRange) {
+        const [start, end] = timeRange;
+        setStartTime(start);
+        setEndTime(end); 
+      } else {
+        setStartTime(null);
+        setEndTime(null);
+      }
+    };
+   
+    const handleSubmit = async () => {
+      if (!selectedDate || !startTime || !endTime) {
+        toast("Please select a date and both start and end times.");
+        return;
+      }
+      const token = localStorage.getItem("accessToken");
+      const decodedToken = jwtDecode(token);
+      const userId = decodedToken.userId;
+      console.log("id:", userId);
+  
+     
+      const bookingData = {
+          accountId: userId, 
+          podId: pods?.id,
+          startTime: startTime ? startTime.toISOString() : null, 
+          endTime: endTime ? endTime.toISOString() : null,
+          paymentMethod: 0,
+          bookingServices: selectedServices.map(service => ({
+              serviceId: service.id, 
+              quantity: service.quantity 
+          }))
+      };
+      console.log("Booking Data:", bookingData);
+      try {
+          const response = await api.post("bookings", bookingData);
+          const createdBooking = response.data.data
+          console.log(createdBooking.id)
+          console.log(response.data);
+          setSelectedDate(null);
+          setStartTime(null);
+          setEndTime(null);
+          setSelectedServices([]);
+          navigate(`/confirmBooking/${createdBooking?.id}`)
+      } catch (err) {
+        console.error(err.response.data);
+        toast.error(err.response.data);
+          console.log(err);
+      }
+     
   };
 
-  const handleServiceSelection = (serviceItem: Service) => {
-    setSelectedServices((prev) => {
-      if (prev.includes(serviceItem)) {
-        return prev.filter(item => item !== serviceItem);
-      } else {
-        return [...prev, serviceItem];
-      }
-    });
+    const handleServiceSelection = (serviceId, quantity) => {
+      setSelectedServices((prevServices) => {
+        const existingService = prevServices.find((service) => service.id === serviceId);
+        if (existingService) {
+          return prevServices.map((service) =>
+            service.id === serviceId ? { ...service, quantity: quantity } : service
+          );
+        } else {
+          return [...prevServices, { id: serviceId, quantity: quantity }];
+        }
+      });
+    };
+
+  const handleOk = () => {
+    console.log('services:',selectedServices)
+    setShowModal(false); 
   };
 
   const fetchService = async () =>{
@@ -81,7 +138,7 @@ export default function Booking({
      }
       useEffect(() =>{
          fetchPod();
-      },[]);
+      },[id]);
 
       const handleCheckboxChange: CheckboxProps['onChange'] = (e) => {
         if (e.target.checked) {
@@ -91,36 +148,82 @@ export default function Booking({
       const toggleDescription = () => {
         setShowFullDescription(!showFullDescription);
     };
-    const onChange: DatePickerProps<Dayjs[]>['onChange'] = (date, dateString) => {
-      console.log(date, dateString);
-    };
+    
     const toggleRatings = () => {
       setShowRatings(!showRatings); 
   };
   
-    // Gọi API để lấy danh sách đánh giá
-    const fetchRatings = async () => {
-      try {
-        const response = await api.get(`ratings/${Ratingid}`); // Thay thế bằng URL API của bạn
-        console.log(response.data)
-        const ratingsData = response.data; // Dữ liệu đánh giá từ API
-        setRatings(ratingsData);
-
-        // Tính toán tỷ lệ cao nhất
-        const maxRating = Math.max(...ratingsData.map(rating => rating.ratingValue));
-        setHighestRating(maxRating);
-      } catch (error) {
-        console.error('Error fetching ratings:', error);
-      }
-    };
+ 
+  const fetchRatings = async (podId) => {
+    try {
+       const response = await api.get(`ratings/${podId}`);
+       console.log(response.data);
+       const ratingsData = response.data;
+       setRatings(ratingsData);
+       const maxRating = Math.max(...ratingsData.map(rating => rating.ratingValue));
+       setHighestRating(maxRating);
+    } catch (error) {
+       console.error('Error fetching ratings:', error);
+    }
+ };
     
     useEffect(() => {
-    fetchRatings(id);
-  }, []);
+    fetchRatings();
+  }, [Ratingid]);
   return (
     <div className="Booking">
         <div className="booking">
         <div className="img"><img width={600}  src={pods?.imageUrl} alt="" />
+        <div style={{display:"flex", alignItems:"center", gap:"50px",cursor: "pointer"}}>
+        <Flex gap="middle" vertical>
+        <Rate tooltips={desc} value={highestRating} />
+      <ul>
+        {ratings.map((rating, index) => (
+          <li key={index}>
+            {rating?.ratingValue}
+          </li>
+        ))}
+      </ul>
+         </Flex>
+         <a onClick={toggleRatings}>Review</a>
+                </div>{showRatings && <div> <Ratings podId={id} /> </div>} 
+    </div>
+
+       <div className="booking__content"> 
+        
+        <div className="booking__content1">
+        <h1>{pods?.name}</h1>
+        <p className="price">{formatVND(pods?.pricePerHour)}/giờ</p>
+        </div>
+        
+        <div className="booking__content2">
+        <p><UserOutlined /> {pods?.capacity}</p>
+        <p><LayoutOutlined /> {pods?.area} m </p>
+        </div>
+        
+        <Form form={form} style={{display:"flex", gap:"70px",marginBottom:"-30px"}}>
+          <FormItem name="date" rules={[{required:true,message:"Vui lòng lựa chọn ngày phù hợp"}]}>
+          <DatePicker style={{width:"120px"}}onChange={handleDateChange} needConfirm />
+          </FormItem>
+          <FormItem name="time" rules={[{required:true,message:"Vui lòng lựa chọn thời gian phù hợp"}]}>
+          <TimePicker.RangePicker onChange={handleTimeChange}/>
+          </FormItem>
+        </Form>
+        
+        <h2>Giới thiệu</h2>
+        <p>
+                    {showFullDescription
+                        ? pods?.description 
+                        : pods?.description.substring(0, 260)} 
+                    {pods?.description && pods?.description.length > 265 && (
+                        <span
+                            onClick={toggleDescription}
+                            style={{ color: 'rgb(194, 191, 191)', cursor: 'pointer' }}
+                        >
+                            {showFullDescription ? " Thu gọn" : "... Xem thêm"}
+                        </span>
+                    )}
+                </p>
         <h2>Tiện ích</h2>
         <div style={{width:"100%", backgroundColor:"rgb(235, 235, 235)", height:"90px"}}>
         <Swiper
@@ -186,68 +289,18 @@ export default function Booking({
       </Swiper>
       
     </div>
-    </div>
-
-       <div className="booking__content"> 
-        
-        <div className="booking__content1">
-        <h1>{pods?.name}</h1>
-        <p className="price">{formatVND(pods?.pricePerHour)}/giờ</p>
-        </div>
-        <div style={{display:"flex", alignItems:"center", gap:"50px",cursor: "pointer"}}>
-        <Flex gap="middle" vertical>
-        <Rate tooltips={desc} value={highestRating} />
-      <ul>
-        {ratings.map((rating, index) => (
-          <li key={index}>
-            {rating.ratingValue}
-          </li>
-        ))}
-      </ul>
-         </Flex>
-         <a onClick={toggleRatings}>Review</a>
-                </div>{showRatings && <div> <Ratings podId={id} /> </div>} 
-        <div className="booking__content2">
-        <p><UserOutlined /> {pods?.capacity}</p>
-        <p><LayoutOutlined /> {pods?.area} m </p>
-        </div>
-        
-        <Form form={form} style={{display:"flex", gap:"70px",marginBottom:"-30px"}}>
-          <FormItem name="date" rules={[{required:true,message:"Vui lòng lựa chọn ngày phù hợp"}]}>
-          <DatePicker style={{width:"120px"}} onChange={onChange} needConfirm />
-          </FormItem>
-          <FormItem name="time" rules={[{required:true,message:"Vui lòng lựa chọn thời gian phù hợp"}]}>
-          <TimePicker.RangePicker />
-          </FormItem>
-        </Form>
-        
-        <h2>Giới thiệu</h2>
-        <p>
-                    {showFullDescription
-                        ? pods?.description 
-                        : pods?.description.substring(0, 260)} 
-                    {pods?.description && pods?.description.length > 265 && (
-                        <span
-                            onClick={toggleDescription}
-                            style={{ color: 'rgb(194, 191, 191)', cursor: 'pointer' }}
-                        >
-                            {showFullDescription ? " Thu gọn" : "... Xem thêm"}
-                        </span>
-                    )}
-                </p>
-
         
     <Checkbox style={{marginTop:"15px"}} onChange={handleCheckboxChange}>Sử dụng thêm dịch vụ đi kèm</Checkbox>
        </div>
-       <Button style={{marginLeft:"42%", width:"200px", fontSize:"18px", padding:"20px"}}  type="primary" danger htmlType="submit">Xác Nhận</Button>
+       <Button style={{marginLeft:"42%", width:"200px", fontSize:"18px", padding:"20px"}}  type="primary" danger htmlType="submit" onClick={handleSubmit}>Xác Nhận</Button>
     </div>
-    <Modal width={"83%"} open={showModal} onCancel={() => setShowModal(false)} onOk={handleContinue}>
+    <Modal width={"83%"} open={showModal} onCancel={() => setShowModal(false)} onOk={handleOk}>
           <div style={{display:"grid",gridTemplateColumns: "repeat(3, 1fr)", gap:"16px"}}>
           {service?.map((serviceItem: Service) => (
             <ServiceCard 
               key={serviceItem.id} 
               service={serviceItem}
-              onSelect={handleServiceSelection} 
+              onSelect={handleServiceSelection}
             />
           ))}
             </div> 
