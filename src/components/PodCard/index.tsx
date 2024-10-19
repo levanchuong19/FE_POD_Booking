@@ -31,7 +31,7 @@ function PodCard({pod}: Card2Props) {
    </div>
          
    </div>
-   <Button type="primary" danger onClick={()=> Navigate(`/booking/${pod.id}`)}>Đặt chỗ</Button>
+   <Button className="button" type="primary" danger onClick={()=> Navigate(`/booking/${pod.id}`)}>Đặt chỗ</Button>
   </div>
   </Card>
      

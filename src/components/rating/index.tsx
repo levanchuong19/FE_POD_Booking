@@ -11,7 +11,7 @@ const Ratings: React.FC<{ podId: string }> = ({ podId }) => {
     const [showRating, setShowRating] = useState<Rating[]>([]);
     const [comment, setComment] = useState('');
     const [customerId, setCustomerId] = useState('');
-    const [value, setValue] = useState(3);
+    const [value, setValue] = useState(0);
     const desc = ['terrible', 'bad', 'normal', 'good', 'wonderful'];
 
     const fetchRating = async () => {
@@ -74,12 +74,12 @@ const Ratings: React.FC<{ podId: string }> = ({ podId }) => {
     };
 
     return (
-        <Card title="Ratings" style={{ width: 500 }}>
+        <Card title="Đánh giá chất lượng và dịch vụ !" style={{ width: 550 }}>
             <Rate
                 tooltips={desc}
                 onChange={(value) => setValue(value)}
                 value={value}
-            />
+            /><br></br><br></br>
             <TextArea
                 rows={4}
                 value={comment}

@@ -21,6 +21,7 @@ import ManageDevice from "./pages/admin/manage-device";
 import ManageUser from "./pages/admin/manage-user";
 import UserProfile from "./pages/userProfile";
 import ConfirmBooking from "./pages/confirmBooking";
+import DeviceDetails from "./pages/deviceDetails";
 
 function App() {
   const router = createBrowserRouter([
@@ -40,6 +41,7 @@ function App() {
         { path: "/ConfirmRegister", element: <ConfirmCode /> },
         { path: "/userProfile/:id", element: <UserProfile /> },
         { path: "/locationDetails/:id", element: <LocationDetails /> },
+        { path: "/deviceDetails", element: <DeviceDetails /> },
         { path: "/booking/:id", element: <Bookings /> },
         { path: "/profile/:id", element: <Profile /> },
         { path: "/confirmBooking/:id", element: <ConfirmBooking/> },

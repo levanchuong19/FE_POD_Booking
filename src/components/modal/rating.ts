@@ -1,4 +1,4 @@
-export type Rating ={
+export type RATING ={
     id:string;
     ratingValue: number;
     comments: string;
