@@ -3,11 +3,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    
     .booking{
         width: 83%;
         margin: 50px;
         padding:50px 50px;
-        border-radius: 20px;
+        border-radius: 10px;
         background-color:rgb(235, 235, 235); 
         display: flex;
         // align-items: center;
@@ -28,7 +29,7 @@
             display: flex;
             flex-direction: column;
             width: 45%;
-            gap: 15px;
+            gap: 10px;
         }
         
         &__content1{
@@ -53,5 +54,14 @@
             gap: 20px;
             font-size: 15px;
         }
+        .button{
+            &:hover{
+                transform:  scale(1.05);
+            }
+        }
     }
 }
+.ant-picker-cell-disabled {
+    opacity: 0.5; /* Giảm độ trong suốt */
+    pointer-events: none; /* Ngăn không cho người dùng tương tác */
+  }

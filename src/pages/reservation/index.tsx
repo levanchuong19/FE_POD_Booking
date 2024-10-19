@@ -7,6 +7,9 @@ import api from '../../components/config/api';
 import { Booking } from '../../components/modal/booking';
 import ReservationCard from '../../components/reservationCard';
 import "./index.scss"
+import { Button, Modal } from 'antd';
+import Ratings from '../../components/rating';
+import { useNavigate } from 'react-router-dom';
 
 export default function Reservation({
   numberOfSlides = 1,
@@ -16,6 +19,10 @@ export default function Reservation({
   const [reservation, setReservation] = useState<Booking[]>();
   const [selectedStatus, setSelectedStatus] = useState<string>('On Going');
   const [activeSlide, setActiveSlide] = useState<string>('On Going');
+  const [showRatings, setShowRatings] = useState(false); 
+  const [currentPodId, setCurrentPodId] = useState([]); 
+
+  const navigate = useNavigate();
     const fetchBooking = async () => {
         const response =  await api.get("bookings");
         console.log('response',response.data)
@@ -30,6 +37,18 @@ export default function Reservation({
     const handleSlideClick = (status: string) => {
       setSelectedStatus(status);
       setActiveSlide(status);
+      
+    };
+
+    const handleAddRating = (podId: string) => {
+      console.log(`Adding rating for pod ID: ${podId}`);
+      setCurrentPodId(podId); 
+      setShowRatings(true); 
+
+    };
+
+    const handleRebookPod = (podId: string) => {
+      navigate(`/booking/${podId}`)
     };
 
   return (
@@ -41,7 +60,6 @@ export default function Reservation({
           delay: 2000,
           disableOnInteraction: false,
         }}
-        // navigation={true}
         modules={autoplay ? [Autoplay, Navigation] : [Pagination]}
         className={`carousel ${numberOfSlides > 1 ? "multi-item" : ""}`}
         
@@ -66,7 +84,7 @@ export default function Reservation({
           Pending
         </SwiperSlide>
         <SwiperSlide
-          onClick={() => handleSlideClick('Completed')}
+          onClick={() => handleSlideClick('Complete')}
           className={activeSlide === 'Completed' ? '-slide' : ''}
         >
           Completed
@@ -86,14 +104,27 @@ export default function Reservation({
      <div className="reservationCard">
      {filteredBookings.length > 0 ? (
               filteredBookings?.map((item: Booking) => (
-                <ReservationCard key={item.id} booking={item} />
+                <ReservationCard key={item.id} booking={item} canAddRating={activeSlide === 'Complete'} 
+                onAddRating={handleAddRating} onRebook={handleRebookPod}
+                />
               ))
             ) : (
               <p>No bookings available for this status.</p>
             )}
+           
       </div>
      </div>
      </div>
+            <Modal 
+            open={showRatings}  onCancel={() => setShowRatings(false)}  width={600}
+             footer={[
+               <Button key="cancel" onClick={() => setShowRatings(false)}>
+                            Cancel
+               </Button>,
+              ]}
+            >
+             {currentPodId && <Ratings podId={currentPodId} />}
+           </Modal>
     </div>
   );
 }

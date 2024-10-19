@@ -19,8 +19,8 @@ function ManageLocation() {
     { title: "Address", dataIndex: "address", key: "address" },
     { title: "Description", dataIndex: "description", key: "description" },
     { title: "PhoneNumber", dataIndex: "phoneNumber", key: "phoneNumber" },
-    { title: "Image", dataIndex: "imageUrl", key: "imageUrl" },
-  ];
+    { title: "Image", dataIndex: "imageUrl", key: "imageUrl", render:(img) => <Image src={img}/> }
+  ]
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
@@ -52,7 +52,6 @@ function ManageLocation() {
       <div style={{ marginTop: 8 }}>Upload</div>
     </button>
   );
-
   const formItems = (
     <>
       {/* Name */}
@@ -86,16 +85,15 @@ function ManageLocation() {
       <Form.Item
         name="imageUrl"
         label="Image"
-        rules={[{ required: true, message: "Please enter imageUrl" }]}
+        // rules={[{ required: true, message: "Please enter imageUrl" }]}
       >
         <Upload
-          action="http://localhost:5088/api/upload"
           listType="picture-card"
           fileList={fileList}
           onPreview={handlePreview}
           onChange={handleChange}
         >
-          {fileList.length >= 8 ? null : uploadButton}
+          {fileList.length == 1? null : uploadButton}
         </Upload>
         {previewImage && (
           <Image
@@ -119,6 +117,7 @@ function ManageLocation() {
   return (
     <div>
       <DashboardTemplate
+      fileList ={fileList}
         title={title}
         columns={columns}
         formItems={formItems}

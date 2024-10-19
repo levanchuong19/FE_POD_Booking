@@ -4,11 +4,13 @@ import { toast } from "react-toastify";
 import { useForm } from "antd/es/form/Form";
 import api from "../config/api";
 import moment from "moment";
+import uploadFile from "../../utils/upload";
 
 export interface Column {
   title: string;
   dataIndex: string;
   key: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   render?: (value: any) => any;
 }
 
@@ -17,6 +19,8 @@ interface DashboardTemplateProps {
   columns: Column[];
   apiURI: string;
   formItems: React.ReactElement;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  fileList: any
 }
 
 function DashboardTemplate({
@@ -24,6 +28,7 @@ function DashboardTemplate({
   formItems,
   apiURI,
   title,
+  fileList
 }: DashboardTemplateProps) {
   const [datas, setDatas] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -37,6 +42,7 @@ function DashboardTemplate({
       const response = await api.get(apiURI);
       setDatas(response.data);
       setFetching(false);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast.error(`Error fetching ${title}`);
     }
@@ -44,29 +50,45 @@ function DashboardTemplate({
 
   //CREATE OR UPDATE
   const handleSubmit = async (values) => {
-    const dateFormatted = moment(values.dateOfBirthday.$d).format(
-      "DD-MM-YYYY"
-    );
-    values.dateOfBirthday = dateFormatted;
+    if (fileList && fileList.length > 0) {
+      try {
+        console.log(fileList[0].originFileObj);
+        const img = await uploadFile(fileList[0].originFileObj);
+        console.log(img);
+        values.imageUrl = img; // Set uploaded image URL
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (error) {
+        toast.error("Image upload failed!");
+        return; // Stop submission if image upload fails
+      }
+    }
+  
+    // Optional: Format date if using DatePicker
+    if (values.dateOfBirthday) {
+      const dateFormatted = moment(values.dateOfBirthday).format("DD-MM-YYYY");
+      values.dateOfBirthday = dateFormatted;
+    }
+  
     try {
+      console.log("Submitting form...");
       setLoading(true);
-
+  
       if (values.id) {
-        console.log(values.id);
-
+        console.log("Updating item with ID:", values.id);
         await api.put(`${apiURI}/${values.id}`, values);
         toast.success("Update successfully");
       } else {
+        console.log("Creating new item");
         await api.post(apiURI, values);
+        toast.success("Successfully created!");
       }
-      toast.success("Successfully!!!");
-      fetchData();
-      form.resetFields();
-      setShowModal(false);
+  
+      fetchData();   // Refresh data after successful operation
+      form.resetFields();  // Clear form
+      setShowModal(false); // Close modal
     } catch (error) {
-      console.log(error );
-
-      toast.error(error.response.data);
+      console.error(error);
+      toast.error(error.response?.data || "An error occurred.");
     } finally {
       setLoading(false);
     }

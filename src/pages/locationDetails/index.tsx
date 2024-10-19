@@ -49,16 +49,17 @@ function LocationDetails() {
     ];
     
   return (
-    <div className="locationDetails" >
-      {/* <div className="locationDetails__left">
-        <img style={{borderRadius:"15px"}} width={500} src={locations?.imageUrl} alt="" />
-      </div> */}
+   <div className="LocationDetails" >
+     <div className="locationDetails" >
+      <div className="locationDetails__left">
+        <img style={{borderRadius:"15px"}} width={600} src={locations?.imageUrl} alt="" />
+      </div>
       
       <div className="locationDetails__reight" >
-      <img style={{borderRadius:"15px", marginLeft:"30px", marginTop:"20px",objectFit:"cover" }} width={1020} height={450}  src={locations?.imageUrl} alt="" />
-        <strong>{locations?.name}</strong>
-        <p className="lineItem"></p>
-        <h4 style={{paddingLeft: "30px"}}>Giới thiệu</h4>
+      {/* <img style={{borderRadius:"15px", marginLeft:"30px", marginTop:"20px",objectFit:"cover" }} width={1020} height={450}  src={locations?.imageUrl} alt="" /> */}
+        <h2>{locations?.name}</h2>
+       
+        {/* <h4 style={{paddingLeft: "30px"}}>Giới thiệu</h4> */}
         <p>
                     {showFullDescription
                         ? locations?.description // Hiển thị đầy đủ
@@ -77,9 +78,10 @@ function LocationDetails() {
         <p><MailOutlined />  info@workflow.com.vn</p>
         <p>Câu hỏi thường gặp</p>
         <p><Collapse style={{border:"none",}} accordion items={items} /></p>
-        <Button type="primary" danger onClick={()=> navigate("/device")}> Xem Thiết Bị</Button>
+        <Button type="primary" danger onClick={()=> navigate("/device")}> Đặt phòng ngay</Button>
       </div>
     </div>
+   </div>
   )
 }
 
