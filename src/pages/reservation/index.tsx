@@ -9,7 +9,7 @@ import ReservationCard from '../../components/reservationCard';
 import "./index.scss"
 import { Button, Modal } from 'antd';
 import Ratings from '../../components/rating';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function Reservation({
   numberOfSlides = 1,
@@ -21,17 +21,28 @@ export default function Reservation({
   const [activeSlide, setActiveSlide] = useState<string>('On Going');
   const [showRatings, setShowRatings] = useState(false); 
   const [currentPodId, setCurrentPodId] = useState([]); 
+  const [showPaymentSuccessModal, setShowPaymentSuccessModal] = useState(false);
+  const [paymentBookingCode, setPaymentBookingCode] = useState<string | null>(null);
 
+  const location = useLocation();
   const navigate = useNavigate();
+  
     const fetchBooking = async () => {
         const response =  await api.get("bookings");
         console.log('response',response.data)
         setReservation(response.data || []);
     }
 
-    useEffect(()=>{
-        fetchBooking();
-    },[]);
+      useEffect(() => {
+      fetchBooking();
+      const params = new URLSearchParams(location.search);
+      const code = params.get('bookingCode');
+      if (code) {
+        setPaymentBookingCode(code);
+        setShowPaymentSuccessModal(true); 
+      }
+      fetchBooking();
+    }, [location]);
     
     const filteredBookings = reservation?.filter((item: Booking) => item.paymentStatus === selectedStatus) || [];
     const handleSlideClick = (status: string) => {
@@ -51,6 +62,25 @@ export default function Reservation({
       navigate(`/booking/${podId}`)
     };
 
+    const handlePaymentSuccessModalClose = () => {
+      setShowPaymentSuccessModal(false);
+      if (paymentBookingCode) {
+        // Call API to update booking's paymentStatus to "UpComing"
+        updatePaymentStatus(paymentBookingCode);
+      }
+    };
+  
+    const updatePaymentStatus = async (code: string) => {
+      console.log('code:', code)
+      try {
+        const response = await api.post(`payments/success?bookingCode=${code}`);
+        console.log('Payment status updated:', response.data);
+      } catch (error) {
+        console.error('Error updating payment status:', error);
+      }
+    };
+  
+
   return (
     <div className='bookingPage'>
       <h3 style={{marginTop:"30px", marginBottom:"20px",cursor: "pointer"}}><UnorderedListOutlined />  My Booking</h3>
@@ -66,14 +96,14 @@ export default function Reservation({
       >
        
       <SwiperSlide
-          onClick={() => handleSlideClick('On Going')}
-          className={activeSlide === 'On Going' ? '-slide' : ''}
+          onClick={() => handleSlideClick('OnGoing')}
+          className={activeSlide === 'OnGoing' ? '-slide' : ''}
         >
           On Going
         </SwiperSlide>
         <SwiperSlide
-          onClick={() => handleSlideClick('Up Coming')}
-          className={activeSlide === 'Up Coming' ? '-slide' : ''}
+          onClick={() => handleSlideClick('UpComing')}
+          className={activeSlide === 'UpComing' ? '-slide' : ''}
         >
           Up Coming
         </SwiperSlide>
@@ -85,7 +115,7 @@ export default function Reservation({
         </SwiperSlide>
         <SwiperSlide
           onClick={() => handleSlideClick('Complete')}
-          className={activeSlide === 'Completed' ? '-slide' : ''}
+          className={activeSlide === 'Complete' ? '-slide' : ''}
         >
           Completed
         </SwiperSlide>
@@ -125,6 +155,15 @@ export default function Reservation({
             >
              {currentPodId && <Ratings podId={currentPodId} />}
            </Modal>
+
+           <Modal
+        open={showPaymentSuccessModal}
+        onOk={handlePaymentSuccessModalClose}
+        onCancel={handlePaymentSuccessModalClose}
+        title="Payment Successful"
+      >
+        <p>Your payment was successful!</p>
+      </Modal>
     </div>
   );
 }

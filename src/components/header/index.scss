@@ -5,7 +5,7 @@
     display: flex;
     justify-content: center;
    &__center{
-    width: 82%;
+    width: 83%;
     padding: 20px 0px;
     display: flex;
     align-items: center;
@@ -15,11 +15,11 @@
     // gap: 620px;
    }
     &__left{
-        gap: 50px;
+        gap: 20px;
         display: flex;
         
         ul{
-            gap: 40px;
+            gap: 30px;
             display: flex;
             align-items: center;
             a{

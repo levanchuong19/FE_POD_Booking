@@ -7,6 +7,7 @@ export type BookingService = {
 
 export type Booking = {
     id: string;
+    code: string;
     podId: string;
     accountId: string;
     startTime: Date;

@@ -6,20 +6,90 @@ import "./index.scss"
 import formatVND from "../../utils/currency";
 import { Button } from "antd";
 import { format } from 'date-fns'
+import { Payment } from "../../components/modal/payment";
 
 function ConfirmBooking() {
-            const [isBooking ,setIsbooking] = useState<Booking>();
+            const [isBooking, setIsbooking] = useState<Booking | null>(null);
+            const [isPayment, setIsPayment] = useState<Payment|null>(null);
             const {id} = useParams();
-            const fetchBooking = async () => {
-                  const response =  await api.get(`bookings/${id}`);
-                  console.log('response',response.data.data)
-                  setIsbooking(response.data.data);
-                 }
+        const fetchBooking = async () => {
+            const response =  await api.get(`bookings/${id}`);
+            console.log('BookingData',response.data.data)
+                setIsbooking(response.data.data);
+                }
 
-                useEffect(()=>{
-                     fetchBooking();
-                },[]);
+        useEffect(()=>{
+            fetchBooking();
+        },[]);
     
+
+        const fetchPayment = async (bookingCode: string) => {
+            try {
+              console.log("Gửi mã booking:", bookingCode); 
+              const payload = { bookingCode };
+              console.log("Payment request payload:", payload);
+              const response = await api.post(`payments/create?bookingCode=${bookingCode}` );
+              console.log("bookingResult:", response); 
+              const paymentUrl = response.data;
+              console.log('paymentUrl: ',paymentUrl )
+              setIsPayment(response.data)
+            //   return paymentUrl;
+            } catch (error) {
+              if (error.response) {
+                console.error("Lỗi từ server:", error.response.data);
+              }
+              throw error; 
+            }
+          };
+
+          useEffect(() => {
+            if (isBooking?.code) {
+              fetchPayment(isBooking.code);
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+            }}, [isBooking?.code]);
+
+        //   const handlePayment = async () => {
+        //     if (!isBooking?.code) {
+        //       console.error("Không có mã đặt chỗ.");
+        //       return;
+        //     }
+          
+        //     try {
+        //     //   const paymentUrl = await fetchPayment(isBooking.code);
+        //     console.log('code:',isPayment) 
+
+        //       const paymentUrl = isPayment?.result; 
+        //       console.log("VNPay Payment URL:", paymentUrl);
+          
+        //       if (paymentUrl) {
+        //         window.location.href = paymentUrl;
+        //       } else {
+        //         console.error("Không nhận được URL thanh toán.");
+        //       }
+        //     } catch (error) {
+        //       console.error("Thanh toán thất bại:", error);
+        //     }
+        //   };
+
+        const handlePayment = async () => {
+            if (!isBooking?.code) {
+                console.error("No booking code available.");
+                return;
+            }
+        
+            try {
+                const paymentUrl = isPayment?.result; 
+                console.log("VNPay Payment URL:", paymentUrl);
+        
+                if (paymentUrl) {
+                    window.location.href = paymentUrl;
+                } else {
+                    console.error("No payment URL received.");
+                }
+            } catch (error) {
+                console.error("Payment failed:", error);
+            }
+        };        
 
                 const formatDate = (date:Date) => {
                     return format(date, "dd/MM/yyyy"); 
@@ -40,7 +110,8 @@ function ConfirmBooking() {
                 if (isMultipleDays) {
                     return `${formatDate(startDate)} ${formatTime(startDate)} - ${formatDate(endDate)} ${formatTime(endDate)}`;
                 } else {
-                    return `${formatTime(startDate)} - ${formatTime(endDate)}`;
+                    return `${formatDate(startDate)}
+                    ${formatTime(startDate)} - ${formatTime(endDate)}`;
                 }
                 };
 
@@ -63,7 +134,7 @@ function ConfirmBooking() {
         return durationString;
     };
 
-    const calculateTime = (startTime, endTime) => {
+    const calculateTime = (startTime: string | number | Date, endTime: string | number | Date) => {
         const start = new Date(startTime);
         const end = new Date(endTime);
         const durationInMinutes = (end - start) / (1000 * 60); 
@@ -124,13 +195,14 @@ function ConfirmBooking() {
                 <span style={{height:'0.8px',backgroundColor: 'black'}} className="spanLine"></span>
                 <h2>Thanh toán: </h2>
                 <div style={{display:"flex", alignItems:"center", gap: "150px"}}>
-                    <img width={80} src="https://didongmoi.com.vn/data/cms-image/momo-la-gi/momo-la-gi-6.jpg" alt="" />
-                    <p>Ví Momo</p>
+                    <img width={120} height={100} src="https://vnpay.vn/s1/statics.vnpay.vn/2021/6/05g0ytd7dxcs1624443633411.png" alt="" />
+                    <p>Ví VNPAY</p>
                 </div>
             </div>
         </div>
         <div className="confirm-button">
-            <Button style={{padding:"20px 50px", fontSize:"18px"}} type="primary" danger>Thanh toán</Button>
+            <Button onClick={handlePayment}  style={{padding:"20px 50px", fontSize:"18px"}} type="primary" danger>Thanh toán</Button>
+            
         </div>
     </div>
 </div>
