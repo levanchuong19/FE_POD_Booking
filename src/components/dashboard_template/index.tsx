@@ -44,9 +44,7 @@ function DashboardTemplate({
 
   //CREATE OR UPDATE
   const handleSubmit = async (values) => {
-    const dateFormatted = moment(values.dateOfBirthday.$d).format(
-      "DD-MM-YYYY, HH:mm"
-    );
+    const dateFormatted = moment(values.dateOfBirthday.$d).format("DD-MM-YYYY");
     values.dateOfBirthday = dateFormatted;
     try {
       setLoading(true);
@@ -91,14 +89,14 @@ function DashboardTemplate({
       dataIndex: "id",
       key: "id",
       render: (id, record) => (
-        <>
+        <div style={{ gap: "" }}>
           <Button
             type="primary"
             onClick={() => {
               const recordValiDate = {
                 ...record,
                 dateOfBirthday: record.dateOfBirth
-                  ? moment(record.dateOfBirth, "DD-MM-YYYY HH:mm")
+                  ? moment(record.dateOfBirth, "DD-MM-YYYY")
                   : null,
               };
               form.setFieldsValue(recordValiDate);
@@ -117,7 +115,7 @@ function DashboardTemplate({
               Delete
             </Button>
           </Popconfirm>
-        </>
+        </div>
       ),
     },
   ];

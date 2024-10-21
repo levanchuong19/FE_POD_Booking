@@ -3,7 +3,7 @@ import {
   GetProp,
   Image,
   Input,
-  Select,
+  InputNumber,
   Upload,
   UploadFile,
   UploadProps,
@@ -75,17 +75,13 @@ function ManageDevice() {
       </Form.Item>
 
       {/* Status */}
-      {/* <Form.Item
+      <Form.Item
         label="Status"
         name="status"
         rules={[{ required: true, message: "Please select the status!" }]}
       >
-        <Select placeholder="Select status">
-          <Select.Option value={0}>Available</Select.Option>
-          <Select.Option value={1}>Occupied</Select.Option>
-          <Select.Option value={2}>Under Maintenance</Select.Option>
-        </Select>
-      </Form.Item> */}
+        <InputNumber />
+      </Form.Item>
 
       {/* Image URL */}
       <Form.Item label="Image URL" name="imageUrl">
@@ -109,6 +105,7 @@ function ManageDevice() {
             src={previewImage}
           />
         )}
+        {/* <Input /> */}
       </Form.Item>
     </>
   );

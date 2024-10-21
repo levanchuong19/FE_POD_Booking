@@ -114,11 +114,7 @@ function ManageLocation() {
       </Form.Item>
 
       {/* Image Upload */}
-      <Form.Item
-        name="imageUrl"
-        label="Image"
-        rules={[{ required: true, message: "Please upload an image" }]}
-      >
+      <Form.Item name="imageUrl" label="Image">
         <Upload
           action="http://localhost:5088/api/upload"
           listType="picture-card"

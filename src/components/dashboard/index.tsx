@@ -23,11 +23,11 @@ function getItem(
 }
 
 const items: MenuItem[] = [
-  getItem("ManageLocation", "locations", <PieChartOutlined />),
-  getItem("ManagePod", "pods", <PieChartOutlined />),
-  getItem("ManageService", "services", <PieChartOutlined />),
-  getItem("ManageDevice", "devices", <PieChartOutlined />),
-  getItem("ManageUser", "accounts", <PieChartOutlined />),
+  getItem("Manage Location", "locations", <PieChartOutlined />),
+  getItem("Manage Pod", "pods", <PieChartOutlined />),
+  getItem("Manage Service", "services", <PieChartOutlined />),
+  getItem("Manage Device", "devices", <PieChartOutlined />),
+  getItem("Manage User", "accounts", <PieChartOutlined />),
 ];
 
 const Dashboard: React.FC = () => {

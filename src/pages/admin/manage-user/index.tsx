@@ -34,7 +34,7 @@ function ManageDevice() {
     { title: "Address", dataIndex: "address", key: "address" },
     { title: "Image", dataIndex: "image", key: "image" },
     { title: "Email", dataIndex: "email", key: "email" },
-    { title: "Phone", dataIndex: "phone", key: "phone" },
+    { title: "PhoneNumber", dataIndex: "phoneNumber", key: "phoneNumber" },
   ];
 
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -128,8 +128,8 @@ function ManageDevice() {
       </Form.Item>
 
       <Form.Item
-        label="Phone"
-        name="phone"
+        label="PhoneNumber"
+        name="phoneNumber"
         rules={[{ required: true, message: "Please enter your phone number!" }]}
       >
         <Input placeholder="Enter your phone number" />

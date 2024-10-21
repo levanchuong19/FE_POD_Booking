@@ -4,11 +4,13 @@ import { useNavigate } from "react-router-dom";
 import api from "../../components/config/api";
 import { jwtDecode } from "jwt-decode";
 import { User } from "../../components/modal/user";
+import { toast } from "react-toastify";
+import "./userProfile.scss";
 
 function UserProfile() {
   const [form] = Form.useForm();
   const [profile, setProfile] = useState<User>();
-  const [showProfile, setShowProfile] = useState<User>();
+  // const [showProfile, setShowProfile] = useState<User>();
 
   const navigate = useNavigate();
 
@@ -23,11 +25,10 @@ function UserProfile() {
         const response = await api.get(`accounts/${userId}`);
         console.log(response.data.data);
         setProfile(response.data.data);
-        setShowProfile(response.data.data);
-        form.setFieldsValue(response.data);
+        // setShowProfile(response.data.data);
+        form.setFieldsValue(response.data.data);
       } catch (error) {
-        console.error("Failed to fetch user data or decode token:", error);
-        message.error("Failed to load user data.");
+        toast.error(error);
       }
     } else {
       navigate("/login");
@@ -63,34 +64,31 @@ function UserProfile() {
     <div className="user-profile-container">
       <h2>User Profile</h2>
 
-      <div>
-        <p>{showProfile?.firstName}</p>
-        <p>{showProfile?.lastName}</p>
-        <p>{showProfile?.gender}</p>
-
-        <p>{showProfile?.address}</p>
-        <p>{showProfile?.email}</p>
-        <p>{showProfile?.phone}</p>
-        <p>
-          <img src={showProfile?.image} alt="" />
-        </p>
+      <div className="image">
+        <div className="image_wrapper">
+          {profile?.image ? (
+            <img src={`account${profile.image}`} alt="User profile" />
+          ) : (
+            <img src="/path/to/default/image.jpg" />
+          )}
+        </div>
       </div>
 
-      {/* <Form
+      <div className="user-name">
+        {profile?.firstName && profile?.lastName ? (
+          <h3>{`${profile.firstName} ${profile.lastName}`}</h3>
+        ) : (
+          <h3>Username not available</h3>
+        )}
+      </div>
+
+      <Form
         form={form}
         layout="vertical"
         initialValues={profile}
         onFinish={handleUpdateProfile}
         className="user-profile-form"
       >
-        <Form.Item
-          label="Username"
-          name="username"
-          rules={[{ required: true, message: "Please enter your username" }]}
-        >
-          <Input placeholder="Enter your username" />
-        </Form.Item>
-
         <Form.Item
           label="Email"
           name="email"
@@ -139,7 +137,7 @@ function UserProfile() {
         <Button type="primary" htmlType="submit">
           Update Profile
         </Button>
-      </Form> */}
+      </Form>
 
       <Button type="default" onClick={handleLogout} className="logout-button">
         Logout
