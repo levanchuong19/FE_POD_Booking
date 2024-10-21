@@ -32,7 +32,7 @@ function ManageDevice() {
       },
     },
     { title: "Address", dataIndex: "address", key: "address" },
-    { title: "Image", dataIndex: "image", key: "image" },
+    { title: "Image", dataIndex: "image", key: "image", render:(img) => <Image src={img}/> },
     { title: "Email", dataIndex: "email", key: "email" },
     { title: "Phone", dataIndex: "phone", key: "phone" },
   ];
@@ -143,7 +143,7 @@ function ManageDevice() {
           onPreview={handlePreview}
           onChange={handleChange}
         >
-          {fileList.length >= 8 ? null : uploadButton}
+          {fileList.length == 1 ? null : uploadButton}
         </Upload>
         {previewImage && (
           <Image
@@ -162,6 +162,7 @@ function ManageDevice() {
   return (
     <div>
       <DashboardTemplate
+      fileList ={fileList}
         title={title}
         columns={columns}
         formItems={formItems}

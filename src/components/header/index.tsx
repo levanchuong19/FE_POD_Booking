@@ -67,7 +67,7 @@ function Header() {
             <a href="/device">
               <li>Thiết bị</li>
             </a>
-            {/* <a href="/menu"><li>Thực đơn</li></a> */}
+            <a href="/menu"><li>Dịch vụ</li></a>
           </ul>
         </div>
         <div className="header__reight">
