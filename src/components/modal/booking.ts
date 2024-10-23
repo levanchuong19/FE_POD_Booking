@@ -3,6 +3,7 @@ export type BookingService = {
     nameService: string;
     quantity: number;
     totalPrice: number;
+    imageUrl: string;
 };
 
 export type Booking = {

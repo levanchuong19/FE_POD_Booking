@@ -7,7 +7,6 @@ import { Button, Form, Input, Modal } from "antd";
 import { useState } from "react";
 import "./index.scss";
 
-
 function Header() {
   const navigate = useNavigate();
   const [UserData, setUserData] = useState(null);
@@ -41,9 +40,8 @@ function Header() {
     setIsModalVisible(false);
   };
   const handleLogout = () => {
-    localStorage.removeItem("accessToken"); 
-    setIsModalVisible(false); 
-    
+    localStorage.removeItem("accessToken");
+    setIsModalVisible(false);
   };
 
   return (
@@ -67,11 +65,16 @@ function Header() {
             <a href="/device">
               <li>Thiết bị</li>
             </a>
-            <a href="/menu"><li>Dịch vụ</li></a>
+            <a href="/menu">
+              <li>Dịch vụ</li>
+            </a>
           </ul>
         </div>
         <div className="header__reight">
-          <BellOutlined style={{ fontSize: 35 }} />
+          <BellOutlined
+            onClick={() => navigate("/notification")}
+            style={{ fontSize: 35 }}
+          />
           <UserOutlined
             onClick={handleUserIconClick}
             className="user"
