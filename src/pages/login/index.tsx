@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { Button, Form, Input } from "antd";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
@@ -9,9 +10,13 @@ import "./index.scss"; // Create and import a CSS file for better management
 import { useDispatch } from "react-redux";
 import { login } from "../../redux/features/userSlice";
 import { jwtDecode } from "jwt-decode";
+import { useNotification } from "../NotificationContext";
+import { v4 as uuidv4 } from "uuid";
 function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { addNotification } = useNotification();
+
   const handleLoginGoogle = () => {
     signInWithPopup(auth, Ggprovider)
       .then((result) => {
@@ -45,6 +50,11 @@ function Login() {
         navigate("/dashboard");
       }
       dispatch(login(response.data));
+      addNotification({
+        id: uuidv4(),
+        message: "Login successful!",
+        body: "You have logged in successfully.",
+      });
     } catch (error) {
       console.log(error);
       toast.error("Email or Password Invalid");

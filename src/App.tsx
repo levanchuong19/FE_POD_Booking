@@ -22,6 +22,9 @@ import ManageUser from "./pages/admin/manage-user";
 import UserProfile from "./pages/userProfile";
 import ConfirmBooking from "./pages/confirmBooking";
 import DeviceDetails from "./pages/deviceDetails";
+import BookingService from "./pages/bookingService";
+import NotificationPage from "./pages/NotificationPage";
+import { NotificationProvider } from "./pages/NotificationContext";
 
 function App() {
   const router = createBrowserRouter([
@@ -44,7 +47,9 @@ function App() {
         { path: "/deviceDetails", element: <DeviceDetails /> },
         { path: "/booking/:id", element: <Bookings /> },
         { path: "/profile/:id", element: <Profile /> },
-        { path: "/confirmBooking/:id", element: <ConfirmBooking/> },
+        { path: "/confirmBooking/:id", element: <ConfirmBooking /> },
+        { path: "/bookingService/:id", element: <BookingService /> },
+        { path: "/notification", element: <NotificationPage /> },
       ],
     },
 
@@ -75,7 +80,11 @@ function App() {
       ],
     },
   ]);
-  return <RouterProvider router={router} />;
+  return (
+    <NotificationProvider>
+      <RouterProvider router={router} />
+    </NotificationProvider>
+  );
 }
 
 export default App;

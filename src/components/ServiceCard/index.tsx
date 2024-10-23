@@ -17,6 +17,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, onSelect }) => {
     setShowInputNumber(e.target.checked);
     if (e.target.checked) {
       onSelect(service.id, quantity);
+      console.log()
     }
   };
 

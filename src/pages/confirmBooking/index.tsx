@@ -7,11 +7,29 @@ import formatVND from "../../utils/currency";
 import { Button } from "antd";
 import { format } from 'date-fns'
 import { Payment } from "../../components/modal/payment";
+import { POD } from "../../components/modal/pod";
 
 function ConfirmBooking() {
             const [isBooking, setIsbooking] = useState<Booking | null>(null);
             const [isPayment, setIsPayment] = useState<Payment|null>(null);
             const {id} = useParams();
+            const [pods, setPod] = useState<POD>();
+
+            const fetchPod = async () =>{
+                try{
+                    const response = await api.get(`pods/${isBooking?.podId}`);
+                      console.log(response.data.data);
+                      setPod(response.data.data) 
+                }catch(err){
+                    console.log(err);
+                }
+            }
+             useEffect(() =>{
+                fetchPod();
+             },[isBooking?.podId]);
+
+
+
         const fetchBooking = async () => {
             const response =  await api.get(`bookings/${id}`);
             console.log('BookingData',response.data.data)
@@ -47,29 +65,6 @@ function ConfirmBooking() {
               fetchPayment(isBooking.code);
             // eslint-disable-next-line react-hooks/exhaustive-deps
             }}, [isBooking?.code]);
-
-        //   const handlePayment = async () => {
-        //     if (!isBooking?.code) {
-        //       console.error("Không có mã đặt chỗ.");
-        //       return;
-        //     }
-          
-        //     try {
-        //     //   const paymentUrl = await fetchPayment(isBooking.code);
-        //     console.log('code:',isPayment) 
-
-        //       const paymentUrl = isPayment?.result; 
-        //       console.log("VNPay Payment URL:", paymentUrl);
-          
-        //       if (paymentUrl) {
-        //         window.location.href = paymentUrl;
-        //       } else {
-        //         console.error("Không nhận được URL thanh toán.");
-        //       }
-        //     } catch (error) {
-        //       console.error("Thanh toán thất bại:", error);
-        //     }
-        //   };
 
         const handlePayment = async () => {
             if (!isBooking?.code) {
@@ -165,7 +160,7 @@ function ConfirmBooking() {
     <div className="confirm">
         <div className="confirm-content">
             <div className="confirm__left">
-                <img width={500} src="https://workflow.com.vn/wp-content/uploads/2024/07/pod-representative.jpg" alt="" />
+                <img width={500} src={pods?.imageUrl} alt="" />
             </div>
             <div className="confirm__right">
                 <h2>Thời Gian:</h2>

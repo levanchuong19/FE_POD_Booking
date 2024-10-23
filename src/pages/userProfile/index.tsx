@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../../components/config/api";
 import { jwtDecode } from "jwt-decode";
 import { User } from "../../components/modal/user";
+import { toast } from "react-toastify";
 
 function UserProfile() {
   const [form] = Form.useForm();
@@ -56,7 +57,9 @@ function UserProfile() {
 
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
+    toast.success("Đăng xuất tài khoản thành công")
     navigate("/");
+    
   };
 
   return (
