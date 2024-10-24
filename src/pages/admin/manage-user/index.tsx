@@ -95,12 +95,34 @@ function ManageDevice() {
       >
         <Input placeholder="Enter your phone number" />
       </Form.Item>
+
+      <Form.Item name="image" label="Image">
+        <Upload
+          action="http://localhost:5088/api/upload"
+          listType="picture-card"
+          fileList={fileList}
+          onPreview={handlePreview}
+          onChange={handleChange}
+        >
+          {fileList.length >= 8 ? null : uploadButton}
+        </Upload>
+        {previewImage && (
+          <Image
+            wrapperStyle={{ display: "none" }}
+            preview={{
+              visible: previewOpen,
+              onVisibleChange: (visible) => setPreviewOpen(visible),
+              afterOpenChange: (visible) => !visible && setPreviewImage(""),
+            }}
+            src={previewImage}
+          />
+        )}
+      </Form.Item>
     </>
   );
   return (
     <div>
       <DashboardTemplate
-        fileList={""}
         title={title}
         columns={columns}
         formItems={formItems}

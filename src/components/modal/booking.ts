@@ -3,10 +3,12 @@ export type BookingService = {
     nameService: string;
     quantity: number;
     totalPrice: number;
+    imageUrl: string;
 };
 
 export type Booking = {
     id: string;
+    code: string;
     podId: string;
     accountId: string;
     startTime: Date;

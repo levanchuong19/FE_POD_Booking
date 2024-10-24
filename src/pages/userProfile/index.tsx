@@ -57,6 +57,7 @@ function UserProfile() {
 
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
+    toast.success("Đăng xuất tài khoản thành công");
     navigate("/");
   };
 

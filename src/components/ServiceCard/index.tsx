@@ -17,13 +17,14 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, onSelect }) => {
     setShowInputNumber(e.target.checked);
     if (e.target.checked) {
       onSelect(service.id, quantity);
+      console.log()
     }
   };
 
   const onQuantityChange: InputNumberProps['onChange'] = (value) => {
     const newQuantity = value as number;
-    setQuantity(newQuantity); // Update the quantity state
-    onSelect(service?.id, newQuantity || 1); // Pass the serviceId and the updated quantity to the parent
+    setQuantity(newQuantity);
+    onSelect(service?.id, newQuantity || 1);
   };
 
   return (
@@ -31,15 +32,14 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, onSelect }) => {
       <Card
         className="service-card-inner"
         hoverable
-        style={{ width: 230, height:450 }}
-        cover={<img style={{width:"230px"}} alt={service?.name} src={service?.imageUrl} />}
+        style={{ width: 340 , height:450}}
+        cover={<img style={{width:"340px", height:200}} alt={service?.name} src={service?.imageUrl} />}
       >
         <div className="service-card-content">
           <div className="desc">
             <strong>{service?.name}</strong>
             <p>{service?.description}</p>
-            <p>{formatVND(service.unitPrice)}</p>
-            <p>{service.id}</p>
+            <h4 style={{color:"darkcyan"}}>{formatVND(service.unitPrice)}</h4>
           </div>
 
           <Checkbox style={{ marginTop: "15px", marginRight: "20px" }} onChange={onCheckboxChange}>

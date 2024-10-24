@@ -7,7 +7,7 @@ import { LayoutOutlined, UserOutlined } from "@ant-design/icons";
 import formatVND from "../../utils/currency";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
-import type {CheckboxProps,DatePickerProps, GetProps } from 'antd';
+import type {CheckboxProps } from 'antd';
 import { Button, DatePicker, Form,Modal } from 'antd';
 import type { Dayjs } from 'dayjs';
 import FormItem from "antd/es/form/FormItem";
@@ -25,10 +25,7 @@ import dayjs from 'dayjs';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 import isBetween from 'dayjs/plugin/isBetween';
-
-// Add the isBetween plugin to dayjs
 dayjs.extend(isBetween);
-type RangePickerProps = GetProps<typeof DatePicker.RangePicker>;
 export default function Bookings({
   numberOfSlides = 4,
   autoplay = false,
@@ -41,7 +38,6 @@ export default function Bookings({
     const [showModal, setShowModal] = useState(false);
     const [selectedServices, setSelectedServices] = useState([]);
     const desc = ['terrible', 'bad', 'normal', 'good', 'wonderful'];
-    const [showRatings, setShowRatings] = useState(false); 
     const [highestRating, setHighestRating] = useState(1);
     const [startTime, setStartTime] = useState<Dayjs | null>(null);
     const [endTime, setEndTime] = useState<Dayjs | null>(null);
@@ -62,35 +58,24 @@ export default function Bookings({
       fetchBookedTimes();
     }, []); 
     
-    const isDateFullyBooked = (date) => {
-      return bookedSlots.some(slot => {
-        const bookedStart = dayjs(slot.startTime).startOf('day');
-        const bookedEnd = dayjs(slot.endTime).endOf('day');
-        return date.isBetween(bookedStart, bookedEnd, 'day', '[]'); // Disable entire day
-      });
-    };
-  
-    const disabledDate = (current) => {
-      // Ensure `current` is a dayjs instance
+    const disabledDate = (current: string | number | Date | Dayjs | null | undefined) => {
       const currentDayjs = dayjs(current);
-    
-      // Disable dates that are already booked
       return bookedSlots.some(slot => {
         const bookedStart = dayjs(slot.startTime);
         const bookedEnd = dayjs(slot.endTime);
     
-        return currentDayjs.isBetween(bookedStart, bookedEnd, 'day', '[]'); // Disable whole day for booked slots
+        return currentDayjs.isBetween(bookedStart, bookedEnd, 'day', '[]'); 
       });
     };
   
-    const disabledTime = (date) => {
+    const disabledTime = (date: string | number | Date | Dayjs | null | undefined) => {
       const bookedTimes = bookedSlots.filter(slot =>
         dayjs(slot.startTime).isSame(date, 'day')
       );
   
       return {
         disabledHours: () => {
-          const hoursToDisable = [];
+          const hoursToDisable: number[] = [];
           bookedTimes.forEach(({ startTime, endTime }) => {
             const start = dayjs(startTime).hour();
             const end = dayjs(endTime).hour();
@@ -100,8 +85,8 @@ export default function Bookings({
           });
           return hoursToDisable;
         },
-        disabledMinutes: (selectedHour) => {
-          const minutesToDisable = [];
+        disabledMinutes: (selectedHour: number) => {
+          const minutesToDisable: number[] = [];
           bookedTimes.forEach(({ startTime, endTime }) => {
             const start = dayjs(startTime);
             const end = dayjs(endTime);
@@ -121,11 +106,6 @@ export default function Bookings({
       };
     };
   
-
-  
-    
-   
-
     const handleTimeChange = (timeRange: [Dayjs, Dayjs] | null) => {
       if (timeRange) {
         const [start, end] = timeRange;
@@ -179,12 +159,8 @@ export default function Bookings({
      
   };
   
-
-     
-  const onOk = (value: DatePickerProps['value'] | RangePickerProps['value']) => {
-    console.log('onOk: ', value);
-  };
-    const handleServiceSelection = (serviceId, quantity) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handleServiceSelection = (serviceId: any, quantity: any) => {
       setSelectedServices((prevServices) => {
         const existingService = prevServices.find((service) => service.id === serviceId);
         if (existingService) {
@@ -237,11 +213,6 @@ export default function Bookings({
       const toggleDescription = () => {
         setShowFullDescription(!showFullDescription);
     };
-    
-    const toggleRatings = () => {
-      setShowRatings(!showRatings); 
-  };
-  
  
   const fetchRatings = async () => {
     try {
@@ -254,8 +225,6 @@ export default function Bookings({
       } else {
         console.log('No ratings found for this pod.');
       }
-  
-      // setRatings(filteredRatings);
     } catch (error) {
        console.error('Error fetching ratings:', error);
     }
@@ -380,7 +349,7 @@ export default function Bookings({
        <Button className="button" style={{marginLeft:"42%", width:"200px", fontSize:"18px", padding:"20px"}}  type="primary" danger htmlType="submit" onClick={handleSubmit}>Xác Nhận</Button>
     </div>
     <Modal width={"83%"} open={showModal} onCancel={() => setShowModal(false)} onOk={handleOk}>
-          <div style={{display:"grid",gridTemplateColumns: "repeat(3, 1fr)", gap:"16px"}}>
+          <div style={{display:"grid",gridTemplateColumns: "repeat(3, 1fr)", gap:"16px", padding:"25px"}}>
           {service?.map((serviceItem: Service) => (
             <ServiceCard 
               key={serviceItem.id} 

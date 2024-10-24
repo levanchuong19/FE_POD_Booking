@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import api from "../config/api";
 import { useState } from "react";
+import "./index.scss";
 
 function Header() {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -70,11 +71,16 @@ function Header() {
             <a href="/device">
               <li>Thiết bị</li>
             </a>
-            {/* <a href="/menu"><li>Thực đơn</li></a> */}
+            <a href="/menu">
+              <li>Dịch vụ</li>
+            </a>
           </ul>
         </div>
         <div className="header__reight">
-          <BellOutlined style={{ fontSize: 35 }} />
+          <BellOutlined
+            onClick={() => navigate("/notification")}
+            style={{ fontSize: 35 }}
+          />
           <UserOutlined
             onClick={handleUserIconClick}
             className="user"
