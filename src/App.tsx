@@ -9,7 +9,7 @@ import Login from "./pages/login";
 import LocationDetails from "./pages/locationDetails";
 import Register from "./pages/register";
 import ConfirmCode from "./components/ConfirmRegister";
-import Booking from "./pages/booking";
+import Bookings from "./pages/booking";
 import ForgotPassword from "./components/Forgot_Password";
 import ResetPassword from "./components/reset_Password";
 import Dashboard from "./components/dashboard";
@@ -19,6 +19,8 @@ import ManageService from "./pages/admin/manage-service";
 import ManageDevice from "./pages/admin/manage-device";
 import ManageUser from "./pages/admin/manage-user";
 import UserProfile from "./pages/userProfile";
+import ConfirmBooking from "./pages/confirmBooking";
+import DeviceDetails from "./pages/deviceDetails";
 import Profile from "./pages/profile";
 
 function App() {
@@ -41,6 +43,7 @@ function App() {
         { path: "/profile/:id", element: <Profile /> },
         { path: "/locationDetails/:id", element: <LocationDetails /> },
         { path: "/booking/:id", element: <Booking /> },
+        { path: "/profile/:id", element: <Profile /> },
       ],
     },
 

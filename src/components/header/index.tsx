@@ -1,9 +1,11 @@
 import "./index.scss";
 import { jwtDecode } from "jwt-decode";
 import { Button, Form, Input, Modal } from "antd";
+import { useState } from "react";
 import { BellOutlined, UserOutlined } from "@ant-design/icons";
 import "./index.scss";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 import api from "../config/api";
 import { useState } from "react";
 
@@ -14,8 +16,9 @@ function Header() {
     setIsModalVisible(false);
   };
   const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    setIsModalVisible(false);
+    localStorage.removeItem("accessToken"); // Remove the token from local storage
+    setIsModalVisible(false); // Close the modal
+    // navigate("/login"); // Redirect to login page
   };
   const navigate = useNavigate();
   const [UserData, setUserData] = useState(null);
@@ -30,14 +33,9 @@ function Header() {
 
         const userId = decodedToken.userId;
         console.log("id:", userId);
-        if (userId == null) {
-          navigate("/login");
-        } else {
-          const response = await api.get(`accounts/${userId}`);
-          console.log(response.data);
-          navigate(`/profile/${userId}`);
-          setUserData(response.data);
-        }
+        const response = await api.get(`accounts/${userId}`);
+        navigate(`/userProfile/${userId}`);
+        setUserData(response.data);
 
         // const userData = response.data;
         // console.log("User Data:", userData);
@@ -50,6 +48,9 @@ function Header() {
     }
   };
 
+  // const handleModalClose = () => {
+  //   setIsModalVisible(false);
+  // };
   return (
     <div className="header">
       <div className="header__center">

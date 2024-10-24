@@ -10,4 +10,9 @@
     .description{
         display: flex;
     }
+    .button{
+        &:hover{
+            transform:  scale(1.05);
+        }
+    }
 }
