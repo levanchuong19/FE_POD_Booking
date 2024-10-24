@@ -19,7 +19,12 @@ function ManageDevice() {
     { title: "RoomType", dataIndex: "roomType", key: "roomType" },
     { title: "Status", dataIndex: "status", key: "status" },
     { title: "Floor", dataIndex: "floor", key: "floor" },
-    { title: "ImageUrl", dataIndex: "imageUrl", key: "imageUrl" },
+    {
+      title: "ImageUrl",
+      dataIndex: "imageUrl",
+      key: "imageUrl",
+      render: (img) => <Image src={img} />,
+    },
   ];
 
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -112,6 +117,7 @@ function ManageDevice() {
   return (
     <div>
       <DashboardTemplate
+        fileList={fileList}
         title={title}
         columns={columns}
         formItems={formItems}

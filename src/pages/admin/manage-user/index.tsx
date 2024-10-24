@@ -1,19 +1,8 @@
-import {
-  DatePicker,
-  Form,
-  GetProp,
-  Image,
-  Input,
-  Select,
-  Upload,
-  UploadFile,
-  UploadProps,
-} from "antd";
+import { DatePicker, Form, Input, Select } from "antd";
 import DashboardTemplate, {
   Column,
 } from "../../../components/dashboard_template";
-import { useState } from "react";
-import { PlusOutlined } from "@ant-design/icons";
+
 import dayjs from "dayjs";
 
 function ManageDevice() {
@@ -28,46 +17,18 @@ function ManageDevice() {
       dataIndex: "dateOfBirthday",
       key: "dateOfBirthday",
       render: (dateOfBirth) => {
-        return dayjs(dateOfBirth).format("DD/MM/YYYY HH:mm");
+        return dayjs(dateOfBirth).format("DD/MM/YYYY");
       },
     },
     { title: "Address", dataIndex: "address", key: "address" },
-    { title: "Image", dataIndex: "image", key: "image" },
+    {
+      title: "Image",
+      dataIndex: "image",
+      key: "image",
+    },
     { title: "Email", dataIndex: "email", key: "email" },
     { title: "PhoneNumber", dataIndex: "phoneNumber", key: "phoneNumber" },
   ];
-
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState("");
-  const [fileList, setFileList] = useState<UploadFile[]>([]);
-
-  type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
-  const getBase64 = (file: FileType): Promise<string> =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = (error) => reject(error);
-    });
-
-  const handlePreview = async (file: UploadFile) => {
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj as FileType);
-    }
-
-    setPreviewImage(file.url || (file.preview as string));
-    setPreviewOpen(true);
-  };
-
-  const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) =>
-    setFileList(newFileList);
-
-  const uploadButton = (
-    <button style={{ border: 0, background: "none" }} type="button">
-      <PlusOutlined />
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </button>
-  );
 
   const formItems = (
     <>
@@ -134,34 +95,12 @@ function ManageDevice() {
       >
         <Input placeholder="Enter your phone number" />
       </Form.Item>
-
-      <Form.Item name="image" label="Image">
-        <Upload
-          action="http://localhost:5088/api/upload"
-          listType="picture-card"
-          fileList={fileList}
-          onPreview={handlePreview}
-          onChange={handleChange}
-        >
-          {fileList.length >= 8 ? null : uploadButton}
-        </Upload>
-        {previewImage && (
-          <Image
-            wrapperStyle={{ display: "none" }}
-            preview={{
-              visible: previewOpen,
-              onVisibleChange: (visible) => setPreviewOpen(visible),
-              afterOpenChange: (visible) => !visible && setPreviewImage(""),
-            }}
-            src={previewImage}
-          />
-        )}
-      </Form.Item>
     </>
   );
   return (
     <div>
       <DashboardTemplate
+        fileList={""}
         title={title}
         columns={columns}
         formItems={formItems}

@@ -115,7 +115,7 @@ function DashboardTemplate({
       dataIndex: "id",
       key: "id",
       render: (id, record) => (
-        <div style={{ gap: "" }}>
+        <div>
           <Button
             type="primary"
             onClick={() => {
@@ -127,7 +127,6 @@ function DashboardTemplate({
               };
               form.setFieldsValue(recordValiDate);
               setShowModal(true);
-              // form.resetFields();
             }}
           >
             Update

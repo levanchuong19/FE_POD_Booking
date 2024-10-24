@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import api from "../../components/config/api";
 import { jwtDecode } from "jwt-decode";
 import { User } from "../../components/modal/user";
+import "./profile.scss";
 
 function Profile() {
   const [profile, setProfile] = useState<User>();
@@ -44,12 +45,12 @@ function Profile() {
   return (
     <div>
       <div className="show-profile-container">
-        <h2>User Profile Details</h2>
+        <h1>User Profile Details</h1>
         {loading ? (
           <Spin tip="Loading..." />
         ) : (
           profile && (
-            <Card className="profile-card">
+            <div className="profile-card">
               <p>
                 <strong>Email:</strong> {profile.email}
               </p>
@@ -73,7 +74,7 @@ function Profile() {
               <Button type="primary" onClick={handleUpdateClick}>
                 Update Profile
               </Button>
-            </Card>
+            </div>
           )
         )}
       </div>

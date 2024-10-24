@@ -19,8 +19,13 @@ function ManageLocation() {
     { title: "Address", dataIndex: "address", key: "address" },
     { title: "Description", dataIndex: "description", key: "description" },
     { title: "PhoneNumber", dataIndex: "phoneNumber", key: "phoneNumber" },
-    { title: "Image", dataIndex: "imageUrl", key: "imageUrl", render:(img) => <Image src={img}/> }
-  ]
+    {
+      title: "Image",
+      dataIndex: "imageUrl",
+      key: "imageUrl",
+      render: (img) => <Image src={img} width={200} />,
+    },
+  ];
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
@@ -54,7 +59,6 @@ function ManageLocation() {
   );
   const formItems = (
     <>
-      {/* Name */}
       <Form.Item
         name="name"
         label="Name"
@@ -63,7 +67,6 @@ function ManageLocation() {
         <Input />
       </Form.Item>
 
-      {/* Address */}
       <Form.Item
         name="address"
         label="Address"
@@ -72,7 +75,6 @@ function ManageLocation() {
         <Input />
       </Form.Item>
 
-      {/* Phonenumber */}
       <Form.Item
         name="phoneNumber"
         label="PhoneNumber"
@@ -81,12 +83,6 @@ function ManageLocation() {
         <Input />
       </Form.Item>
 
-      {/* ImgeUrl */}
-      <Form.Item
-        name="imageUrl"
-        label="Image"
-        // rules={[{ required: true, message: "Please enter imageUrl" }]}
-      >
       <Form.Item name="imageUrl" label="Image">
         <Upload
           listType="picture-card"
@@ -94,7 +90,7 @@ function ManageLocation() {
           onPreview={handlePreview}
           onChange={handleChange}
         >
-          {fileList.length == 1? null : uploadButton}
+          {fileList.length == 1 ? null : uploadButton}
         </Upload>
         {previewImage && (
           <Image
@@ -109,16 +105,16 @@ function ManageLocation() {
         )}
       </Form.Item>
 
-      {/* Description */}
       <Form.Item name="description" label="Description">
         <Input.TextArea />
       </Form.Item>
     </>
   );
+
   return (
     <div>
       <DashboardTemplate
-      fileList ={fileList}
+        fileList={fileList}
         title={title}
         columns={columns}
         formItems={formItems}

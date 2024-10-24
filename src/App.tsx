@@ -9,7 +9,6 @@ import Login from "./pages/login";
 import LocationDetails from "./pages/locationDetails";
 import Register from "./pages/register";
 import ConfirmCode from "./components/ConfirmRegister";
-import Bookings from "./pages/booking";
 import ForgotPassword from "./components/Forgot_Password";
 import ResetPassword from "./components/reset_Password";
 import Dashboard from "./components/dashboard";
@@ -19,9 +18,8 @@ import ManageService from "./pages/admin/manage-service";
 import ManageDevice from "./pages/admin/manage-device";
 import ManageUser from "./pages/admin/manage-user";
 import UserProfile from "./pages/userProfile";
-import ConfirmBooking from "./pages/confirmBooking";
-import DeviceDetails from "./pages/deviceDetails";
 import Profile from "./pages/profile";
+import ConfirmBooking from "./pages/confirmBooking";
 
 function App() {
   const router = createBrowserRouter([
@@ -42,7 +40,7 @@ function App() {
         { path: "/userProfile/:id", element: <UserProfile /> },
         { path: "/profile/:id", element: <Profile /> },
         { path: "/locationDetails/:id", element: <LocationDetails /> },
-        { path: "/booking/:id", element: <Booking /> },
+        { path: "/booking/:id", element: <ConfirmBooking /> },
         { path: "/profile/:id", element: <Profile /> },
       ],
     },

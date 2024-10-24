@@ -1,7 +1,5 @@
 import "./index.scss";
-import { jwtDecode } from "jwt-decode";
 import { Button, Form, Input, Modal } from "antd";
-import { useState } from "react";
 import { BellOutlined, UserOutlined } from "@ant-design/icons";
 import "./index.scss";
 import { useNavigate } from "react-router-dom";
@@ -34,7 +32,7 @@ function Header() {
         const userId = decodedToken.userId;
         console.log("id:", userId);
         const response = await api.get(`accounts/${userId}`);
-        navigate(`/userProfile/${userId}`);
+        navigate(`/profile/${userId}`);
         setUserData(response.data);
 
         // const userData = response.data;
