@@ -20,7 +20,7 @@ interface DashboardTemplateProps {
   apiURI: string;
   formItems: React.ReactElement;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  fileList: any
+  fileList: any;
 }
 
 function DashboardTemplate({
@@ -28,7 +28,7 @@ function DashboardTemplate({
   formItems,
   apiURI,
   title,
-  fileList
+  fileList,
 }: DashboardTemplateProps) {
   const [datas, setDatas] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -42,7 +42,7 @@ function DashboardTemplate({
       const response = await api.get(apiURI);
       setDatas(response.data);
       setFetching(false);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast.error(`Error fetching ${title}`);
     }
@@ -56,23 +56,23 @@ function DashboardTemplate({
         const img = await uploadFile(fileList[0].originFileObj);
         console.log(img);
         values.imageUrl = img; // Set uploaded image URL
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
         toast.error("Image upload failed!");
         return; // Stop submission if image upload fails
       }
     }
-  
+
     // Optional: Format date if using DatePicker
     if (values.dateOfBirthday) {
       const dateFormatted = moment(values.dateOfBirthday).format("DD-MM-YYYY");
       values.dateOfBirthday = dateFormatted;
     }
-  
+
     try {
       console.log("Submitting form...");
       setLoading(true);
-  
+
       if (values.id) {
         console.log("Updating item with ID:", values.id);
         await api.put(`${apiURI}/${values.id}`, values);
@@ -82,9 +82,9 @@ function DashboardTemplate({
         await api.post(apiURI, values);
         toast.success("Successfully created!");
       }
-  
-      fetchData();   // Refresh data after successful operation
-      form.resetFields();  // Clear form
+
+      fetchData(); // Refresh data after successful operation
+      form.resetFields(); // Clear form
       setShowModal(false); // Close modal
     } catch (error) {
       console.error(error);

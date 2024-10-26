@@ -23,6 +23,7 @@ function getItem(
 }
 
 const items: MenuItem[] = [
+  getItem("Dashboard", "statistical", <PieChartOutlined />),
   getItem("ManageLocation", "locations", <PieChartOutlined />),
   getItem("ManagePod", "pods", <PieChartOutlined />),
   getItem("ManageService", "services", <PieChartOutlined />),
