@@ -25,6 +25,7 @@ import DeviceDetails from "./pages/deviceDetails";
 import BookingService from "./pages/bookingService";
 import NotificationPage from "./pages/NotificationPage";
 import { NotificationProvider } from "./pages/NotificationContext";
+import DashboardChard from "./components/dashboardChart";
 
 function App() {
   const router = createBrowserRouter([
@@ -57,6 +58,10 @@ function App() {
       path: "/dashboard",
       element: <Dashboard />,
       children: [
+        {
+          path: "statistical",
+          element: <DashboardChard />,
+        },
         {
           path: "locations",
           element: <ManageLocation />,
