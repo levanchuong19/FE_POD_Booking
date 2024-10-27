@@ -26,6 +26,7 @@ import BookingService from "./pages/bookingService";
 import NotificationPage from "./pages/NotificationPage";
 import { NotificationProvider } from "./pages/NotificationContext";
 import DashboardChard from "./components/dashboardChart";
+import ManageRating from "./pages/admin/manage-rating";
 
 function App() {
   const router = createBrowserRouter([
@@ -81,6 +82,10 @@ function App() {
         {
           path: "accounts",
           element: <ManageUser />,
+        },
+        {
+          path: "ratings",
+          element: <ManageRating />,
         },
       ],
     },

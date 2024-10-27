@@ -72,19 +72,34 @@ import BarChart from "../barChart";
 import { useNavigate } from "react-router-dom";
 import "./index.scss";
 import api from "../config/api";
-import { User } from "../modal/user";
-import { Table } from "antd";
+import { Button, Table } from "antd";
+import moment from "moment";
 
 const DashboardChard: React.FC = () => {
   const navigate = useNavigate();
   const [isData, setIsData] = useState<any>(null);
-  const [accounts, setAccounts] = useState<User[]>([]);
+  const [monthlyRevenue, setMonthlyRevenue] = useState<number>(0);
+  const [top5Pods, setTop5Pods] = useState<any[]>([]);
+  const [selectedDate, setSelectedDate] = useState<moment.Moment | null>(
+    moment()
+  );
 
   const fetchData = async () => {
     try {
       const response = await api.get("dashboard/revenue-stats");
       setIsData(response.data);
-      console.log("Dữ liệu thống kê:", response.data);
+      const top5Pods = response.data.bestSellingPods
+        .sort((a, b) => b.totalBookings - a.totalBookings)
+        .slice(0, 5);
+      setTop5Pods(top5Pods);
+      const yearlyRevenue = [];
+      for (let month = 1; month <= 12; month++) {
+        const monthlyRevenueResponse = await api.get(
+          `dashboard/revenue/monthly?month=${month}&year=${selectedDate?.year()}`
+        );
+        yearlyRevenue.push(monthlyRevenueResponse.data.revenue);
+      }
+      setMonthlyRevenue(yearlyRevenue);
     } catch (error) {
       console.error("Lỗi khi lấy dữ liệu:", error);
     }
@@ -95,38 +110,52 @@ const DashboardChard: React.FC = () => {
   }, []);
 
   if (!isData) {
-    return <div>Đang tải dữ liệu...</div>;
+    return (
+      <div>
+        <Button type="dashed">
+          Chỉ dành cho Admin. Bạn không được phép truy cập
+        </Button>
+      </div>
+    );
   }
 
   const totalLocations = isData.locationCount;
   const totalPods = isData.podCount;
   const totalServices = isData.deviceCount;
   const totalDevices = isData.deviceCount;
-
-  const areaChartLabels = isData.bestSellingPods.map((pod) => pod.podName);
-  const areaChartData = isData.bestSellingPods.map((pod) => pod.revenue);
+  const areaChartLabels = [
+    "Tháng 1",
+    "Tháng 2",
+    "Tháng 3",
+    "Tháng 4",
+    "Tháng 5",
+    "Tháng 6",
+    "Tháng 7",
+    "Tháng 8",
+    "Tháng 9",
+    "Tháng 10",
+    "Tháng 11",
+    "Tháng 12",
+  ];
+  const areaChartData = monthlyRevenue;
   const barChartLabels = isData.bestSellingPods.map((pod) => pod.podName);
   const barChartData = isData.bestSellingPods.map((pod) => pod.totalBookings);
-  const columns = [
+  const podColumns = [
     {
-      title: "Account ID",
-      dataIndex: "accountId",
-      key: "accountId",
+      title: "Pod Name",
+      dataIndex: "podName",
+      key: "podName",
     },
     {
-      title: "Account Name",
-      dataIndex: "accountName",
-      key: "accountName",
+      title: "Total Bookings",
+      dataIndex: "totalBookings",
+      key: "totalBookings",
     },
     {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
+      title: "Revenue",
+      dataIndex: "revenue",
+      key: "revenue",
+      render: (revenue: number) => `${revenue.toLocaleString()} VND`,
     },
   ];
 
@@ -157,17 +186,17 @@ const DashboardChard: React.FC = () => {
 
       <div className="chart-container">
         <div className="chart">
-          <div className="chart-title">Biểu đồ Area</div>
+          <div className="chart-title">Doanh thu</div>
           <AreaChart labels={areaChartLabels} data={areaChartData} />
         </div>
         <div className="chart">
-          <div className="chart-title">Biểu đồ Bar</div>
+          <div className="chart-title">Best Seller</div>
           <BarChart labels={barChartLabels} data={barChartData} />
         </div>
       </div>
       <div className="table-container">
-        <h2>Tất cả tài khoản</h2>
-        <Table dataSource={accounts} columns={columns} rowKey="accountId" />
+        <h2>Top 5 POD được sử dụng nhiều nhất</h2>
+        <Table dataSource={top5Pods} columns={podColumns} rowKey="podId" />
       </div>
     </div>
   );
