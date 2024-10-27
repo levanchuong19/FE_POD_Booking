@@ -19,27 +19,6 @@ function Home() {
       setPaymentBookingCode(code);
       setShowPaymentSuccessModal(true);
     }
-
-    // const fetchOnGoingBookings = async () => {
-    //   try {
-    //     const token = localStorage.getItem("accessToken");
-    //     const decodedToken = jwtDecode(token);
-    //     const userId = decodedToken.userId;
-    //     const response = await api.get(`bookings?AccountId=${userId}`);
-    //     console.log("response", response.data);
-    //     const bookings = response.data || [];
-    //     const userBookings = bookings.filter(
-    //       (booking: Booking) => booking.accountId === userId
-    //     );
-    //     setReservation(userBookings);
-    //     setSelectedStatus("OnGoing");
-    //     setActiveSlide("OnGoing");
-    //   } catch (error) {
-    //     console.error("Error fetching bookings:", error);
-    //   }
-    // };
-
-    // fetchOnGoingBookings();
   }, [location]);
 
   const updatePaymentStatus = async (code: string) => {

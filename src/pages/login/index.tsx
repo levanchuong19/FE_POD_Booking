@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/rules-of-hooks */
 import { Button, Form, Input } from "antd";
 import { toast } from "react-toastify";
@@ -32,7 +33,7 @@ function Login() {
     navigate("/register");
   };
 
-  const handleLogin = async (values) => {
+  const handleLogin = async (values: any) => {
     try {
       const response = await api.post("authentication/login", values);
       const { accessToken } = response.data.data;

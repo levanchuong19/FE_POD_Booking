@@ -16,7 +16,7 @@ function ManageRating() {
       title: "Rating Value",
       dataIndex: "ratingValue",
       key: "ratingValue",
-      render: (value) => value || "N/A", // Show "N/A" if rating is 0
+      render: (value: any) => value || "N/A",
     },
     {
       title: "Comments",
