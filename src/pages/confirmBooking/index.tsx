@@ -23,6 +23,7 @@ function ConfirmBooking() {
   const [isBooking, setIsbooking] = useState<Booking | null>(null);
   const [isPayment, setIsPayment] = useState<Payment | null>(null);
   const [isRewardpoints, setIsRewardpoints] = useState<RewardPoints[]>([]);
+  const [oldPrice, setOldPrice] = useState(null);
   const [isChecked, setIsChecked] = useState(false);
   const { id } = useParams();
   const [pods, setPod] = useState<POD>();
@@ -41,6 +42,18 @@ function ConfirmBooking() {
     fetchPod();
   }, [isBooking?.podId]);
 
+  const calculateDiscount = (points: number) => {
+    if (points < 400) return 0;
+    const discountPercentage = Math.floor(points / 400) * 10;
+    return discountPercentage > 100 ? 100 : discountPercentage;
+  };
+
+  const calculateTotalWithDiscount = (totalPrice: number, points: number) => {
+    const discountPercentage = calculateDiscount(points);
+    const discountAmount = (totalPrice * discountPercentage) / 100;
+    return totalPrice - discountAmount;
+  };
+
   const fetchRewardPoint = async () => {
     const decodedToken = jwtDecode(token);
     const userId = decodedToken.userId;
@@ -48,7 +61,7 @@ function ConfirmBooking() {
     try {
       const response = await api.get(`rewardpoints/total/${userId}`);
       console.log("isRewardpoints", response.data.data.value);
-      setIsRewardpoints(response.data.data);
+      setIsRewardpoints(response.data.data.value);
     } catch (err) {
       console.log(err);
     }
@@ -79,7 +92,6 @@ function ConfirmBooking() {
       const paymentUrl = response.data;
       console.log("paymentUrl: ", paymentUrl);
       setIsPayment(response.data);
-      //   return paymentUrl;
     } catch (error) {
       if (error.response) {
         console.error("Lỗi từ server:", error.response.data);
@@ -203,9 +215,12 @@ function ConfirmBooking() {
 
   const onChange: CheckboxProps["onChange"] = async (e) => {
     if (e.target.checked) {
-      if (isRewardpoints?.value >= 400) {
+      if (isRewardpoints >= 400) {
         try {
           const oldBooking = { ...isBooking };
+          const price = oldBooking.totalPrice;
+          console.log("old price", price);
+          setOldPrice(price);
           console.log("old booking", oldBooking);
           const start = isBooking?.startTime
             ? moment(isBooking.startTime)
@@ -225,6 +240,7 @@ function ConfirmBooking() {
           console.log("Booking updated with reward points", response.data);
           setIsbooking(response.data);
           setIsChecked(true);
+          fetchBooking();
         } catch (error) {
           console.error("Lỗi khi cập nhật booking:", error);
           setIsChecked(false);
@@ -239,6 +255,12 @@ function ConfirmBooking() {
       setIsChecked(false);
     }
   };
+
+  const resetBooking = () => {
+    setIsChecked(false);
+    setIsbooking(null);
+  };
+
   return (
     <div className="confirmBooking">
       <div className="confirm">
@@ -247,9 +269,6 @@ function ConfirmBooking() {
             <img width={500} src={pods?.imageUrl} alt="" />
           </div>
           <div className="confirm__right">
-            {/* <h2>Thời Gian:</h2> */}
-            {/* <p>{isBooking?.startTime ? formatDate(new Date(isBooking.startTime)) : 'No date available'} - {isBooking?.endTime ? formatDate(new Date(isBooking.endTime)) : 'No date available'}</p> */}
-            {/* <p>{formatBookingTime()}</p> */}
             <span
               style={{ height: "0.99px", backgroundColor: "black" }}
               className="spanLine"
@@ -286,9 +305,23 @@ function ConfirmBooking() {
                   </div>
                 </div>
               ))}
-
+            <div>
+              <p>
+                Tổng giá trị:{" "}
+                <strong>
+                  {oldPrice
+                    ? formatVND(oldPrice)
+                    : formatVND(isBooking?.totalPrice)}
+                </strong>
+              </p>
+              {isChecked && (
+                <p>Giảm giá: {calculateDiscount(isRewardpoints)}%</p>
+              )}
+            </div>
             <div style={{ display: "flex", gap: "190px", fontSize: "20px" }}>
-              <h4>Tổng :</h4>
+              {/* <h4>Tổng :</h4>
+              <h4>{formatVND(isBooking?.totalPrice)}</h4> */}
+              <h4>Tổng cộng:</h4>
               <h4>{formatVND(isBooking?.totalPrice)}</h4>
             </div>
             <span

@@ -134,7 +134,7 @@ const ReservationCard: React.FC<ReservationCardProps> = ({
           <p>{formatBookingTime()}</p>
           {pricePerHour > 0 && (
             <p>
-              {formatVND(pricePerHour)} x{" "}
+              {formatVND(booking.pricePerHour)} x{" "}
               {booking?.startTime && booking?.endTime
                 ? calculateTime(
                     new Date(booking.startTime),

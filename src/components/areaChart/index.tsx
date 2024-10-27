@@ -52,7 +52,7 @@ const AreaChart: React.FC<AreaChartProps> = ({ labels, data }) => {
     labels,
     datasets: [
       {
-        label: "Doanh thu theo POD",
+        label: "Doanh thu theo tháng ",
         data,
         fill: true,
         backgroundColor: "rgba(75,192,192,0.4)",

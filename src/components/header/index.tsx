@@ -71,10 +71,10 @@ function Header() {
           </ul>
         </div>
         <div className="header__reight">
-          <BellOutlined
+          {/* <BellOutlined    
             onClick={() => navigate("/notification")}
             style={{ fontSize: 35 }}
-          />
+          /> */}
           <UserOutlined
             onClick={handleUserIconClick}
             className="user"
