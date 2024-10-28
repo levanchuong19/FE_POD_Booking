@@ -13,6 +13,11 @@ import { login } from "../../redux/features/userSlice";
 import { jwtDecode } from "jwt-decode";
 import { useNotification } from "../NotificationContext";
 import { v4 as uuidv4 } from "uuid";
+
+interface JwtPayload {
+  userId: any;
+  "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": string;
+}
 function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -40,7 +45,7 @@ function Login() {
       localStorage.setItem("accessToken", accessToken);
       toast.success("Login success!");
 
-      const decodedToken = jwtDecode(accessToken);
+      const decodedToken: JwtPayload = jwtDecode(accessToken);
       const roles =
         decodedToken[
           "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"

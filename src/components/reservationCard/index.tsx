@@ -73,7 +73,7 @@ const ReservationCard: React.FC<ReservationCardProps> = ({
   ) => {
     const start = new Date(startTime);
     const end = new Date(endTime);
-    const durationInMinutes = (end - start) / (1000 * 60);
+    const durationInMinutes = (end.getTime() - start.getTime()) / (1000 * 60);
 
     const hours = Math.floor(durationInMinutes / 60);
     const minutes = Math.round(durationInMinutes % 60);

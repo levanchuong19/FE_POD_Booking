@@ -1,4 +1,4 @@
-import { BellOutlined, UserOutlined } from "@ant-design/icons";
+import { UserOutlined } from "@ant-design/icons";
 import "./index.scss";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
@@ -6,7 +6,11 @@ import api from "../config/api";
 import { Button, Form, Input, Modal } from "antd";
 import { useState } from "react";
 import "./index.scss";
+import { toast } from "react-toastify";
 
+interface JwtPayload {
+  userId: string;
+}
 function Header() {
   const navigate = useNavigate();
   const [UserData, setUserData] = useState(null);
@@ -15,7 +19,7 @@ function Header() {
     const token = localStorage.getItem("accessToken");
     if (token) {
       try {
-        const decodedToken = jwtDecode(token);
+        const decodedToken: JwtPayload = jwtDecode(token);
         const userId = decodedToken.userId;
         console.log("id:", userId);
         if (userId == null) {
@@ -42,6 +46,7 @@ function Header() {
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
     setIsModalVisible(false);
+    toast.success("Đăng xuất tài khoản thành công");
   };
 
   return (

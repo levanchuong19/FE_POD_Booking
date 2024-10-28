@@ -13,7 +13,7 @@ ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend);
 
 interface AreaChartProps {
   labels: string[];
-  data: number[];
+  data: number;
 }
 
 const AreaChart: React.FC<AreaChartProps> = ({ labels, data }) => {

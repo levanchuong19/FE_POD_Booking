@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { Location } from "../modal/location";
 import api from "../config/api";
@@ -15,7 +16,7 @@ export default function DeviceList({ numberOfSlides = 3, autoplay = false }) {
   const [device, setDevice] = useState<Device[]>();
   const [pod, setPod] = useState<POD[]>();
   const [filteredPods, setFilteredPods] = useState<POD[]>([]);
-  const [selectedSlide, setSelectedSlide] = useState();
+  const [selectedSlide, setSelectedSlide] = useState<string>();
   const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
   const [selectedLocationId, setSelectedLocationId] = useState<string | null>(
     null
@@ -40,7 +41,7 @@ export default function DeviceList({ numberOfSlides = 3, autoplay = false }) {
       const response = await api.get("devices");
       setDevice(response.data);
       setFilteredPods(response.data);
-      setSelectedSlide(null);
+      setSelectedSlide(undefined);
     } catch (err) {
       console.log(err);
     }
@@ -78,7 +79,7 @@ export default function DeviceList({ numberOfSlides = 3, autoplay = false }) {
     new Set(device?.map((device) => device.floor))
   );
 
-  const handleAddressChange = (locationID) => {
+  const handleAddressChange = (locationID: any) => {
     setSelectedLocationId(locationID);
     const filtered = pod?.filter(
       (pod) =>
@@ -88,7 +89,7 @@ export default function DeviceList({ numberOfSlides = 3, autoplay = false }) {
     setSelectedSlide(locationID);
     setCurrentPage(1);
   };
-  const handleFloorChange = (floor) => {
+  const handleFloorChange = (floor: any) => {
     const filtered = pod?.filter(
       (pod) =>
         pod.floor === floor &&
@@ -176,9 +177,6 @@ export default function DeviceList({ numberOfSlides = 3, autoplay = false }) {
           marginBottom: "50px",
         }}
       >
-        {/* {filteredPods?.map((podItem: POD) => (
-          <PodCard key={podItem.id} pod={podItem} />
-        ))} */}
         {currentPods.map((podItem: POD) => (
           <PodCard key={podItem.id} pod={podItem} />
         ))}

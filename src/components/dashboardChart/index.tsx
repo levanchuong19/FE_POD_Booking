@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // import React, { useEffect, useState } from "react";
 // import CardComponent from "../dashboardCard";
 // import AreaChart from "../areaChart";
@@ -89,10 +91,13 @@ const DashboardChard: React.FC = () => {
       const response = await api.get("dashboard/revenue-stats");
       setIsData(response.data);
       const top5Pods = response.data.bestSellingPods
-        .sort((a, b) => b.totalBookings - a.totalBookings)
+        .sort(
+          (a: { totalBookings: number }, b: { totalBookings: number }) =>
+            b.totalBookings - a.totalBookings
+        )
         .slice(0, 5);
       setTop5Pods(top5Pods);
-      const yearlyRevenue = [];
+      const yearlyRevenue: any = [];
       for (let month = 1; month <= 12; month++) {
         const monthlyRevenueResponse = await api.get(
           `dashboard/revenue/monthly?month=${month}&year=${selectedDate?.year()}`
@@ -138,8 +143,12 @@ const DashboardChard: React.FC = () => {
     "Tháng 12",
   ];
   const areaChartData = monthlyRevenue;
-  const barChartLabels = isData.bestSellingPods.map((pod) => pod.podName);
-  const barChartData = isData.bestSellingPods.map((pod) => pod.totalBookings);
+  const barChartLabels = isData.bestSellingPods.map(
+    (pod: { podName: any }) => pod.podName
+  );
+  const barChartData = isData.bestSellingPods.map(
+    (pod: { totalBookings: any }) => pod.totalBookings
+  );
   const podColumns = [
     {
       title: "Pod Name",

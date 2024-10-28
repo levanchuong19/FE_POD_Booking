@@ -21,7 +21,12 @@ function ManageLocation() {
     { title: "Capacity", dataIndex: "capacity", key: "capacity" },
     { title: "Area", dataIndex: "area", key: "area" },
     { title: "Description", dataIndex: "description", key: "description" },
-    { title: "Image", dataIndex: "imageUrl", key: "imageUrl", render:(img) => <Image src={img}/>  },
+    {
+      title: "Image",
+      dataIndex: "imageUrl",
+      key: "imageUrl",
+      render: (img: string | undefined) => <Image src={img} />,
+    },
     { title: "PricePerHour", dataIndex: "pricePerHour", key: "pricePerHour" },
     { title: "LocationId", dataIndex: "locationId", key: "locationId" },
     { title: "DeviceId", dataIndex: "deviceId", key: "deviceId" },
@@ -155,7 +160,7 @@ function ManageLocation() {
   return (
     <div>
       <DashboardTemplate
-        fileList ={fileList}
+        fileList={fileList}
         title={title}
         columns={columns}
         formItems={formItems}

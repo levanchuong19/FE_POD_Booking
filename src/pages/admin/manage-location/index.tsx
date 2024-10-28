@@ -19,8 +19,13 @@ function ManageLocation() {
     { title: "Address", dataIndex: "address", key: "address" },
     { title: "Description", dataIndex: "description", key: "description" },
     { title: "PhoneNumber", dataIndex: "phoneNumber", key: "phoneNumber" },
-    { title: "Image", dataIndex: "imageUrl", key: "imageUrl", render:(img) => <Image src={img}/> }
-  ]
+    {
+      title: "Image",
+      dataIndex: "imageUrl",
+      key: "imageUrl",
+      render: (img: string | undefined) => <Image src={img} />,
+    },
+  ];
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
@@ -93,7 +98,7 @@ function ManageLocation() {
           onPreview={handlePreview}
           onChange={handleChange}
         >
-          {fileList.length == 1? null : uploadButton}
+          {fileList.length == 1 ? null : uploadButton}
         </Upload>
         {previewImage && (
           <Image
@@ -117,7 +122,7 @@ function ManageLocation() {
   return (
     <div>
       <DashboardTemplate
-      fileList ={fileList}
+        fileList={fileList}
         title={title}
         columns={columns}
         formItems={formItems}

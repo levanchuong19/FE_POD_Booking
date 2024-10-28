@@ -24,7 +24,7 @@ function ConfirmCode() {
       toast.success("Xác thực thành công!");
       navigate("/login");
     } catch (error) {
-      console.log(error.response.data);
+      console.log(error);
       toast.error("Confirm Failed, Try again!!.");
     }
   };

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from "react";
 import { PieChartOutlined, UserOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
@@ -19,7 +21,10 @@ import api from "../config/api";
 const { Header, Content, Footer, Sider } = Layout;
 
 type MenuItem = Required<MenuProps>["items"][number];
-
+interface JwtPayload {
+  userId: any;
+  "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": string;
+}
 const getItem = (
   label: React.ReactNode,
   key: React.Key,
@@ -62,7 +67,7 @@ const Dashboard: React.FC = () => {
   };
 
   const handleToken = (token: string) => {
-    const decodedToken = jwtDecode(token);
+    const decodedToken: JwtPayload = jwtDecode(token);
     const roles =
       decodedToken[
         "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"

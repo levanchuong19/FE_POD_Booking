@@ -1,10 +1,16 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useEffect } from "react";
-import { Button, Input, Form, message } from "antd";
+import { Button, Form, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import api from "../../components/config/api";
 import { jwtDecode } from "jwt-decode";
 import { User } from "../../components/modal/user";
 import { toast } from "react-toastify";
+
+interface JwtPayload {
+  userId: any;
+}
 
 function UserProfile() {
   const [form] = Form.useForm();
@@ -18,7 +24,7 @@ function UserProfile() {
     console.log(token);
     if (token) {
       try {
-        const decodedToken = jwtDecode(token);
+        const decodedToken: JwtPayload = jwtDecode(token);
         const userId = decodedToken.userId;
         console.log(userId);
         const response = await api.get(`accounts/${userId}`);
@@ -38,11 +44,11 @@ function UserProfile() {
     fetchUserData();
   }, [form, navigate]);
 
-  const handleUpdateProfile = async (values) => {
+  const handleUpdateProfile = async (values: any) => {
     try {
       const token = localStorage.getItem("accessToken");
       if (token) {
-        const decodedToken = jwtDecode(token);
+        const decodedToken: JwtPayload = jwtDecode(token);
         const userId = decodedToken.userId;
         await api.put(`/accounts/${userId}`, values);
         setProfile(values);
@@ -57,9 +63,8 @@ function UserProfile() {
 
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
-    toast.success("Đăng xuất tài khoản thành công")
+    toast.success("Đăng xuất tài khoản thành công");
     navigate("/");
-    
   };
 
   return (

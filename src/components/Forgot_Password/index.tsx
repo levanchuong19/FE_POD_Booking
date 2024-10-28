@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Form, Input } from "antd";
 import { useNavigate } from "react-router-dom";
 import api from "../config/api";
@@ -7,13 +8,14 @@ import "./index.scss";
 function ForgotPassword() {
   const navigate = useNavigate();
 
-  const handleForgotPassword = async (values) => {
+  const handleForgotPassword = async (values: any) => {
     try {
       await api.post("authentication/password/forgot", values);
       toast.success("Check your email to reset your password!");
       navigate("/reset_Password");
     } catch (error) {
-      toast.error(error.response.data);
+      console.log(error);
+      toast.error("error");
     }
   };
   return (

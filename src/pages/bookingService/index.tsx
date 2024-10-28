@@ -52,10 +52,7 @@ function BookingService() {
       setIsPayment(response.data);
       //   return paymentUrl;
     } catch (error) {
-      if (error.response) {
-        console.error("Lỗi từ server:", error.response.data);
-      }
-      throw error;
+      console.error("Lỗi từ server:", error);
     }
   };
 
@@ -139,7 +136,7 @@ function BookingService() {
 
             <div style={{ display: "flex", gap: "190px", fontSize: "20px" }}>
               <h4>Tổng :</h4>
-              <h4>{formatVND(isBooking?.totalPrice)}</h4>
+              <h4>{formatVND(isBooking?.totalPrice ?? 0)}</h4>
             </div>
             <span
               style={{ height: "0.8px", backgroundColor: "black" }}

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Form, Modal, Popconfirm, Table } from "antd";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -49,7 +50,11 @@ function DashboardTemplate({
   };
 
   //CREATE OR UPDATE
-  const handleSubmit = async (values) => {
+  const handleSubmit = async (values: {
+    imageUrl: string;
+    dateOfBirthday: moment.MomentInput;
+    id: any;
+  }) => {
     if (fileList && fileList.length > 0) {
       try {
         console.log(fileList[0].originFileObj);
@@ -88,7 +93,7 @@ function DashboardTemplate({
       setShowModal(false); // Close modal
     } catch (error) {
       console.error(error);
-      toast.error(error.response?.data || "An error occurred.");
+      toast.error("An error occurred.");
     } finally {
       setLoading(false);
     }
@@ -101,7 +106,8 @@ function DashboardTemplate({
       toast.success("Success deleted!!!");
       fetchData();
     } catch (error) {
-      toast.error(error.response.data);
+      console.log(error);
+      toast.error("delete error");
     }
   };
 
@@ -114,7 +120,7 @@ function DashboardTemplate({
       title: "Action",
       dataIndex: "id",
       key: "id",
-      render: (id, record) => (
+      render: (record: { dateOfBirth: moment.MomentInput; id: string }) => (
         <>
           <Button
             type="primary"

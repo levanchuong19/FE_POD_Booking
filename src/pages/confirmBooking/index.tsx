@@ -18,11 +18,14 @@ import moment from "moment";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
+interface JwtPayload {
+  userId: string;
+}
 
 function ConfirmBooking() {
   const [isBooking, setIsbooking] = useState<Booking | null>(null);
   const [isPayment, setIsPayment] = useState<Payment | null>(null);
-  const [isRewardpoints, setIsRewardpoints] = useState<RewardPoints[]>([]);
+  const [isRewardpoints, setIsRewardpoints] = useState<number>();
   const [oldPrice, setOldPrice] = useState(null);
   const [isChecked, setIsChecked] = useState(false);
   const { id } = useParams();
@@ -48,22 +51,24 @@ function ConfirmBooking() {
     return discountPercentage > 100 ? 100 : discountPercentage;
   };
 
-  const calculateTotalWithDiscount = (totalPrice: number, points: number) => {
-    const discountPercentage = calculateDiscount(points);
-    const discountAmount = (totalPrice * discountPercentage) / 100;
-    return totalPrice - discountAmount;
-  };
+  // const calculateTotalWithDiscount = (totalPrice: number, points: number) => {
+  //   const discountPercentage = calculateDiscount(points);
+  //   const discountAmount = (totalPrice * discountPercentage) / 100;
+  //   return totalPrice - discountAmount;
+  // };
 
   const fetchRewardPoint = async () => {
-    const decodedToken = jwtDecode(token);
-    const userId = decodedToken.userId;
-    console.log("id:", userId);
-    try {
-      const response = await api.get(`rewardpoints/total/${userId}`);
-      console.log("isRewardpoints", response.data.data.value);
-      setIsRewardpoints(response.data.data.value);
-    } catch (err) {
-      console.log(err);
+    if (token) {
+      const decodedToken: JwtPayload = jwtDecode(token);
+      const userId = decodedToken.userId;
+      console.log("id:", userId);
+      try {
+        const response = await api.get(`rewardpoints/total/${userId}`);
+        console.log("isRewardpoints", response.data.data.value);
+        setIsRewardpoints(response.data.data.value);
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
   useEffect(() => {
@@ -93,10 +98,7 @@ function ConfirmBooking() {
       console.log("paymentUrl: ", paymentUrl);
       setIsPayment(response.data);
     } catch (error) {
-      if (error.response) {
-        console.error("Lỗi từ server:", error.response.data);
-      }
-      throw error;
+      console.error("Lỗi từ server:", error);
     }
   };
 
@@ -178,40 +180,13 @@ function ConfirmBooking() {
   ) => {
     const start = new Date(startTime);
     const end = new Date(endTime);
-    const durationInMinutes = (end - start) / (1000 * 60);
+    const durationInMinutes = (end.getTime() - start.getTime()) / (1000 * 60);
 
     const hours = Math.floor(durationInMinutes / 60);
     const minutes = Math.round(durationInMinutes % 60);
 
     return `${hours} giờ ${minutes} phút`;
   };
-  const calculateTotalServicePrice = () => {
-    if (isBooking?.bookingServices) {
-      return isBooking.bookingServices.reduce(
-        (total, service) => total + service.totalPrice,
-        0
-      );
-    }
-    return 0;
-  };
-
-  const adjustedTotalPrice = isBooking?.totalPrice
-    ? isBooking.totalPrice - calculateTotalServicePrice()
-    : 0;
-  const calculateUsageHours = (startTime: Date, endTime: Date) => {
-    const durationInMinutes =
-      (endTime.getTime() - startTime.getTime()) / (1000 * 60);
-    const hours = durationInMinutes / 60;
-    return hours > 0 ? hours : 1;
-  };
-  const usageHours =
-    isBooking?.startTime && isBooking?.endTime
-      ? calculateUsageHours(
-          new Date(isBooking.startTime),
-          new Date(isBooking.endTime)
-        )
-      : 1;
-  const pricePerHour = usageHours > 0 ? adjustedTotalPrice / usageHours : 0;
 
   const onChange: CheckboxProps["onChange"] = async (e) => {
     if (e.target.checked) {

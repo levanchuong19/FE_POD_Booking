@@ -14,14 +14,12 @@ export type ReservationCardProps = {
 
 const BookingCard: React.FC<ReservationCardProps> = ({ booking }) => {
   const [pods, setPod] = useState<POD>();
-  const [isChoose, setIsChoose] = useState<Booking>();
 
   const onCheckboxChange: CheckboxProps["onChange"] = (e) => {
     if (e.target.checked) {
-      setIsChoose(booking);
       console.log("Selected booking:", booking);
     } else {
-      setIsChoose(undefined);
+      console.log("Selected booking:", booking);
     }
   };
   const fetchPod = async () => {
@@ -67,7 +65,8 @@ const BookingCard: React.FC<ReservationCardProps> = ({ booking }) => {
   ) => {
     const start = new Date(startTime);
     const end = new Date(endTime);
-    const durationInMinutes = (end - start) / (1000 * 60);
+    const durationInMinutes = ((end.getTime() - start.getTime()) /
+      (1000 * 60)) as number;
 
     const hours = Math.floor(durationInMinutes / 60);
     const minutes = Math.round(durationInMinutes % 60);
@@ -127,7 +126,7 @@ const BookingCard: React.FC<ReservationCardProps> = ({ booking }) => {
           <p>Địa chỉ: {booking.locationAddress}</p>
           <p>{formatBookingTime()}</p>
           <p>
-            {formatVND(pricePerHour)} x{" "}
+            {formatVND(booking.pricePerHour)} x{" "}
             {booking?.startTime && booking?.endTime
               ? calculateTime(
                   new Date(booking.startTime),
