@@ -15,6 +15,11 @@ import { PlusOutlined } from "@ant-design/icons";
 function ManageDevice() {
   const title = "devices";
   const columns = [
+    {
+      title: "No",
+      key: "index",
+      render: (text, record, index) => index + 1,
+    },
     { title: "ID", dataIndex: "id", key: "id" },
     { title: "RoomType", dataIndex: "roomType", key: "roomType" },
     { title: "Status", dataIndex: "status", key: "status" },
@@ -23,7 +28,7 @@ function ManageDevice() {
       title: "ImageUrl",
       dataIndex: "imageUrl",
       key: "imageUrl",
-      render: (img) => <Image src={img} />,
+      render: (img) => <Image src={img} width={200} />,
     },
   ];
 

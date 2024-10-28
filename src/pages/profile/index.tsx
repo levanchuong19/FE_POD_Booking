@@ -1,4 +1,4 @@
-import { Button, Card, Spin } from "antd";
+import { Button, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";

@@ -20,10 +20,13 @@ import ManageUser from "./pages/admin/manage-user";
 import UserProfile from "./pages/userProfile";
 import Profile from "./pages/profile";
 import ConfirmBooking from "./pages/confirmBooking";
-import DeviceDetails from "./pages/deviceDetails";
-import BookingService from "./pages/bookingService";
-import NotificationPage from "./pages/NotificationPage";
+// import DeviceDetails from "./pages/deviceDetails";
+// import BookingService from "./pages/bookingService";
+// import NotificationPage from "./pages/NotificationPage";
 import { NotificationProvider } from "./pages/NotificationContext";
+import ManageRating from "./pages/admin/manager-rating";
+import ManageBooking from "./pages/admin/manage-booking";
+import ManageRewardPoint from "./pages/admin/manage-rewardBooking";
 
 function App() {
   const router = createBrowserRouter([
@@ -73,6 +76,18 @@ function App() {
         {
           path: "accounts",
           element: <ManageUser />,
+        },
+        {
+          path: "ratings",
+          element: <ManageRating />,
+        },
+        {
+          path: "bookings",
+          element: <ManageBooking />,
+        },
+        {
+          path: "rewardpoints",
+          element: <ManageRewardPoint />,
         },
       ],
     },

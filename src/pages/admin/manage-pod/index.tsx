@@ -16,6 +16,11 @@ function ManageLocation() {
   const title = "pods";
 
   const columns = [
+    {
+      title: "No",
+      key: "index",
+      render: (text, record, index) => index + 1,
+    },
     { title: "ID", dataIndex: "id", key: "id" },
     { title: "Name", dataIndex: "name", key: "name" },
     { title: "Capacity", dataIndex: "capacity", key: "capacity" },
@@ -143,12 +148,12 @@ function ManageLocation() {
       </Form.Item>
 
       {/*  LocationId */}
-      <Form.Item name="locationId" hidden>
+      <Form.Item label="LocationId" name="locationId">
         <Input />
       </Form.Item>
 
       {/*  DeviceId */}
-      <Form.Item name="deviceId" hidden>
+      <Form.Item label="DeviceId" name="deviceId">
         <Input />
       </Form.Item>
     </>

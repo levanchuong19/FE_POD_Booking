@@ -1,13 +1,30 @@
-import { DatePicker, Form, Input, Select } from "antd";
+import {
+  DatePicker,
+  Form,
+  GetProp,
+  Image,
+  Input,
+  Select,
+  Upload,
+  UploadFile,
+  UploadProps,
+} from "antd";
 import DashboardTemplate, {
   Column,
 } from "../../../components/dashboard_template";
 
 import dayjs from "dayjs";
+import { useState } from "react";
+import { PlusOutlined } from "@ant-design/icons";
 
 function ManageDevice() {
   const title = "accounts";
   const columns: Column[] = [
+    {
+      title: "No",
+      key: "index",
+      render: (text, record, index) => index + 1,
+    },
     { title: "Id", dataIndex: "id", key: "id" },
     { title: "FirstName", dataIndex: "firstName", key: "firstName" },
     { title: "LastName", dataIndex: "lastName", key: "lastName" },
@@ -25,10 +42,43 @@ function ManageDevice() {
       title: "Image",
       dataIndex: "image",
       key: "image",
+      render: (img) => <Image src={img} width={200} />,
     },
     { title: "Email", dataIndex: "email", key: "email" },
     { title: "PhoneNumber", dataIndex: "phoneNumber", key: "phoneNumber" },
   ];
+
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState("");
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
+
+  type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
+  const getBase64 = (file: FileType): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+    });
+
+  const handlePreview = async (file: UploadFile) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj as FileType);
+    }
+
+    setPreviewImage(file.url || (file.preview as string));
+    setPreviewOpen(true);
+  };
+
+  const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) =>
+    setFileList(newFileList);
+
+  const uploadButton = (
+    <button style={{ border: 0, background: "none" }} type="button">
+      <PlusOutlined />
+      <div style={{ marginTop: 8 }}>Upload</div>
+    </button>
+  );
 
   const formItems = (
     <>
@@ -123,6 +173,7 @@ function ManageDevice() {
   return (
     <div>
       <DashboardTemplate
+        fileList={fileList}
         title={title}
         columns={columns}
         formItems={formItems}

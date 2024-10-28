@@ -44,7 +44,7 @@ function UserProfile() {
       if (token) {
         const decodedToken = jwtDecode(token);
         const userId = decodedToken.userId;
-        await api.put(`/accounts/${userId}`, values);
+        await api.put(`accounts/${userId}`, values);
         setProfile(values);
         message.success("Profile updated successfully!");
       } else {
@@ -67,11 +67,10 @@ function UserProfile() {
 
       <div className="image">
         <div className="image_wrapper">
-          {profile?.image ? (
-            <img src={`account${profile.image}`} alt="User profile" />
-          ) : (
-            <img src="/path/to/default/image.jpg" />
-          )}
+          <img
+            src={profile?.image ? profile.image : "/path/to/default/image.jpg"}
+            alt="User profile"
+          />
         </div>
       </div>
 

@@ -115,7 +115,7 @@ function DashboardTemplate({
       dataIndex: "id",
       key: "id",
       render: (id, record) => (
-        <div>
+        <div style={{ display: "flex", gap: "10px" }}>
           <Button
             type="primary"
             onClick={() => {

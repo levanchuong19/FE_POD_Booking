@@ -14,6 +14,11 @@ import { PlusOutlined } from "@ant-design/icons";
 function ManageLocation() {
   const title = "locatios";
   const columns = [
+    {
+      title: "No",
+      key: "index",
+      render: (text, record, index) => index + 1,
+    },
     { title: "ID", dataIndex: "id", key: "id" },
     { title: "Name", dataIndex: "name", key: "name" },
     { title: "Address", dataIndex: "address", key: "address" },
