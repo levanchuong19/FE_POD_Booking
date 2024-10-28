@@ -40,7 +40,7 @@ export default function Reservation({ numberOfSlides = 1, autoplay = false }) {
         const token = localStorage.getItem("accessToken");
         const decodedToken = jwtDecode(token);
         const userId = decodedToken.userId;
-        const response = await api.get("bookings");
+        const response = await api.get(`bookings?AccountId=${userId}`);
         console.log("response", response.data);
         const bookings = response.data || [];
         const userBookings = bookings.filter(

@@ -119,7 +119,7 @@ function ManageDevice() {
   return (
     <div>
       <DashboardTemplate
-        fileList={fileList}
+        fileList={"fileList"}
         title={title}
         columns={columns}
         formItems={formItems}

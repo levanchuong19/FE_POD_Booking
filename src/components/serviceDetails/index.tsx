@@ -66,6 +66,10 @@ function ServiceDetails() {
   }, []);
 
   const handleModal = async () => {
+    if (selectedServices.length === 0) {
+      toast.error("Bạn phải chọn ít nhất một dịch vụ trước khi tiếp tục.");
+      return;
+    }
     if (!activeBookingId) {
       toast.error(
         "Bạn cần có một booking đang hoạt động hoặc sắp tới để sử dụng thêm dịch vụ."
@@ -76,6 +80,10 @@ function ServiceDetails() {
   };
 
   const handleSubmit = async () => {
+    if (selectedServices.length === 0) {
+      toast.error("Bạn phải chọn ít nhất một dịch vụ trước khi tiếp tục.");
+      return;
+    }
     const bookingData = {
       bookingId: activeBookingId,
       bookingServices: selectedServices.map((service) => ({
@@ -98,20 +106,29 @@ function ServiceDetails() {
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleServiceSelection = (serviceId: any, quantity: any) => {
+  const handleServiceSelection = (
+    serviceId: any,
+    quantity: any,
+    isChecked: boolean
+  ) => {
     setSelectedServices((prevServices) => {
-      const existingService = prevServices.find(
-        (service) => service.id === serviceId
-      );
-      if (existingService) {
-        return prevServices.map((service) =>
-          service.id === serviceId
-            ? { ...service, quantity: quantity }
-            : service
+      if (isChecked) {
+        // Nếu checkbox được chọn, thêm hoặc cập nhật số lượng dịch vụ
+        const existingService = prevServices.find(
+          (service) => service.id === serviceId
         );
+        if (existingService) {
+          return prevServices.map((service) =>
+            service.id === serviceId
+              ? { ...service, quantity: quantity }
+              : service
+          );
+        } else {
+          return [...prevServices, { id: serviceId, quantity: quantity }];
+        }
       } else {
-        console.log([...prevServices, { id: serviceId, quantity: quantity }]);
-        return [...prevServices, { id: serviceId, quantity: quantity }];
+        // Nếu checkbox bị bỏ chọn, xóa dịch vụ khỏi danh sách
+        return prevServices.filter((service) => service.id !== serviceId);
       }
     });
   };

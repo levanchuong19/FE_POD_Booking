@@ -27,6 +27,7 @@ import { NotificationProvider } from "./pages/NotificationContext";
 import ManageRating from "./pages/admin/manager-rating";
 import ManageBooking from "./pages/admin/manage-booking";
 import ManageRewardPoint from "./pages/admin/manage-rewardBooking";
+import DashboardChard from "./components/dashboardChart";
 
 function App() {
   const router = createBrowserRouter([
@@ -57,6 +58,10 @@ function App() {
       path: "/dashboard",
       element: <Dashboard />,
       children: [
+        {
+          path: "statistical",
+          element: <DashboardChard />,
+        },
         {
           path: "locations",
           element: <ManageLocation />,
