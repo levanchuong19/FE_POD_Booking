@@ -16,7 +16,7 @@ import Dashboard from "./components/dashboard";
 import ManageLocation from "./pages/admin/manage-location";
 import ManagePod from "./pages/admin/manage-pod";
 import ManageService from "./pages/admin/manage-service";
-import Profile from "./pages/profile/inde";
+import Profile from "./pages/profile";
 import ManageDevice from "./pages/admin/manage-device";
 import ManageUser from "./pages/admin/manage-user";
 import UserProfile from "./pages/userProfile";

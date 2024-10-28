@@ -122,31 +122,35 @@ function DashboardTemplate({
       key: "id",
       render: (record: { dateOfBirth: moment.MomentInput; id: string }) => (
         <>
-          <Button
-            type="primary"
-            onClick={() => {
-              const recordValiDate = {
-                ...record,
-                dateOfBirthday: record.dateOfBirth
-                  ? moment(record.dateOfBirth, "DD-MM-YYYY HH:mm")
-                  : null,
-              };
-              form.setFieldsValue(recordValiDate);
-              setShowModal(true);
-              // form.resetFields();
-            }}
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "10px" }}
           >
-            Update
-          </Button>
-          <Popconfirm
-            title="Delete"
-            description="Do you want to delete"
-            onConfirm={() => handleDelete(record.id)}
-          >
-            <Button type="primary" danger>
-              Delete
+            <Button
+              type="primary"
+              onClick={() => {
+                const recordValiDate = {
+                  ...record,
+                  dateOfBirthday: record.dateOfBirth
+                    ? moment(record.dateOfBirth, "DD-MM-YYYY HH:mm")
+                    : null,
+                };
+                form.setFieldsValue(recordValiDate);
+                setShowModal(true);
+                // form.resetFields();
+              }}
+            >
+              Update
             </Button>
-          </Popconfirm>
+            <Popconfirm
+              title="Delete"
+              description="Do you want to delete"
+              onConfirm={() => handleDelete(record.id)}
+            >
+              <Button type="primary" danger>
+                Delete
+              </Button>
+            </Popconfirm>
+          </div>
         </>
       ),
     },

@@ -93,8 +93,12 @@ const Dashboard: React.FC = () => {
 
   const handleUserIconClick = () => {
     const token = localStorage.getItem("accessToken");
+    const decodedToken: JwtPayload = jwtDecode(token);
+    const userId = decodedToken.userId;
+    console.log("id:", userId);
     if (token) {
       handleToken(token);
+      navigate(`/profile/${userId}`);
       setIsModalVisible(true);
     } else {
       navigate("/login");

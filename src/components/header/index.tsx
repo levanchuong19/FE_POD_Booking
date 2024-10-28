@@ -27,7 +27,8 @@ function Header() {
         } else {
           const response = await api.get(`accounts/${userId}`);
           setUserData(response.data);
-          setIsModalVisible(true);
+          // setIsModalVisible(true);
+          navigate(`/profile/${userId}`);
         }
         // const userData = response.data;
         // console.log("User Data:", userData);
