@@ -14,6 +14,11 @@ import { PlusOutlined } from "@ant-design/icons";
 function ManageLocation() {
   const title = "locatios";
   const columns = [
+    {
+      title: "No",
+      key: "index",
+      render: (text, record, index) => index + 1,
+    },
     { title: "ID", dataIndex: "id", key: "id" },
     { title: "Name", dataIndex: "name", key: "name" },
     { title: "Address", dataIndex: "address", key: "address" },
@@ -23,7 +28,7 @@ function ManageLocation() {
       title: "Image",
       dataIndex: "imageUrl",
       key: "imageUrl",
-      render: (img: string | undefined) => <Image src={img} />,
+      render: (img) => <Image src={img} width={200} />,
     },
   ];
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -59,7 +64,6 @@ function ManageLocation() {
   );
   const formItems = (
     <>
-      {/* Name */}
       <Form.Item
         name="name"
         label="Name"
@@ -68,7 +72,6 @@ function ManageLocation() {
         <Input />
       </Form.Item>
 
-      {/* Address */}
       <Form.Item
         name="address"
         label="Address"
@@ -77,7 +80,6 @@ function ManageLocation() {
         <Input />
       </Form.Item>
 
-      {/* Phonenumber */}
       <Form.Item
         name="phoneNumber"
         label="PhoneNumber"
@@ -86,12 +88,7 @@ function ManageLocation() {
         <Input />
       </Form.Item>
 
-      {/* ImgeUrl */}
-      <Form.Item
-        name="imageUrl"
-        label="Image"
-        // rules={[{ required: true, message: "Please enter imageUrl" }]}
-      >
+      <Form.Item name="imageUrl" label="Image">
         <Upload
           listType="picture-card"
           fileList={fileList}
@@ -113,12 +110,12 @@ function ManageLocation() {
         )}
       </Form.Item>
 
-      {/* Description */}
       <Form.Item name="description" label="Description">
         <Input.TextArea />
       </Form.Item>
     </>
   );
+
   return (
     <div>
       <DashboardTemplate

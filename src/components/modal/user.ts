@@ -7,7 +7,7 @@ export interface User{
     address: string;
     image: string;
     email:string;
-    phone: string;
+    phoneNumber: string;
     role:"ADMIN" | "MANAGER" |"STAFF" | "CUSTOMER" ;
 
 }

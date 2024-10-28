@@ -3,7 +3,6 @@ import "./index.scss";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import api from "../config/api";
-import { Button, Form, Input, Modal } from "antd";
 import { useState } from "react";
 import "./index.scss";
 import { toast } from "react-toastify";
@@ -12,11 +11,22 @@ interface JwtPayload {
   userId: string;
 }
 function Header() {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const handleModalClose = () => {
+    setIsModalVisible(false);
+  };
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken"); // Remove the token from local storage
+    setIsModalVisible(false); // Close the modal
+    // navigate("/login"); // Redirect to login page
+  };
   const navigate = useNavigate();
   const [UserData, setUserData] = useState(null);
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const handleUserIconClick = async () => {
     const token = localStorage.getItem("accessToken");
+    console.log(token);
+
     if (token) {
       try {
         const decodedToken: JwtPayload = jwtDecode(token);
@@ -90,7 +100,7 @@ function Header() {
         {isModalVisible && (
           <Modal
             title="User Profile"
-            visible={isModalVisible}
+            open={isModalVisible}
             onCancel={handleModalClose}
             footer={null}
           >

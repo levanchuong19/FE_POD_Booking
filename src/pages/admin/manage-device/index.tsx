@@ -3,6 +3,7 @@ import {
   GetProp,
   Image,
   Input,
+  InputNumber,
   Upload,
   UploadFile,
   UploadProps,
@@ -14,11 +15,21 @@ import { PlusOutlined } from "@ant-design/icons";
 function ManageDevice() {
   const title = "devices";
   const columns = [
+    {
+      title: "No",
+      key: "index",
+      render: (text, record, index) => index + 1,
+    },
     { title: "ID", dataIndex: "id", key: "id" },
     { title: "RoomType", dataIndex: "roomType", key: "roomType" },
     { title: "Status", dataIndex: "status", key: "status" },
     { title: "Floor", dataIndex: "floor", key: "floor" },
-    { title: "ImageUrl", dataIndex: "imageUrl", key: "imageUrl" },
+    {
+      title: "ImageUrl",
+      dataIndex: "imageUrl",
+      key: "imageUrl",
+      render: (img) => <Image src={img} width={200} />,
+    },
   ];
 
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -74,17 +85,13 @@ function ManageDevice() {
       </Form.Item>
 
       {/* Status */}
-      {/* <Form.Item
+      <Form.Item
         label="Status"
         name="status"
         rules={[{ required: true, message: "Please select the status!" }]}
       >
-        <Select placeholder="Select status">
-          <Select.Option value={0}>Available</Select.Option>
-          <Select.Option value={1}>Occupied</Select.Option>
-          <Select.Option value={2}>Under Maintenance</Select.Option>
-        </Select>
-      </Form.Item> */}
+        <InputNumber />
+      </Form.Item>
 
       {/* Image URL */}
       <Form.Item label="Image URL" name="imageUrl">
@@ -108,6 +115,7 @@ function ManageDevice() {
             src={previewImage}
           />
         )}
+        {/* <Input /> */}
       </Form.Item>
     </>
   );

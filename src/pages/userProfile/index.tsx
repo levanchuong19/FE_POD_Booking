@@ -165,10 +165,12 @@ import { jwtDecode } from "jwt-decode";
 import { User } from "../../components/modal/user";
 import { toast } from "react-toastify";
 import "./index.scss";
+import "./userProfile.scss";
 
 function UserProfile() {
   const [form] = Form.useForm();
   const [profile, setProfile] = useState<User>();
+  // const [showProfile, setShowProfile] = useState<User>();
   // const [showProfile, setShowProfile] = useState<User>();
 
   const navigate = useNavigate();
@@ -186,7 +188,10 @@ function UserProfile() {
         setProfile(response.data.data);
         // setShowProfile(response.data.data);
         form.setFieldsValue(response.data.data);
+        // setShowProfile(response.data.data);
+        form.setFieldsValue(response.data.data);
       } catch (error) {
+        toast.error(error);
         toast.error(error);
       }
     } else {
@@ -204,6 +209,7 @@ function UserProfile() {
         const decodedToken = jwtDecode(token);
         const userId = decodedToken.userId;
         await api.put(`accounts/${userId}`, values);
+        await api.put(`accounts/${userId}`, values);
         setProfile(values);
         message.success("Profile updated successfully!");
       } else {
@@ -212,6 +218,12 @@ function UserProfile() {
     } catch (error) {
       message.error("Failed to update profile.");
     }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    toast.success("Đăng xuất tài khoản thành công");
+    navigate("/");
   };
 
   return (
@@ -233,8 +245,24 @@ function UserProfile() {
         ) : (
           <h3>Username not available</h3>
         )}
+      <div className="image">
+        <div className="image_wrapper">
+          <img
+            src={profile?.image ? profile.image : "/path/to/default/image.jpg"}
+            alt="User profile"
+          />
+        </div>
       </div>
 
+      <div className="user-name">
+        {profile?.firstName && profile?.lastName ? (
+          <h3>{`${profile.firstName} ${profile.lastName}`}</h3>
+        ) : (
+          <h3>Username not available</h3>
+        )}
+      </div>
+
+      <Form
       <Form
         form={form}
         layout="vertical"
@@ -291,6 +319,11 @@ function UserProfile() {
           Update Profile
         </Button>
       </Form>
+      </Form>
+
+      <Button type="default" onClick={handleLogout} className="logout-button">
+        Logout
+      </Button>
     </div>
   );
 }

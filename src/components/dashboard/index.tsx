@@ -45,6 +45,9 @@ const allItems: MenuItem[] = [
   getItem("Manage Device", "devices", <PieChartOutlined />),
   getItem("Manage Account", "accounts", <PieChartOutlined />),
   getItem("Manage Rating", "ratings", <PieChartOutlined />),
+  getItem("Manage Rating", "ratings", <PieChartOutlined />),
+  getItem("Manage Booking", "bookings", <PieChartOutlined />),
+  getItem("Manage RewardPoint", "rewardpoints", <PieChartOutlined />),
 ];
 
 const Dashboard: React.FC = () => {

@@ -12,13 +12,19 @@ import {
 import DashboardTemplate, {
   Column,
 } from "../../../components/dashboard_template";
+
+import dayjs from "dayjs";
 import { useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
-import dayjs from "dayjs";
 
 function ManageDevice() {
   const title = "accounts";
   const columns: Column[] = [
+    {
+      title: "No",
+      key: "index",
+      render: (text, record, index) => index + 1,
+    },
     { title: "Id", dataIndex: "id", key: "id" },
     { title: "FirstName", dataIndex: "firstName", key: "firstName" },
     { title: "LastName", dataIndex: "lastName", key: "lastName" },
@@ -28,13 +34,18 @@ function ManageDevice() {
       dataIndex: "dateOfBirthday",
       key: "dateOfBirthday",
       render: (dateOfBirth) => {
-        return dayjs(dateOfBirth).format("DD/MM/YYYY HH:mm");
+        return dayjs(dateOfBirth).format("DD/MM/YYYY");
       },
     },
     { title: "Address", dataIndex: "address", key: "address" },
-    { title: "Image", dataIndex: "image", key: "image", render:(img) => <Image src={img}/> },
+    {
+      title: "Image",
+      dataIndex: "image",
+      key: "image",
+      render: (img) => <Image src={img} width={200} />,
+    },
     { title: "Email", dataIndex: "email", key: "email" },
-    { title: "Phone", dataIndex: "phone", key: "phone" },
+    { title: "PhoneNumber", dataIndex: "phoneNumber", key: "phoneNumber" },
   ];
 
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -128,8 +139,8 @@ function ManageDevice() {
       </Form.Item>
 
       <Form.Item
-        label="Phone"
-        name="phone"
+        label="PhoneNumber"
+        name="phoneNumber"
         rules={[{ required: true, message: "Please enter your phone number!" }]}
       >
         <Input placeholder="Enter your phone number" />
@@ -143,7 +154,7 @@ function ManageDevice() {
           onPreview={handlePreview}
           onChange={handleChange}
         >
-          {fileList.length == 1 ? null : uploadButton}
+          {fileList.length >= 8 ? null : uploadButton}
         </Upload>
         {previewImage && (
           <Image
@@ -162,7 +173,7 @@ function ManageDevice() {
   return (
     <div>
       <DashboardTemplate
-      fileList ={fileList}
+        fileList={fileList}
         title={title}
         columns={columns}
         formItems={formItems}
