@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import formatVND from "../../utils/currency";
 import { Booking } from "../modal/booking";
@@ -110,8 +111,8 @@ const ReservationCard: React.FC<ReservationCardProps> = ({
   const pricePerHour = usageHours > 0 ? adjustedTotalPrice / usageHours : 0;
 
   return (
-    <div>
-      <div className="reser" style={{ width: "100%" }}>
+    <div className="Cardreser">
+      <div className="reser">
         <div className="reservation__left">
           <img
             style={{ borderRadius: "10px" }}
@@ -183,9 +184,10 @@ const ReservationCard: React.FC<ReservationCardProps> = ({
               </Button>
             )}
           </p>
-          {booking.paymentStatus === "Canceled" && (
+          {(booking.paymentStatus === "Canceled" ||
+            booking.paymentStatus === "Pending") && (
             <Button
-              style={{ width: 150 }}
+              style={{ width: 102 }}
               type="primary"
               danger
               onClick={() => onRebook(booking.podId)}

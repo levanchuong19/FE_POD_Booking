@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { RATING } from "../../../components/modal/rating";
 import api from "../../../components/config/api";
@@ -7,6 +8,11 @@ function ManageRating() {
   const [rating, setRating] = useState<RATING[]>();
 
   const columns = [
+    {
+      title: "No",
+      key: "index",
+      render: (_text: any, _record: any, index: number) => index + 1,
+    },
     {
       title: "POD ID",
       dataIndex: "podId",

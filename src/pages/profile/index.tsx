@@ -1,3 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -7,6 +10,9 @@ import { jwtDecode } from "jwt-decode";
 import { User } from "../../components/modal/user";
 import "./index.scss";
 
+interface JwtPayload {
+  userId: any;
+}
 function Profile() {
   const [profile, setProfile] = useState<User>();
   const [loading, setLoading] = useState(true);
@@ -16,7 +22,7 @@ function Profile() {
     const token = localStorage.getItem("accessToken");
     if (token) {
       try {
-        const decodedToken = jwtDecode(token);
+        const decodedToken: JwtPayload = jwtDecode(token);
         const userId = decodedToken.userId;
         const response = await api.get(`accounts/${userId}`);
         setProfile(response.data.data);
@@ -37,7 +43,7 @@ function Profile() {
   function handleUpdateClick() {
     const token = localStorage.getItem("accessToken");
     if (token) {
-      const decodedToken = jwtDecode(token);
+      const decodedToken: JwtPayload = jwtDecode(token);
       const userId = decodedToken.userId;
       navigate(`/userProfile/${userId}`);
     }

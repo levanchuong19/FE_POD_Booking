@@ -111,7 +111,6 @@ function ServiceDetails() {
     }
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleServiceSelection = (
     serviceId: any,
     quantity: any,
@@ -168,7 +167,7 @@ function ServiceDetails() {
             style={{
               display: "flex",
               justifyContent: "flex-end",
-              marginBottom: "20px",
+              marginBottom: "5px",
               marginLeft: "960px",
             }}
           />

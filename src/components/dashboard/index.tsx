@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import React, { useEffect, useState } from "react";
 import { PieChartOutlined, UserOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
@@ -44,7 +45,6 @@ const allItems: MenuItem[] = [
   getItem("Manage Service", "services", <PieChartOutlined />),
   getItem("Manage Device", "devices", <PieChartOutlined />),
   getItem("Manage Account", "accounts", <PieChartOutlined />),
-  getItem("Manage Rating", "ratings", <PieChartOutlined />),
   getItem("Manage Rating", "ratings", <PieChartOutlined />),
   getItem("Manage Booking", "bookings", <PieChartOutlined />),
   getItem("Manage RewardPoint", "rewardpoints", <PieChartOutlined />),
@@ -96,10 +96,10 @@ const Dashboard: React.FC = () => {
 
   const handleUserIconClick = () => {
     const token = localStorage.getItem("accessToken");
-    const decodedToken: JwtPayload = jwtDecode(token);
-    const userId = decodedToken.userId;
-    console.log("id:", userId);
     if (token) {
+      const decodedToken: JwtPayload = jwtDecode(token);
+      const userId = decodedToken.userId;
+      console.log("id:", userId);
       handleToken(token);
       navigate(`/profile/${userId}`);
       setIsModalVisible(true);
@@ -116,7 +116,11 @@ const Dashboard: React.FC = () => {
         return allItems.filter((item) => item?.key !== "statistical");
       case "Staff":
         return allItems.filter(
-          (item) => item?.key === "pods" || item?.key === "accounts"
+          (item) =>
+            item?.key === "pods" ||
+            item?.key === "accounts" ||
+            item?.key === "bookings" ||
+            item?.key === "rewardpoints"
         );
       default:
         return [];

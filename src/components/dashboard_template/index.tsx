@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Form, Modal, Popconfirm, Table } from "antd";
 import { useEffect, useState } from "react";
@@ -11,7 +12,6 @@ export interface Column {
   title: string;
   dataIndex: string;
   key: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   render?: (value: any) => any;
 }
 
@@ -20,7 +20,6 @@ interface DashboardTemplateProps {
   columns: Column[];
   apiURI: string;
   formItems: React.ReactElement;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fileList: any;
 }
 
@@ -100,7 +99,7 @@ function DashboardTemplate({
   };
 
   //DELETE
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id) => {
     try {
       await api.delete(`${apiURI}/${id}`);
       toast.success("Success deleted!!!");

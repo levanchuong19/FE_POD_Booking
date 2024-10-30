@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Form,
   GetProp,
@@ -8,18 +9,20 @@ import {
   UploadFile,
   UploadProps,
 } from "antd";
-import DashboardTemplate from "../../../components/dashboard_template";
+import DashboardTemplate, {
+  Column,
+} from "../../../components/dashboard_template";
 import { useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 
 function ManageLocation() {
   const title = "pods";
 
-  const columns = [
+  const columns: Column[] = [
     {
       title: "No",
       key: "index",
-      render: (text, record, index) => index + 1,
+      render: (_text: any, _record: any, index: number) => index + 1,
     },
     { title: "ID", dataIndex: "id", key: "id" },
     { title: "Name", dataIndex: "name", key: "name" },

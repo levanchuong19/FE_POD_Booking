@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import api from "../../components/config/api";
 import { Booking } from "../../components/modal/booking";
@@ -50,7 +52,6 @@ function BookingService() {
       const paymentUrl = response.data;
       console.log("paymentUrl: ", paymentUrl);
       setIsPayment(response.data);
-      //   return paymentUrl;
     } catch (error) {
       console.error("Lỗi từ server:", error);
     }
@@ -59,7 +60,6 @@ function BookingService() {
   useEffect(() => {
     if (isBooking?.code) {
       fetchPayment(isBooking.code);
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }
   }, [isBooking?.code]);
 
@@ -103,26 +103,24 @@ function BookingService() {
         endDate
       )} ${formatTime(endDate)}`;
     } else {
-      return `${formatDate(startDate)}
-                    ${formatTime(startDate)} - ${formatTime(endDate)}`;
+      return `${formatTime(startDate)}  -  ${formatDate(startDate)} `;
+      // - ${formatTime(endDate)}
     }
   };
 
   return (
-    <div className="confirmBooking">
+    <div className="bookingService">
       <div className="confirm">
         <div className="confirm-content">
-          <div className="confirm__left">
-            <img width={500} src={pods?.imageUrl} alt="" />
-          </div>
+          <h2 className="h2">Chi tiết đơn hàng</h2>
           <div className="confirm__right">
-            <h2>{isBooking?.podName}</h2>
+            <strong className="strong">
+              Dịch vụ order thêm dành cho : {isBooking?.podName}(
+              {formatVND(isBooking?.pricePerHour ?? 0) + "/giờ"})
+            </strong>
+            <p>Địa chỉ: {isBooking?.locationAddress}</p>
             <p>{formatBookingTime()}</p>
-            <span
-              style={{ height: "0.99px", backgroundColor: "black" }}
-              className="spanLine"
-            ></span>
-            <h4>Chi tiết đơn hàng:</h4>
+
             {isBooking?.bookingServices &&
               isBooking.bookingServices.map((service, index) => (
                 <div key={index} className="service-item">
@@ -134,25 +132,36 @@ function BookingService() {
                 </div>
               ))}
 
-            <div style={{ display: "flex", gap: "190px", fontSize: "20px" }}>
+            <span
+              style={{
+                height: "0.8px",
+                backgroundColor: "#b4b4b4",
+                width: "700px",
+                marginLeft: "-20px",
+              }}
+              className="spanLine"
+            ></span>
+            <div
+              style={{
+                display: "flex",
+                fontSize: "20px",
+                justifyContent: "flex-end",
+                gap: "20px",
+              }}
+            >
               <h4>Tổng :</h4>
               <h4>{formatVND(isBooking?.totalPrice ?? 0)}</h4>
             </div>
-            <span
-              style={{ height: "0.8px", backgroundColor: "black" }}
-              className="spanLine"
-            ></span>
-            <h2>Thanh toán: </h2>
             <div
               style={{ display: "flex", alignItems: "center", gap: "150px" }}
             >
+              <h4>Phương thức thanh toán: </h4>
+              <p>Ví VNPAY</p>
               <img
-                width={120}
-                height={100}
+                width={50}
                 src="https://vnpay.vn/s1/statics.vnpay.vn/2021/6/05g0ytd7dxcs1624443633411.png"
                 alt=""
               />
-              <p>Ví VNPAY</p>
             </div>
           </div>
         </div>

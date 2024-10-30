@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Modal } from "antd";
 import Carousel from "../../components/carousel";
 import ListDevice from "../../components/list_device";

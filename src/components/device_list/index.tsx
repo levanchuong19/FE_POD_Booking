@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { Location } from "../modal/location";
@@ -21,6 +22,7 @@ export default function DeviceList({ numberOfSlides = 3, autoplay = false }) {
   const [selectedLocationId, setSelectedLocationId] = useState<string | null>(
     null
   );
+  const [selectedFloor, setSelectedFloor] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [podsPerPage] = useState(6);
 
@@ -65,40 +67,41 @@ export default function DeviceList({ numberOfSlides = 3, autoplay = false }) {
     fetchPod();
   }, []);
 
-  const handleLocationClick = (deviceId: string) => {
-    const filtered = pod?.filter((pod) => pod.deviceId === deviceId);
-    setFilteredPods(filtered || []);
+  useEffect(() => {
+    let filtered = pod || [];
+    if (selectedDeviceId) {
+      filtered = filtered.filter((pod) => pod.deviceId === selectedDeviceId);
+    }
+    if (selectedLocationId) {
+      filtered = filtered.filter(
+        (pod) => pod.locationId === selectedLocationId
+      );
+    }
+    if (selectedFloor) {
+      filtered = filtered.filter((pod) => pod.floor === selectedFloor);
+    }
+    setFilteredPods(filtered);
+  }, [selectedDeviceId, selectedLocationId, selectedFloor, pod]);
+
+  const handleDeviceClick = (deviceId: string) => {
     setSelectedDeviceId(deviceId);
     setSelectedSlide(deviceId);
-    setCurrentPage(1);
   };
+
+  const handleAddressChange = (locationID: string) => {
+    setSelectedLocationId(locationID);
+  };
+
+  // const handleFloorChange = (floor: string) => {
+  //   setSelectedFloor(floor);
+  // };
+
   const uniqueAddresses = Array.from(
     new Set(locations?.map((location) => location.name))
   );
-  const uniqueFloor = Array.from(
-    new Set(device?.map((device) => device.floor))
-  );
-
-  const handleAddressChange = (locationID: any) => {
-    setSelectedLocationId(locationID);
-    const filtered = pod?.filter(
-      (pod) =>
-        pod.locationId === locationID && pod.deviceId === selectedDeviceId
-    );
-    setFilteredPods(filtered || []);
-    setSelectedSlide(locationID);
-    setCurrentPage(1);
-  };
-  const handleFloorChange = (floor: any) => {
-    const filtered = pod?.filter(
-      (pod) =>
-        pod.floor === floor &&
-        pod.deviceId === selectedDeviceId &&
-        pod.locationId === selectedLocationId
-    );
-    setFilteredPods(filtered || []);
-    setSelectedSlide(floor);
-  };
+  // const uniqueFloor = Array.from(
+  //   new Set(device?.map((device) => device.floor))
+  // );
 
   const indexOfLastPod = currentPage * podsPerPage;
   const indexOfFirstPod = indexOfLastPod - podsPerPage;
@@ -108,11 +111,16 @@ export default function DeviceList({ numberOfSlides = 3, autoplay = false }) {
     setCurrentPage(page);
   };
 
+  const handleSetSlide = () => {
+    setSelectedSlide(undefined);
+    fetchPod();
+  };
+
   return (
     <div style={{ backgroundColor: "#fff" }}>
       <h3
         style={{ marginBottom: "20px", marginTop: "20px" }}
-        onClick={() => fetchPod()}
+        onClick={handleSetSlide}
       >
         {" "}
         <BarsOutlined /> Các loại thiết bị
@@ -131,7 +139,7 @@ export default function DeviceList({ numberOfSlides = 3, autoplay = false }) {
           {device?.map((deviceItem: Device) => (
             <SwiperSlide>
               <div
-                onClick={() => handleLocationClick(deviceItem.id)}
+                onClick={() => handleDeviceClick(deviceItem.id)}
                 className={
                   selectedSlide === deviceItem.id ? "active-slide" : ""
                 }
@@ -156,7 +164,7 @@ export default function DeviceList({ numberOfSlides = 3, autoplay = false }) {
           onChange={(value) => handleAddressChange(value)}
           placeholder="Chọn địa điểm"
         />
-        <Select
+        {/* <Select
           className="Select2"
           options={uniqueFloor.map((floor) => ({
             value: floor,
@@ -164,7 +172,7 @@ export default function DeviceList({ numberOfSlides = 3, autoplay = false }) {
           }))}
           onChange={(value) => handleFloorChange(value)}
           placeholder="Chọn tầng"
-        />
+        /> */}
       </div>
 
       <div

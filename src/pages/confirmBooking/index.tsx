@@ -1,14 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import api from "../../components/config/api";
 import { Booking } from "../../components/modal/booking";
 import { useParams } from "react-router-dom";
 import "./index.scss";
 import formatVND from "../../utils/currency";
-import { Button, Checkbox, CheckboxProps } from "antd";
+import { Button, Checkbox, Popconfirm } from "antd";
 import { format } from "date-fns";
 import { Payment } from "../../components/modal/payment";
 import { POD } from "../../components/modal/pod";
-import { RewardPoints } from "../../components/modal/rewardpoints";
 import { toast } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
 import dayjs from "dayjs";
@@ -28,6 +29,7 @@ function ConfirmBooking() {
   const [isRewardpoints, setIsRewardpoints] = useState<number>();
   const [oldPrice, setOldPrice] = useState(null);
   const [isChecked, setIsChecked] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(false);
   const { id } = useParams();
   const [pods, setPod] = useState<POD>();
   const token = localStorage.getItem("accessToken");
@@ -50,12 +52,6 @@ function ConfirmBooking() {
     const discountPercentage = Math.floor(points / 400) * 10;
     return discountPercentage > 100 ? 100 : discountPercentage;
   };
-
-  // const calculateTotalWithDiscount = (totalPrice: number, points: number) => {
-  //   const discountPercentage = calculateDiscount(points);
-  //   const discountAmount = (totalPrice * discountPercentage) / 100;
-  //   return totalPrice - discountAmount;
-  // };
 
   const fetchRewardPoint = async () => {
     if (token) {
@@ -105,7 +101,6 @@ function ConfirmBooking() {
   useEffect(() => {
     if (isBooking?.code) {
       fetchPayment(isBooking.code);
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }
   }, [isBooking?.code]);
 
@@ -154,6 +149,41 @@ function ConfirmBooking() {
     }
   };
 
+  // const calculateDurationInHours = (startTime: Date, endTime: Date) => {
+  //   const openingHour = 7;
+  //   const closingHour = 22;
+  //   let totalHours = 0;
+  //   let currentDate = new Date(startTime);
+  //   while (currentDate <= endTime) {
+  //     const startOfDay = new Date(currentDate);
+  //     const endOfDay = new Date(currentDate);
+  //     startOfDay.setHours(openingHour, 0, 0, 0);
+  //     endOfDay.setHours(closingHour, 0, 0, 0);
+  //     const actualStart = currentDate > startOfDay ? currentDate : startOfDay;
+  //     const actualEnd = endTime < endOfDay ? endTime : endOfDay;
+  //     const hoursForThisDay =
+  //       (actualEnd.getTime() - actualStart.getTime()) / (1000 * 60 * 60);
+  //     if (hoursForThisDay > 0) {
+  //       totalHours += hoursForThisDay;
+  //     }
+  //     currentDate = new Date(currentDate.setDate(currentDate.getDate() + 1));
+  //     currentDate.setHours(openingHour, 0, 0, 0);
+  //   }
+
+  //   return totalHours;
+  // };
+  // const calculateTime = (
+  //   startTime: string | number | Date,
+  //   endTime: string | number | Date
+  // ) => {
+  //   const start = new Date(startTime);
+  //   const end = new Date(endTime);
+  //   const totalHours = calculateDurationInHours(start, end);
+  //   const hours = Math.floor(totalHours);
+  //   const minutes = Math.round((totalHours % 1) * 60);
+
+  //   return `${hours} giờ ${minutes} phút`;
+  // };
   const calculateDuration = (startTime: Date, endTime: Date) => {
     const durationInMinutes =
       (endTime.getTime() - startTime.getTime()) / (1000 * 60);
@@ -188,52 +218,56 @@ function ConfirmBooking() {
     return `${hours} giờ ${minutes} phút`;
   };
 
-  const onChange: CheckboxProps["onChange"] = async (e) => {
-    if (e.target.checked) {
-      if (isRewardpoints >= 400) {
-        try {
-          const oldBooking = { ...isBooking };
-          const price = oldBooking.totalPrice;
-          console.log("old price", price);
-          setOldPrice(price);
-          console.log("old booking", oldBooking);
-          const start = isBooking?.startTime
-            ? moment(isBooking.startTime)
-            : null;
-          const end = isBooking?.endTime ? moment(isBooking.endTime) : null;
-          const updatedBooking = {
-            startTime: start?.format("YYYY-MM-DDTHH:mm:ss"),
-            endTime: end?.format("YYYY-MM-DDTHH:mm:ss"),
-            useRewardPoints: true,
-            bookingServices: isBooking?.bookingServices?.map((service) => ({
-              serviceId: service.serviceId,
-              quantity: service.quantity,
-            })),
-          };
-          console.log("data update:", updatedBooking);
-          const response = await api.put(`bookings/${id}`, updatedBooking);
-          console.log("Booking updated with reward points", response.data);
-          setIsbooking(response.data);
-          setIsChecked(true);
-          fetchBooking();
-        } catch (error) {
-          console.error("Lỗi khi cập nhật booking:", error);
-          setIsChecked(false);
-        }
+  const onChange = async () => {
+    try {
+      const oldBooking = { ...isBooking };
+      const price = oldBooking.totalPrice;
+      console.log("old price", price);
+      setOldPrice(price);
+      console.log("old booking", oldBooking);
+      const start = isBooking?.startTime ? moment(isBooking.startTime) : null;
+      const end = isBooking?.endTime ? moment(isBooking.endTime) : null;
+      const updatedBooking = {
+        startTime: start?.format("YYYY-MM-DDTHH:mm:ss"),
+        endTime: end?.format("YYYY-MM-DDTHH:mm:ss"),
+        useRewardPoints: true,
+        bookingServices: isBooking?.bookingServices?.map((service) => ({
+          serviceId: service.serviceId,
+          quantity: service.quantity,
+        })),
+      };
+      console.log("data update:", updatedBooking);
+      if (isRewardpoints && isRewardpoints >= 400) {
+        const response = await api.put(`bookings/${id}`, updatedBooking);
+        console.log("Booking updated with reward points", response.data);
+        setIsbooking(response.data);
+        setIsChecked(true);
+        setIsDisabled(true);
+        toast.success("Đã sử dụng điểm thưởng thành công!");
+        fetchBooking();
       } else {
-        console.log("Không đủ điểm thưởng để sử dụng.");
-        toast.error("Bạn không đủ điểm thưởng để sử dụng.");
         setIsChecked(false);
+        // setIsDisabled(true);
+      }
+    } catch (error) {
+      console.error("Lỗi khi cập nhật booking:", error);
+      setIsChecked(false);
+    }
+  };
+
+  const handleCheckboxChange = async (e: any) => {
+    if (e.target.checked) {
+      if (isRewardpoints && isRewardpoints < 400) {
+        toast.error("Bạn không đủ điểm thưởng để sử dụng.");
+        // setIsDisabled(true);
+        setIsChecked(false);
+      } else {
+        setIsChecked(true);
       }
     } else {
       console.log("Không sử dụng điểm thưởng");
       setIsChecked(false);
     }
-  };
-
-  const resetBooking = () => {
-    setIsChecked(false);
-    setIsbooking(null);
   };
 
   return (
@@ -259,7 +293,7 @@ function ConfirmBooking() {
                 : "Không có thông tin thời gian"}
             </p>
             <p>
-              {formatVND(isBooking?.pricePerHour)} x{" "}
+              {formatVND(isBooking?.pricePerHour ?? 0)} x{" "}
               {isBooking?.startTime && isBooking?.endTime
                 ? calculateTime(
                     new Date(isBooking.startTime),
@@ -267,7 +301,6 @@ function ConfirmBooking() {
                   )
                 : ""}
             </p>
-            {/* <p>({isBooking?.startTime ? formatTime(new Date(isBooking.startTime)) : ''} - {isBooking?.endTime ? formatTime(new Date(isBooking.endTime)) : ''})</p> */}
             <h4>Lựa chọn đi kèm:</h4>
 
             {isBooking?.bookingServices &&
@@ -286,18 +319,16 @@ function ConfirmBooking() {
                 <strong>
                   {oldPrice
                     ? formatVND(oldPrice)
-                    : formatVND(isBooking?.totalPrice)}
+                    : formatVND(isBooking?.totalPrice ?? 0)}
                 </strong>
               </p>
               {isChecked && (
-                <p>Giảm giá: {calculateDiscount(isRewardpoints)}%</p>
+                <p>Giảm giá: {calculateDiscount(isRewardpoints ?? 0)}%</p>
               )}
             </div>
             <div style={{ display: "flex", gap: "190px", fontSize: "20px" }}>
-              {/* <h4>Tổng :</h4>
-              <h4>{formatVND(isBooking?.totalPrice)}</h4> */}
               <h4>Tổng cộng:</h4>
-              <h4>{formatVND(isBooking?.totalPrice)}</h4>
+              <h4>{formatVND(isBooking?.totalPrice ?? 0)}</h4>
             </div>
             <span
               style={{ height: "0.8px", backgroundColor: "black" }}
@@ -305,16 +336,29 @@ function ConfirmBooking() {
             ></span>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <h2>Thanh toán: </h2>
-              <Checkbox onChange={onChange} checked={isChecked}>
-                Sử dụng điểm thưởng
-              </Checkbox>
+              <Popconfirm
+                title={
+                  isRewardpoints >= 400
+                    ? `Bạn có muốn sử dụng ${isRewardpoints} điểm của mình không?`
+                    : "Bạn cần tối đa 400 điểm để sử dụng"
+                }
+                onConfirm={onChange}
+                onCancel={() => setIsChecked(false)}
+              >
+                <Checkbox
+                  disabled={isDisabled}
+                  onChange={handleCheckboxChange}
+                  checked={isChecked}
+                >
+                  Sử dụng điểm thưởng
+                </Checkbox>
+              </Popconfirm>
             </div>
             <div
               style={{ display: "flex", alignItems: "center", gap: "150px" }}
             >
               <img
-                width={120}
-                height={100}
+                width={60}
                 src="https://vnpay.vn/s1/statics.vnpay.vn/2021/6/05g0ytd7dxcs1624443633411.png"
                 alt=""
               />
