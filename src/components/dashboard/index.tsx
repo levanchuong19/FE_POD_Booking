@@ -1,3 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import React, { useEffect, useState } from "react";
 import { PieChartOutlined, UserOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
@@ -19,7 +22,10 @@ import api from "../config/api";
 const { Header, Content, Footer, Sider } = Layout;
 
 type MenuItem = Required<MenuProps>["items"][number];
-
+interface JwtPayload {
+  userId: any;
+  "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": string;
+}
 const getItem = (
   label: React.ReactNode,
   key: React.Key,
@@ -39,7 +45,6 @@ const allItems: MenuItem[] = [
   getItem("Manage Service", "services", <PieChartOutlined />),
   getItem("Manage Device", "devices", <PieChartOutlined />),
   getItem("Manage Account", "accounts", <PieChartOutlined />),
-  getItem("Manage Rating", "ratings", <PieChartOutlined />),
   getItem("Manage Rating", "ratings", <PieChartOutlined />),
   getItem("Manage Booking", "bookings", <PieChartOutlined />),
   getItem("Manage RewardPoint", "rewardpoints", <PieChartOutlined />),
@@ -65,7 +70,7 @@ const Dashboard: React.FC = () => {
   };
 
   const handleToken = (token: string) => {
-    const decodedToken = jwtDecode(token);
+    const decodedToken: JwtPayload = jwtDecode(token);
     const roles =
       decodedToken[
         "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
@@ -92,7 +97,11 @@ const Dashboard: React.FC = () => {
   const handleUserIconClick = () => {
     const token = localStorage.getItem("accessToken");
     if (token) {
+      const decodedToken: JwtPayload = jwtDecode(token);
+      const userId = decodedToken.userId;
+      console.log("id:", userId);
       handleToken(token);
+      navigate(`/profile/${userId}`);
       setIsModalVisible(true);
     } else {
       navigate("/login");
@@ -107,7 +116,11 @@ const Dashboard: React.FC = () => {
         return allItems.filter((item) => item?.key !== "statistical");
       case "Staff":
         return allItems.filter(
-          (item) => item?.key === "pods" || item?.key === "accounts"
+          (item) =>
+            item?.key === "pods" ||
+            item?.key === "accounts" ||
+            item?.key === "bookings" ||
+            item?.key === "rewardpoints"
         );
       default:
         return [];

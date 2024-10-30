@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Form,
   GetProp,
@@ -18,7 +19,7 @@ function ManageDevice() {
     {
       title: "No",
       key: "index",
-      render: (text, record, index) => index + 1,
+      render: (text: any, record: any, index: number) => index + 1,
     },
     { title: "ID", dataIndex: "id", key: "id" },
     { title: "Name", dataIndex: "name", key: "name" },
@@ -28,7 +29,7 @@ function ManageDevice() {
       title: "ImageUrl",
       dataIndex: "imageUrl",
       key: "imageUrl",
-      render: (img) => <Image src={img} width={200} />,
+      render: (img: string | undefined) => <Image src={img} width={200} />,
     },
   ];
 

@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { POD } from "../../components/modal/pod";
 import api from "../../components/config/api";
@@ -20,12 +22,33 @@ import { toast } from "react-toastify";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import { RATING } from "../../components/modal/rating";
+
+// import type { GetProps } from "antd";
 import dayjs from "dayjs";
+// import customParseFormat from "dayjs/plugin/customParseFormat";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 import isBetween from "dayjs/plugin/isBetween";
 dayjs.extend(isBetween);
+interface JwtPayload {
+  userId: string;
+}
+
+// type RangePickerProps = GetProps<typeof DatePicker.RangePicker>;
+
+// dayjs.extend(customParseFormat);
+
+// const { RangePicker } = DatePicker;
+
+// const range = (start: number, end: number) => {
+//   const result = [];
+//   for (let i = start; i < end; i++) {
+//     result.push(i);
+//   }
+//   return result;
+// };
+
 export default function Bookings({ numberOfSlides = 4, autoplay = false }) {
   const [pods, setPod] = useState<POD>();
   const { id } = useParams();
@@ -33,16 +56,13 @@ export default function Bookings({ numberOfSlides = 4, autoplay = false }) {
   const [form] = useForm();
   const [service, setService] = useState<Service[]>([]);
   const [showModal, setShowModal] = useState(false);
-  const [selectedServices, setSelectedServices] = useState([]);
+  const [selectedServices, setSelectedServices] = useState<Service[]>([]);
   const desc = ["terrible", "bad", "normal", "good", "wonderful"];
   const [highestRating, setHighestRating] = useState(1);
   const [startTime, setStartTime] = useState<Dayjs | null>(null);
   const [endTime, setEndTime] = useState<Dayjs | null>(null);
   const [bookedSlots, setBookedSlots] = useState([]);
   const [isChecked, setIsChecked] = useState(false);
-  const [checkedStates, setCheckedStates] = useState<{
-    [key: string]: boolean;
-  }>({});
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [podsPerPage] = useState(6);
@@ -51,7 +71,7 @@ export default function Bookings({ numberOfSlides = 4, autoplay = false }) {
     const fetchBookedTimes = async () => {
       try {
         const response = await api.get(`bookings/${id}/booked-times`);
-        console.log(response.data.data);
+        console.log("booked-times", response.data.data);
         setBookedSlots(response.data.data);
       } catch (error) {
         console.error("Error fetching booked times:", error);
@@ -60,17 +80,77 @@ export default function Bookings({ numberOfSlides = 4, autoplay = false }) {
     fetchBookedTimes();
   }, []);
 
-  const disabledDate = (
-    current: string | number | Date | Dayjs | null | undefined
-  ) => {
-    const currentDayjs = dayjs(current);
-    return bookedSlots.some((slot) => {
-      const bookedStart = dayjs(slot.startTime);
-      const bookedEnd = dayjs(slot.endTime);
-
-      return currentDayjs.isBetween(bookedStart, bookedEnd, "day", "[]");
-    });
+  const disabledDate = (current: Dayjs | null) => {
+    return current && current.isBefore(dayjs(), "day");
   };
+  // const startDate = dayjs("2024-11-1");
+  // const endDate = dayjs("2024-11-05").endOf("day");
+
+  // const bookingStartTime = dayjs(bookedSlots[0]?.startTime);
+  // const bookingEndTime = dayjs(bookedSlots[0]?.endTime);
+  // const disabledDate = (current) => {
+  //   // Ngăn chọn ngày trước ngày hôm nay
+  //   const isBeforeToday = current && current < dayjs().endOf("day");
+
+  //   // Kiểm tra nếu ngày hiện tại nằm trong khoảng từ startTime đến endTime
+  //   const isInBookingRange = current.isBetween(
+  //     bookingStartTime,
+  //     bookingEndTime,
+  //     "day",
+  //     "[]"
+  //   );
+
+  //   // Xác định xem ngày có nằm trong khoảng thời gian 24 giờ hay không
+  //   const isBlockedDate =
+  //     isInBookingRange && current.isSame(bookingStartTime.add(1, "day"), "day");
+
+  //   return isBeforeToday || isBlockedDate;
+  // };
+
+  // const disabledRangeTime = (dates, type) => {
+  //   if (!dates || dates.length === 0) return {};
+
+  //   const startDate = dates[0];
+  //   const endDate = dates[1];
+
+  //   if (type === "start") {
+  //     if (startDate && startDate.isSame(bookingStartTime, "day")) {
+  //       // Nếu ngày bắt đầu trùng với bookingStartTime, vô hiệu hóa giờ và phút trước thời gian này
+  //       return {
+  //         disabledHours: () =>
+  //           Array.from({ length: 24 }, (_, i) => i).filter(
+  //             (hour) => hour < bookingStartTime.hour()
+  //           ),
+  //       };
+  //     }
+  //   }
+
+  //   if (type === "end") {
+  //     if (endDate && endDate.isSame(bookingEndTime, "day")) {
+  //       // Nếu ngày kết thúc trùng với bookingEndTime, vô hiệu hóa giờ và phút sau thời gian này
+  //       return {
+  //         disabledHours: () =>
+  //           Array.from({ length: 24 }, (_, i) => i).filter(
+  //             (hour) => hour > bookingEndTime.hour()
+  //           ),
+  //       };
+  //     }
+  //   }
+
+  //   return {};
+  // };
+
+  // const disabledDate = (
+  //   current: string | number | Date | Dayjs | null | undefined
+  // ) => {
+  //   const currentDayjs = dayjs(current);
+  //   return bookedSlots.some((slot) => {
+  //     const bookedStart = dayjs(slot?.startTime);
+  //     const bookedEnd = dayjs(slot.endTime);
+
+  //     return currentDayjs.isBetween(bookedStart, bookedEnd, "day", "[]");
+  //   });
+  // };
 
   const disabledTime = (
     date: string | number | Date | Dayjs | null | undefined
@@ -96,22 +176,102 @@ export default function Bookings({ numberOfSlides = 4, autoplay = false }) {
         bookedTimes.forEach(({ startTime, endTime }) => {
           const start = dayjs(startTime);
           const end = dayjs(endTime);
-          if (selectedHour === start.hour()) {
+          const startHour = start.hour();
+          const endHour = end.hour();
+
+          // Nếu giờ được chọn nằm trong khoảng đã đặt
+          if (selectedHour >= startHour && selectedHour <= endHour) {
+            // Bôi đen toàn bộ phút cho giờ đã đặt
+            for (let minute = 0; minute < 60; minute++) {
+              minutesToDisable.push(minute);
+            }
+          }
+
+          // Nếu giờ được chọn là giờ bắt đầu
+          if (selectedHour === startHour) {
             for (let minute = 0; minute < start.minute(); minute++) {
               minutesToDisable.push(minute);
             }
           }
-          if (selectedHour === end.hour()) {
+
+          // Nếu giờ được chọn là giờ kết thúc
+          if (selectedHour === endHour) {
             for (let minute = end.minute(); minute < 60; minute++) {
               minutesToDisable.push(minute);
             }
           }
         });
+
+        // Kiểm tra nếu không còn phút nào để chọn cho giờ đã chọn
+        if (minutesToDisable.length === 60) {
+          hoursToDisable.push(selectedHour);
+        }
+
         return minutesToDisable;
       },
     };
   };
 
+  //   // Ngăn người dùng chọn những ngày trước hôm nay
+  //   const isBeforeToday = current && current < dayjs().endOf("day");
+
+  //   // Ngăn chọn những ngày từ startTime đến endTime
+  //   const isInDisabledRange =
+  //     current &&
+  //     current.isBetween(
+  //       bookingStartTime.startOf("day"),
+  //       bookingEndTime.endOf("day"),
+  //       null,
+  //       "[]"
+  //     );
+
+  //   return isBeforeToday || isInDisabledRange;
+  // };
+
+  // const disabledTime = (date: Dayjs | null) => {
+  //   if (!date) return { disabledHours: () => [], disabledMinutes: () => [] };
+
+  //   const disabledHours: number[] = [];
+  //   const disabledMinutes: { [hour: number]: number[] } = {};
+  //   bookedSlots.forEach(({ startTime, endTime }) => {
+  //     const startDay = dayjs(startTime);
+  //     const endDay = dayjs(endTime);
+  //     if (startDay.isSame(date, "day") || endDay.isSame(date, "day")) {
+  //       const startHour = startDay.hour();
+  //       const startMinute = startDay.minute();
+  //       const endHour = endDay.hour();
+  //       const endMinute = endDay.minute();
+  //       for (let hour = startHour; hour <= endHour; hour++) {
+  //         disabledHours.push(hour);
+  //         if (hour === startHour && hour === endHour) {
+  //           const minutes = [];
+  //           for (let minute = startMinute; minute < endMinute; minute++) {
+  //             minutes.push(minute);
+  //           }
+  //           disabledMinutes[hour] = minutes;
+  //         } else if (hour === startHour) {
+  //           const minutes = [];
+  //           for (let minute = startMinute; minute < 60; minute++) {
+  //             minutes.push(minute);
+  //           }
+  //           disabledMinutes[hour] = minutes;
+  //         } else if (hour === endHour) {
+  //           const minutes = [];
+  //           for (let minute = 0; minute < endMinute; minute++) {
+  //             minutes.push(minute);
+  //           }
+  //           disabledMinutes[hour] = minutes;
+  //         }
+  //       }
+  //     }
+  //   });
+
+  //   return {
+  //     disabledHours: () => disabledHours,
+  //     disabledMinutes: (selectedHour: number) =>
+  //       disabledMinutes[selectedHour] || [],
+  //   };
+  // };
   const handleTimeChange = (timeRange: [Dayjs, Dayjs] | null) => {
     if (timeRange) {
       const [start, end] = timeRange;
@@ -123,17 +283,20 @@ export default function Bookings({ numberOfSlides = 4, autoplay = false }) {
       setEndTime(null);
     }
   };
-
   const handleSubmit = async () => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      toast.error("Vui lòng đăng nhập trước khi thực hiện !");
+      navigate("/login");
+      return;
+    }
+    const decodedToken: JwtPayload = jwtDecode(token);
+    const userId = decodedToken.userId;
+    console.log("id:", userId);
     if (!startTime || !endTime) {
       toast.error("Vui lòng lựa chọn khoảng thời gian đặt POD");
       return;
     }
-    const token = localStorage.getItem("accessToken");
-    const decodedToken = jwtDecode(token);
-    const userId = decodedToken.userId;
-    console.log("id:", userId);
-
     const bookingData = {
       accountId: userId,
       podId: pods?.id,
@@ -141,7 +304,7 @@ export default function Bookings({ numberOfSlides = 4, autoplay = false }) {
       endTime: endTime.format("YYYY-MM-DDTHH:mm:ss"),
 
       paymentMethod: 0,
-      bookingServices: selectedServices.map((service) => ({
+      bookingServices: selectedServices.map((service: Service) => ({
         serviceId: service.id,
         quantity: service.quantity,
       })),
@@ -157,42 +320,22 @@ export default function Bookings({ numberOfSlides = 4, autoplay = false }) {
       setSelectedServices([]);
       navigate(`/confirmBooking/${createdBooking?.id}`);
     } catch (err) {
-      console.error(err.response.data);
-      toast.error("Vui lòng lựa chọn khoảng thời gian khác");
+      toast.error("Vui lòng lựa chọn khoảng thời gian khác !");
       console.log(err);
     }
   };
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // const handleServiceSelection = (serviceId: any, quantity: any, isChecked) => {
-  //   setSelectedServices((prevServices) => {
-  //     const existingService = prevServices.find(
-  //       (service) => service.id === serviceId
-  //     );
-  //     if (existingService) {
-  //       return prevServices.map((service) =>
-  //         service.id === serviceId
-  //           ? { ...service, quantity: quantity }
-  //           : service
-  //       );
-  //     } else {
-  //       return [...prevServices, { id: serviceId, quantity: quantity }];
-  //     }
-  //   });
-  // };
   const handleServiceSelection = (
     serviceId: any,
     quantity: any,
     isChecked: boolean
   ) => {
-    setSelectedServices((prevServices) => {
+    setSelectedServices((prevServices: any) => {
       if (isChecked) {
-        // Nếu checkbox được chọn, thêm hoặc cập nhật số lượng dịch vụ
         const existingService = prevServices.find(
-          (service) => service.id === serviceId
+          (service: Service) => service.id === serviceId
         );
         if (existingService) {
-          return prevServices.map((service) =>
+          return prevServices.map((service: Service) =>
             service.id === serviceId
               ? { ...service, quantity: quantity }
               : service
@@ -202,7 +345,9 @@ export default function Bookings({ numberOfSlides = 4, autoplay = false }) {
         }
       } else {
         // Nếu checkbox bị bỏ chọn, xóa dịch vụ khỏi danh sách
-        return prevServices.filter((service) => service.id !== serviceId);
+        return prevServices.filter(
+          (service: Service) => service.id !== serviceId
+        );
       }
     });
   };
@@ -299,10 +444,9 @@ export default function Bookings({ numberOfSlides = 4, autoplay = false }) {
         <div className="booking__content">
           <div className="booking__content1">
             <h1>{pods?.name}</h1>
-            <p className="price">{formatVND(pods?.pricePerHour)}/giờ</p>
+            <p className="price">{formatVND(pods?.pricePerHour ?? 0)}/giờ</p>
           </div>
           <Flex>
-            {" "}
             <Rate tooltips={desc} value={highestRating} />
           </Flex>
           <div className="booking__content2">
@@ -326,9 +470,10 @@ export default function Bookings({ numberOfSlides = 4, autoplay = false }) {
             >
               <DatePicker.RangePicker
                 disabledDate={disabledDate}
-                showTime={{ disabledTime }}
+                disabledTime={disabledTime}
+                showTime
                 format="YYYY-MM-DD HH:mm"
-                onChange={(value) => handleTimeChange(value)}
+                onChange={(value: any) => handleTimeChange(value)}
               />
             </FormItem>
           </Form>
@@ -537,7 +682,7 @@ export default function Bookings({ numberOfSlides = 4, autoplay = false }) {
             <ServiceCard
               key={serviceItem.id}
               service={serviceItem}
-              isChecked={checkedStates[service.id] || false}
+              // isChecked={checkedStates[service.id] || false}
               onSelect={handleServiceSelection}
             />
           ))}

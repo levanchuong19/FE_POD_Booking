@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Form, Modal, Popconfirm, Table } from "antd";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -10,7 +12,6 @@ export interface Column {
   title: string;
   dataIndex: string;
   key: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   render?: (value: any) => any;
 }
 
@@ -19,7 +20,6 @@ interface DashboardTemplateProps {
   columns: Column[];
   apiURI: string;
   formItems: React.ReactElement;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fileList: any;
 }
 
@@ -49,7 +49,11 @@ function DashboardTemplate({
   };
 
   //CREATE OR UPDATE
-  const handleSubmit = async (values) => {
+  const handleSubmit = async (values: {
+    imageUrl: string;
+    dateOfBirthday: moment.MomentInput;
+    id: any;
+  }) => {
     if (fileList && fileList.length > 0) {
       try {
         console.log(fileList[0].originFileObj);
@@ -88,20 +92,21 @@ function DashboardTemplate({
       setShowModal(false); // Close modal
     } catch (error) {
       console.error(error);
-      toast.error(error.response?.data || "An error occurred.");
+      toast.error("An error occurred.");
     } finally {
       setLoading(false);
     }
   };
 
   //DELETE
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id) => {
     try {
       await api.delete(`${apiURI}/${id}`);
       toast.success("Success deleted!!!");
       fetchData();
     } catch (error) {
-      toast.error(error.response.data);
+      console.log(error);
+      toast.error("delete error");
     }
   };
 
@@ -114,33 +119,38 @@ function DashboardTemplate({
       title: "Action",
       dataIndex: "id",
       key: "id",
-      render: (id, record) => (
-        <div style={{ display: "flex", gap: "10px" }}>
-          <Button
-            type="primary"
-            onClick={() => {
-              const recordValiDate = {
-                ...record,
-                dateOfBirthday: record.dateOfBirth
-                  ? moment(record.dateOfBirth, "DD-MM-YYYY")
-                  : null,
-              };
-              form.setFieldsValue(recordValiDate);
-              setShowModal(true);
-            }}
+      render: (record: { dateOfBirth: moment.MomentInput; id: string }) => (
+        <>
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "10px" }}
           >
-            Update
-          </Button>
-          <Popconfirm
-            title="Delete"
-            description="Do you want to delete"
-            onConfirm={() => handleDelete(record.id)}
-          >
-            <Button type="primary" danger>
-              Delete
+            <Button
+              type="primary"
+              onClick={() => {
+                const recordValiDate = {
+                  ...record,
+                  dateOfBirthday: record.dateOfBirth
+                    ? moment(record.dateOfBirth, "DD-MM-YYYY HH:mm")
+                    : null,
+                };
+                form.setFieldsValue(recordValiDate);
+                setShowModal(true);
+                // form.resetFields();
+              }}
+            >
+              Update
             </Button>
-          </Popconfirm>
-        </div>
+            <Popconfirm
+              title="Delete"
+              description="Do you want to delete"
+              onConfirm={() => handleDelete(record.id)}
+            >
+              <Button type="primary" danger>
+                Delete
+              </Button>
+            </Popconfirm>
+          </div>
+        </>
       ),
     },
   ];

@@ -7,8 +7,11 @@ import AuthenLayout from "../../components/auth-layout";
 function ConfirmCode() {
   const navigate = useNavigate();
 
-  const handleConfirmCode = async (values) => {
-    try{
+  const handleConfirmCode = async (values: {
+    email: any;
+    verificationCode: any;
+  }) => {
+    try {
       const { email, verificationCode } = values;
       const response = await api.get(`authentication/email/verify`, {
         params: {
@@ -16,12 +19,12 @@ function ConfirmCode() {
           verificationCode: verificationCode,
         },
       });
-  
+
       console.log(response);
       toast.success("Xác thực thành công!");
       navigate("/login");
     } catch (error) {
-      console.log(error.response.data);
+      console.log(error);
       toast.error("Confirm Failed, Try again!!.");
     }
   };
@@ -52,18 +55,18 @@ function ConfirmCode() {
             Xác nhận mã OTP
           </h2>
           <Form labelCol={{ span: 24 }} onFinish={handleConfirmCode}>
-          <Form.Item
-             label="Email"
-             name="email"
-             rules={[
-                 {
-                      required: true,
-                      message: "Vui lòng nhập email!",
-                 },
-                 ]}
->
-  <Input placeholder="Nhập email của bạn" />
-</Form.Item>
+            <Form.Item
+              label="Email"
+              name="email"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng nhập email!",
+                },
+              ]}
+            >
+              <Input placeholder="Nhập email của bạn" />
+            </Form.Item>
             <Form.Item
               label="Mã xác nhận"
               name="verificationCode"

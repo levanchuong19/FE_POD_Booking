@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   DatePicker,
   Form,
@@ -23,7 +24,7 @@ function ManageDevice() {
     {
       title: "No",
       key: "index",
-      render: (text, record, index) => index + 1,
+      render: (_text: any, _record: any, index: number) => index + 1,
     },
     { title: "Id", dataIndex: "id", key: "id" },
     { title: "FirstName", dataIndex: "firstName", key: "firstName" },
@@ -42,7 +43,7 @@ function ManageDevice() {
       title: "Image",
       dataIndex: "image",
       key: "image",
-      render: (img) => <Image src={img} width={200} />,
+      render: (img) => <Image src={img} width={30} />,
     },
     { title: "Email", dataIndex: "email", key: "email" },
     { title: "PhoneNumber", dataIndex: "phoneNumber", key: "phoneNumber" },
