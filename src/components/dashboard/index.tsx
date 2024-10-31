@@ -2,7 +2,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import React, { useEffect, useState } from "react";
-import { PieChartOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  BarChartOutlined,
+  FileSearchOutlined,
+  PieChartOutlined,
+  ProfileOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import {
   Breadcrumb,
@@ -39,14 +45,14 @@ const getItem = (
 });
 
 const allItems: MenuItem[] = [
-  getItem("Dashboard", "statistical", <PieChartOutlined />),
-  getItem("Manage Location", "locations", <PieChartOutlined />),
-  getItem("Manage Pod", "pods", <PieChartOutlined />),
-  getItem("Manage Service", "services", <PieChartOutlined />),
-  getItem("Manage Device", "devices", <PieChartOutlined />),
-  getItem("Manage Account", "accounts", <PieChartOutlined />),
-  getItem("Manage Rating", "ratings", <PieChartOutlined />),
-  getItem("Manage Booking", "bookings", <PieChartOutlined />),
+  getItem("Dashboard", "statistical", <BarChartOutlined />),
+  getItem("Manage Location", "locations", <ProfileOutlined />),
+  getItem("Manage Pod", "pods", <ProfileOutlined />),
+  getItem("Manage Service", "services", <ProfileOutlined />),
+  getItem("Manage Device", "devices", <ProfileOutlined />),
+  getItem("Manage Account", "accounts", <ProfileOutlined />),
+  getItem("Manage Rating", "ratings", <ProfileOutlined />),
+  getItem("Manage Booking", "bookings", <FileSearchOutlined />),
   getItem("Manage RewardPoint", "rewardpoints", <PieChartOutlined />),
 ];
 
