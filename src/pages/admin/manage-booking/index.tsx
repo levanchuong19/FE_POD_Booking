@@ -2,11 +2,14 @@
 import { useEffect, useState } from "react";
 import { Booking } from "../../../components/modal/booking";
 import api from "../../../components/config/api";
-import { Table } from "antd";
+import { Button, DatePicker, Table } from "antd";
 import formatVND from "../../../utils/currency";
+import moment from "moment";
 
 function ManageBooking() {
   const [booking, setBooking] = useState<Booking[]>();
+  const [filteredBooking, setFilteredBooking] = useState<Booking[]>([]);
+  const [startTime, setStartTime] = useState<string | null>(null);
   const columns = [
     {
       title: "No",
@@ -99,6 +102,7 @@ function ManageBooking() {
       const response = await api.get("bookings?PaymentMethod=0");
       console.log(response.data);
       setBooking(response.data);
+      setFilteredBooking(response.data);
     } catch (error) {
       console.log(error);
     }
@@ -107,9 +111,35 @@ function ManageBooking() {
   useEffect(() => {
     fetchBooking();
   }, []);
+
+  const handleSearch = () => {
+    const filtered = booking?.filter((b) => {
+      if (startTime) {
+        const bookingStartTime = moment(b.startTime).format("YYYY-MM-DD HH:mm");
+        return bookingStartTime === startTime;
+      }
+      return true; // If no startTime is provided, show all bookings
+    });
+    setFilteredBooking(filtered);
+  };
+
   return (
     <div>
-      <Table dataSource={booking} columns={columns} />
+      <div style={{ marginBottom: "20px" }}>
+        <DatePicker
+          showTime
+          placeholder="Select Start Time"
+          format="YYYY-MM-DD HH"
+          onChange={(value) =>
+            setStartTime(value ? value.format("YYYY-MM-DD HH:mm") : null)
+          }
+          style={{ marginRight: "10px" }}
+        />
+        <Button onClick={handleSearch} type="primary">
+          Search
+        </Button>
+      </div>
+      <Table dataSource={filteredBooking} columns={columns} />
     </div>
   );
 }

@@ -1,3 +1,5 @@
+/* eslint-disable prefer-const */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
@@ -81,197 +83,62 @@ export default function Bookings({ numberOfSlides = 4, autoplay = false }) {
   }, []);
 
   const disabledDate = (current: Dayjs | null) => {
-    return current && current.isBefore(dayjs(), "day");
+    if (!current) return false;
+    const isPastDate = current.isBefore(dayjs(), "day");
+
+    // Kiểm tra nếu ngày hiện tại nằm giữa khoảng booking (trừ ngày đầu và ngày cuối)
+    const isFullyBookedMidDay = bookedSlots.some((slot) => {
+      const start = dayjs(slot.startTime);
+      const end = dayjs(slot.endTime);
+      return current.isAfter(start, "day") && current.isBefore(end, "day");
+    });
+
+    return isPastDate || isFullyBookedMidDay;
   };
-  // const startDate = dayjs("2024-11-1");
-  // const endDate = dayjs("2024-11-05").endOf("day");
 
-  // const bookingStartTime = dayjs(bookedSlots[0]?.startTime);
-  // const bookingEndTime = dayjs(bookedSlots[0]?.endTime);
-  // const disabledDate = (current) => {
-  //   // Ngăn chọn ngày trước ngày hôm nay
-  //   const isBeforeToday = current && current < dayjs().endOf("day");
+  const disabledTime = (current: Dayjs, _type: string) => {
+    const now = dayjs(); // Giờ hiện tại
+    let disabledHours: number[] = [];
 
-  //   // Kiểm tra nếu ngày hiện tại nằm trong khoảng từ startTime đến endTime
-  //   const isInBookingRange = current.isBetween(
-  //     bookingStartTime,
-  //     bookingEndTime,
-  //     "day",
-  //     "[]"
-  //   );
+    bookedSlots.forEach((slot) => {
+      const start = dayjs(slot.startTime);
+      const end = dayjs(slot.endTime);
+      const isSameStartDay = current.isSame(start, "day");
+      const isSameEndDay = current.isSame(end, "day");
+      if (isSameStartDay && isSameEndDay) {
+        // Bôi đen các giờ từ giờ bắt đầu đến giờ kết thúc
+        disabledHours.push(
+          ...Array.from(
+            { length: end.hour() - start.hour() + 1 },
+            (_, i) => i + start.hour()
+          )
+        );
+      } else if (isSameStartDay) {
+        disabledHours.push(
+          ...Array.from(
+            { length: 24 - start.hour() },
+            (_, i) => i + start.hour()
+          )
+        );
+      } else if (isSameEndDay) {
+        disabledHours.push(
+          ...Array.from({ length: end.hour() + 1 }, (_, i) => i)
+        );
+      }
+    });
 
-  //   // Xác định xem ngày có nằm trong khoảng thời gian 24 giờ hay không
-  //   const isBlockedDate =
-  //     isInBookingRange && current.isSame(bookingStartTime.add(1, "day"), "day");
-
-  //   return isBeforeToday || isBlockedDate;
-  // };
-
-  // const disabledRangeTime = (dates, type) => {
-  //   if (!dates || dates.length === 0) return {};
-
-  //   const startDate = dates[0];
-  //   const endDate = dates[1];
-
-  //   if (type === "start") {
-  //     if (startDate && startDate.isSame(bookingStartTime, "day")) {
-  //       // Nếu ngày bắt đầu trùng với bookingStartTime, vô hiệu hóa giờ và phút trước thời gian này
-  //       return {
-  //         disabledHours: () =>
-  //           Array.from({ length: 24 }, (_, i) => i).filter(
-  //             (hour) => hour < bookingStartTime.hour()
-  //           ),
-  //       };
-  //     }
-  //   }
-
-  //   if (type === "end") {
-  //     if (endDate && endDate.isSame(bookingEndTime, "day")) {
-  //       // Nếu ngày kết thúc trùng với bookingEndTime, vô hiệu hóa giờ và phút sau thời gian này
-  //       return {
-  //         disabledHours: () =>
-  //           Array.from({ length: 24 }, (_, i) => i).filter(
-  //             (hour) => hour > bookingEndTime.hour()
-  //           ),
-  //       };
-  //     }
-  //   }
-
-  //   return {};
-  // };
-
-  // const disabledDate = (
-  //   current: string | number | Date | Dayjs | null | undefined
-  // ) => {
-  //   const currentDayjs = dayjs(current);
-  //   return bookedSlots.some((slot) => {
-  //     const bookedStart = dayjs(slot?.startTime);
-  //     const bookedEnd = dayjs(slot.endTime);
-
-  //     return currentDayjs.isBetween(bookedStart, bookedEnd, "day", "[]");
-  //   });
-  // };
-
-  const disabledTime = (
-    date: string | number | Date | Dayjs | null | undefined
-  ) => {
-    const bookedTimes = bookedSlots.filter((slot) =>
-      dayjs(slot.startTime).isSame(date, "day")
-    );
+    // Bôi đen giờ đã trôi qua trong ngày hiện tại
+    if (current.isSame(now, "day")) {
+      disabledHours.push(
+        ...Array.from({ length: now.hour() + 1 }, (_, i) => i)
+      );
+    }
 
     return {
-      disabledHours: () => {
-        const hoursToDisable: number[] = [];
-        bookedTimes.forEach(({ startTime, endTime }) => {
-          const start = dayjs(startTime).hour();
-          const end = dayjs(endTime).hour();
-          for (let hour = start; hour < end; hour++) {
-            hoursToDisable.push(hour);
-          }
-        });
-        return hoursToDisable;
-      },
-      disabledMinutes: (selectedHour: number) => {
-        const minutesToDisable: number[] = [];
-        bookedTimes.forEach(({ startTime, endTime }) => {
-          const start = dayjs(startTime);
-          const end = dayjs(endTime);
-          const startHour = start.hour();
-          const endHour = end.hour();
-
-          // Nếu giờ được chọn nằm trong khoảng đã đặt
-          if (selectedHour >= startHour && selectedHour <= endHour) {
-            // Bôi đen toàn bộ phút cho giờ đã đặt
-            for (let minute = 0; minute < 60; minute++) {
-              minutesToDisable.push(minute);
-            }
-          }
-
-          // Nếu giờ được chọn là giờ bắt đầu
-          if (selectedHour === startHour) {
-            for (let minute = 0; minute < start.minute(); minute++) {
-              minutesToDisable.push(minute);
-            }
-          }
-
-          // Nếu giờ được chọn là giờ kết thúc
-          if (selectedHour === endHour) {
-            for (let minute = end.minute(); minute < 60; minute++) {
-              minutesToDisable.push(minute);
-            }
-          }
-        });
-
-        // Kiểm tra nếu không còn phút nào để chọn cho giờ đã chọn
-        if (minutesToDisable.length === 60) {
-          hoursToDisable.push(selectedHour);
-        }
-
-        return minutesToDisable;
-      },
+      disabledHours: () => [...new Set(disabledHours)],
     };
   };
 
-  //   // Ngăn người dùng chọn những ngày trước hôm nay
-  //   const isBeforeToday = current && current < dayjs().endOf("day");
-
-  //   // Ngăn chọn những ngày từ startTime đến endTime
-  //   const isInDisabledRange =
-  //     current &&
-  //     current.isBetween(
-  //       bookingStartTime.startOf("day"),
-  //       bookingEndTime.endOf("day"),
-  //       null,
-  //       "[]"
-  //     );
-
-  //   return isBeforeToday || isInDisabledRange;
-  // };
-
-  // const disabledTime = (date: Dayjs | null) => {
-  //   if (!date) return { disabledHours: () => [], disabledMinutes: () => [] };
-
-  //   const disabledHours: number[] = [];
-  //   const disabledMinutes: { [hour: number]: number[] } = {};
-  //   bookedSlots.forEach(({ startTime, endTime }) => {
-  //     const startDay = dayjs(startTime);
-  //     const endDay = dayjs(endTime);
-  //     if (startDay.isSame(date, "day") || endDay.isSame(date, "day")) {
-  //       const startHour = startDay.hour();
-  //       const startMinute = startDay.minute();
-  //       const endHour = endDay.hour();
-  //       const endMinute = endDay.minute();
-  //       for (let hour = startHour; hour <= endHour; hour++) {
-  //         disabledHours.push(hour);
-  //         if (hour === startHour && hour === endHour) {
-  //           const minutes = [];
-  //           for (let minute = startMinute; minute < endMinute; minute++) {
-  //             minutes.push(minute);
-  //           }
-  //           disabledMinutes[hour] = minutes;
-  //         } else if (hour === startHour) {
-  //           const minutes = [];
-  //           for (let minute = startMinute; minute < 60; minute++) {
-  //             minutes.push(minute);
-  //           }
-  //           disabledMinutes[hour] = minutes;
-  //         } else if (hour === endHour) {
-  //           const minutes = [];
-  //           for (let minute = 0; minute < endMinute; minute++) {
-  //             minutes.push(minute);
-  //           }
-  //           disabledMinutes[hour] = minutes;
-  //         }
-  //       }
-  //     }
-  //   });
-
-  //   return {
-  //     disabledHours: () => disabledHours,
-  //     disabledMinutes: (selectedHour: number) =>
-  //       disabledMinutes[selectedHour] || [],
-  //   };
-  // };
   const handleTimeChange = (timeRange: [Dayjs, Dayjs] | null) => {
     if (timeRange) {
       const [start, end] = timeRange;
@@ -295,6 +162,11 @@ export default function Bookings({ numberOfSlides = 4, autoplay = false }) {
     console.log("id:", userId);
     if (!startTime || !endTime) {
       toast.error("Vui lòng lựa chọn khoảng thời gian đặt POD");
+      return;
+    }
+    const durationInHours = endTime.diff(startTime, "hour");
+    if (durationInHours < 1) {
+      toast.error("Thời gian đặt phòng phải ít nhất 1 tiếng !");
       return;
     }
     const bookingData = {
@@ -471,7 +343,13 @@ export default function Bookings({ numberOfSlides = 4, autoplay = false }) {
               <DatePicker.RangePicker
                 disabledDate={disabledDate}
                 disabledTime={disabledTime}
-                showTime
+                showTime={{
+                  hideDisabledOptions: false,
+                  defaultValue: [
+                    dayjs("00:00:00", "HH:mm"),
+                    dayjs("11:59:59", "HH:mm"),
+                  ],
+                }}
                 format="YYYY-MM-DD HH:mm"
                 onChange={(value: any) => handleTimeChange(value)}
               />
@@ -494,9 +372,10 @@ export default function Bookings({ numberOfSlides = 4, autoplay = false }) {
           <h2>Tiện ích</h2>
           <div
             style={{
-              width: "100%",
+              width: "580px",
               backgroundColor: "rgb(235, 235, 235)",
               height: "90px",
+              borderRadius: "50px",
             }}
           >
             <Swiper
@@ -505,6 +384,9 @@ export default function Bookings({ numberOfSlides = 4, autoplay = false }) {
               autoplay={{
                 delay: 2000,
                 disableOnInteraction: false,
+              }}
+              style={{
+                borderRadius: "10px",
               }}
               // navigation={true}
               modules={autoplay ? [Autoplay, Navigation] : [Pagination]}
