@@ -29,6 +29,7 @@ import DashboardChard from "./components/dashboardChart";
 import Bookings from "./pages/booking";
 import UpdateBooking from "./pages/updateBooking";
 import ManageRating from "./pages/admin/manage-rating";
+import RevenueLocation from "./pages/admin/revernue-location";
 
 function App() {
   const router = createBrowserRouter([
@@ -97,6 +98,10 @@ function App() {
         {
           path: "rewardpoints",
           element: <ManageRewardPoint />,
+        },
+        {
+          path: "revenueLocation",
+          element: <RevenueLocation />,
         },
       ],
     },

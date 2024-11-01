@@ -26,8 +26,8 @@ interface JwtPayload {
 function ConfirmBooking() {
   const [isBooking, setIsbooking] = useState<Booking | null>(null);
   const [isPayment, setIsPayment] = useState<Payment | null>(null);
-  const [isRewardpoints, setIsRewardpoints] = useState<number>();
-  const [oldPrice, setOldPrice] = useState(null);
+  const [isRewardpoints, setIsRewardpoints] = useState<any>();
+  const [oldPrice, setOldPrice] = useState<number>();
   const [isChecked, setIsChecked] = useState(false);
   const [isDisabled, setIsDisabled] = useState(false);
   const { id } = useParams();
@@ -293,7 +293,7 @@ function ConfirmBooking() {
                 : "Không có thông tin thời gian"}
             </p>
             <p>
-              {formatVND(isBooking?.pricePerHour ?? 0)} x{" "}
+              {formatVND(isBooking?.pricePerHour)} x{" "}
               {isBooking?.startTime && isBooking?.endTime
                 ? calculateTime(
                     new Date(isBooking.startTime),
@@ -328,7 +328,7 @@ function ConfirmBooking() {
             </div>
             <div style={{ display: "flex", gap: "190px", fontSize: "20px" }}>
               <h4>Tổng cộng:</h4>
-              <h4>{formatVND(isBooking?.totalPrice ?? 0)}</h4>
+              <h4>{formatVND(isBooking?.totalPrice)}</h4>
             </div>
             <span
               style={{ height: "0.8px", backgroundColor: "black" }}
@@ -339,8 +339,13 @@ function ConfirmBooking() {
               <Popconfirm
                 title={
                   isRewardpoints >= 400
-                    ? `Bạn có muốn sử dụng ${isRewardpoints} điểm của mình không?`
-                    : "Bạn cần tối đa 400 điểm để sử dụng"
+                    ? `Bạn đang có ${isRewardpoints} điểm !`
+                    : "Bạn cần tối thiểu 400 điểm để sử dụng."
+                }
+                description={
+                  isRewardpoints >= 400
+                    ? `Bạn sẽ không thể thay đổi. Bạn chắc chắn chứ !`
+                    : " "
                 }
                 onConfirm={onChange}
                 onCancel={() => setIsChecked(false)}

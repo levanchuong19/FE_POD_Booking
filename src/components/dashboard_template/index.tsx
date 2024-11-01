@@ -99,7 +99,7 @@ function DashboardTemplate({
   };
 
   //DELETE
-  const handleDelete = async (id) => {
+  const handleDelete = async (id: string) => {
     try {
       await api.delete(`${apiURI}/${id}`);
       toast.success("Success deleted!!!");
