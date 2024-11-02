@@ -1,105 +1,207 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { Location } from "../modal/location";
 import api from "../config/api";
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Navigation, Pagination } from 'swiper/modules';
-import Card1 from "../Card1";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { Device } from "../modal/device";
 import { BarsOutlined, EnvironmentOutlined } from "@ant-design/icons";
-import Card3 from "../Card3";
-import { Select } from "antd";
-import "./index.scss"
+import { Select, Pagination as AntPagination } from "antd";
+import "./index.scss";
+import { POD } from "../modal/pod";
+import PodCard from "../PodCard";
 
-export default function DeviceList({
-  numberOfSlides = 4,
-  autoplay = false,
-}) {
+export default function DeviceList({ numberOfSlides = 3, autoplay = false }) {
   const [locations, setLocation] = useState<Location[]>();
-    const fetchLocation = async () =>{
-        try{
-            const response = await api.get("podbooking");
-               console.log(response.data);
-               setLocation(response.data);
-        }catch(err){
-            console.log(err);
-        }
+  const [device, setDevice] = useState<Device[]>();
+  const [pod, setPod] = useState<POD[]>();
+  const [filteredPods, setFilteredPods] = useState<POD[]>([]);
+  const [selectedSlide, setSelectedSlide] = useState<string>();
+  const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
+  const [selectedLocationId, setSelectedLocationId] = useState<string | null>(
+    null
+  );
+  const [selectedFloor, setSelectedFloor] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [podsPerPage] = useState(6);
+
+  const fetchLocation = async () => {
+    try {
+      const response = await api.get("locations");
+      setLocation(response.data);
+    } catch (err) {
+      console.log(err);
     }
-     useEffect(() =>{
-        fetchLocation();
-     },[]);
-     const [device, setDevice] = useState<Device[]>();
-    
-     const fetchDevice = async () =>{
-         try{
-             const response = await api.get("podbooking");
-                console.log(response.data);
-                setDevice(response.data);
-                setFilteredDevices(response.data);
-         }catch(err){
-             console.log(err);
-         }
-     }
-      useEffect(() =>{
-         fetchDevice();
-      },[]);
-     
-      const [filteredDevices, setFilteredDevices] = useState<Device[]>([]);
-     const handleLocationClick = (address:string) => {
-      const filtered = device?.filter((device) => device.deviceAddress === address);
-      setFilteredDevices(filtered || []);
-    };
-    const uniqueAddresses = Array.from(new Set(device?.map((device) => device.name)));
-    const uniqueFloor = Array.from(new Set(device?.map((device) => device.floor)));
-    const handleAddressChange = (value: string) => {
-      console.log(value)
-      handleLocationClick(value);  
-    };
-    const onSearch = (value: string) => {
-      console.log('search:', value);
-    };
+  };
+  useEffect(() => {
+    fetchLocation();
+  }, []);
+
+  const fetchDevice = async () => {
+    try {
+      const response = await api.get("devices");
+      setDevice(response.data);
+      setFilteredPods(response.data);
+      setSelectedSlide(undefined);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  useEffect(() => {
+    fetchDevice();
+  }, []);
+
+  const fetchPod = async () => {
+    try {
+      const response = await api.get(
+        `pods?PageIndex=${currentPage}&PageSize=${podsPerPage}`
+      );
+      setPod(response.data);
+      setFilteredPods(response.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  useEffect(() => {
+    fetchPod();
+  }, []);
+
+  useEffect(() => {
+    let filtered = pod || [];
+    if (selectedDeviceId) {
+      filtered = filtered.filter((pod) => pod.deviceId === selectedDeviceId);
+    }
+    if (selectedLocationId) {
+      filtered = filtered.filter(
+        (pod) => pod.locationId === selectedLocationId
+      );
+    }
+    if (selectedFloor) {
+      filtered = filtered.filter((pod) => pod.floor === selectedFloor);
+    }
+    setFilteredPods(filtered);
+  }, [selectedDeviceId, selectedLocationId, selectedFloor, pod]);
+
+  const handleDeviceClick = (deviceId: string) => {
+    setSelectedDeviceId(deviceId);
+    setSelectedSlide(deviceId);
+  };
+
+  const handleAddressChange = (locationID: string) => {
+    setSelectedLocationId(locationID);
+  };
+
+  // const handleFloorChange = (floor: string) => {
+  //   setSelectedFloor(floor);
+  // };
+
+  const uniqueAddresses = Array.from(
+    new Set(locations?.map((location) => location.name))
+  );
+  // const uniqueFloor = Array.from(
+  //   new Set(device?.map((device) => device.floor))
+  // );
+
+  const indexOfLastPod = currentPage * podsPerPage;
+  const indexOfFirstPod = indexOfLastPod - podsPerPage;
+  const currentPods = filteredPods.slice(indexOfFirstPod, indexOfLastPod);
+
+  const handleChangePage = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleSetSlide = () => {
+    setSelectedSlide(undefined);
+    fetchPod();
+  };
+
   return (
-    
-    <div style={{backgroundColor:"#fff"}}>
-     <h3 style={{marginBottom:"20px", marginTop:"20px"}} onClick={()=>fetchDevice()}> <BarsOutlined />     Các loại thiết bị</h3>
-     
-     <div style={{border:" 2px solid black", width:"83%", marginLeft:"125px", marginBottom:"20px"}}>
-      <Swiper
-        slidesPerView={numberOfSlides}
-        // spaceBetween={20}
-        autoplay={{
-          delay: 2000,
-          disableOnInteraction: false,
-        }}
-        // navigation={true}
-        modules={autoplay ? [Autoplay, Navigation] : [Pagination]}
-        className={`carousel ${numberOfSlides > 1 ? "multi-item" : ""}`}
-        
+    <div style={{ backgroundColor: "#fff" }}>
+      <h3
+        style={{ marginBottom: "20px", marginTop: "20px" }}
+        onClick={handleSetSlide}
       >
-        
-       
-       {locations?.map((locationItem : Location) => 
-        (<SwiperSlide className="slide"><div onClick={() => handleLocationClick(locationItem.address)}><Card1 key={locationItem.id} location={locationItem}/> </div></SwiperSlide>))}
-       
-       
-       
-      </Swiper>
+        {" "}
+        <BarsOutlined /> Các loại thiết bị
+      </h3>
+
+      <div className="slideDevice">
+        <Swiper
+          slidesPerView={numberOfSlides}
+          autoplay={{
+            delay: 2000,
+            disableOnInteraction: false,
+          }}
+          modules={autoplay ? [Autoplay, Navigation] : [Pagination]}
+          className={`carousel ${numberOfSlides > 1 ? "multi-item" : ""}`}
+        >
+          {device?.map((deviceItem: Device) => (
+            <SwiperSlide>
+              <div
+                onClick={() => handleDeviceClick(deviceItem.id)}
+                className={
+                  selectedSlide === deviceItem.id ? "active-slide" : ""
+                }
+              >
+                {deviceItem.roomType}{" "}
+              </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
       </div>
       <div className="select">
-      <Select className="Select" options={uniqueAddresses.map((name) => ({
-            value: name,
-            label:(<><EnvironmentOutlined />   {name}</>),
-          }))} onChange={(value)=>handleAddressChange(value)} onSearch={onSearch} placeholder="Chọn địa điểm"/>
-       <Select className="Select2" options={uniqueFloor.map((floor) => ({
-            value:"Tầng "+ floor,
-            label:"Tầng "+ floor,
-          }))} placeholder="Chọn tầng"/>
-      
+        <Select
+          className="Select"
+          options={uniqueAddresses.map((name) => ({
+            value: locations?.find((loc) => loc.name === name)?.id || "",
+            label: (
+              <>
+                <EnvironmentOutlined /> {name}
+              </>
+            ),
+          }))}
+          onChange={(value) => handleAddressChange(value)}
+          placeholder="Chọn địa điểm"
+        />
+        {/* <Select
+          className="Select2"
+          options={uniqueFloor.map((floor) => ({
+            value: floor,
+            label: floor,
+          }))}
+          onChange={(value) => handleFloorChange(value)}
+          placeholder="Chọn tầng"
+        /> */}
+      </div>
 
-     </div>
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "90px",
+          width: "100%",
+          justifyContent: "center",
+          marginBottom: "50px",
+        }}
+      >
+        {currentPods.map((podItem: POD) => (
+          <PodCard key={podItem.id} pod={podItem} />
+        ))}
+      </div>
 
-      <div style={{display:"flex", flexWrap:"wrap", gap:"90px", width:"100%", justifyContent:"center", marginBottom:"50px" }}>
-        {filteredDevices?.map((deviceItem : Device) => (<Card3 key={deviceItem.id} device={deviceItem}/>))}
-        </div>
+      <AntPagination
+        current={currentPage}
+        pageSize={podsPerPage}
+        total={filteredPods.length}
+        onChange={handleChangePage}
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          marginBottom: "20px",
+          marginRight: "110px",
+        }}
+      />
     </div>
   );
 }

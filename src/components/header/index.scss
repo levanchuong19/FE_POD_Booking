@@ -1,18 +1,29 @@
 .header{
     // border-bottom: solid 1px rgba($color: #050505, $alpha: 1.0) ;
-    background-color: rgb(250, 245, 240);
+    width: 100%;
+    background-color: rgb(248, 240, 232);
+    display: flex;
+    justify-content: center;
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    z-index: 1000;
+   &__center{
+    width: 83%;
     padding: 20px 0px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 580px;
-    
+    justify-content: space-between;
+
+   }
     &__left{
         gap: 20px;
         display: flex;
         
         ul{
-            gap: 20px;
+            gap: 30px;
             display: flex;
             align-items: center;
             a{
@@ -48,4 +59,5 @@
             margin-left: 40px;
         }
     }
+   
 }

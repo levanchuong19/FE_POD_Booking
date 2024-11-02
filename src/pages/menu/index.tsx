@@ -1,9 +1,12 @@
-import React from 'react'
+import ServiceDetails from "../../components/serviceDetails";
 
 function Menu() {
   return (
-    <div>Menu</div>
-  )
+    <div>
+      <h2>Dịch vụ đi kèm </h2>
+      <ServiceDetails />
+    </div>
+  );
 }
 
-export default Menu
+export default Menu;

@@ -1,6 +1,9 @@
-export type Location ={
+export type Location  ={
     id:string;
-    address : string;
-    image : string;
     name: string;
+    address : string;
+    description: string;  
+    phoneNumber: string;
+    imageUrl:string;
+    isDelete : boolean;
 }

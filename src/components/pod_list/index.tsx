@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
 import { Location } from "../modal/location";
 import api from "../config/api";
-import Cards from "../Card";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import "./index.scss";
-
-
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import { EnvironmentOutlined } from "@ant-design/icons";
+import LocationCard from "../LocationCard";
+
 
 export default function PodBooking({
   numberOfSlides = 1,
@@ -18,9 +17,9 @@ export default function PodBooking({
   const [location, setLocation] = useState<Location[]>();
     const fetchLocation = async () =>{
         try{
-            const response = await api.get("podbooking");
-               console.log(response.data);
-               setLocation(response.data);
+            const response = await api.get("locations");
+               setLocation(response.data.filter((item : Location) => item.isDelete ===  true));
+              setLocation(response.data)
         }catch(err){
             console.log(err);
         }
@@ -45,7 +44,7 @@ export default function PodBooking({
         
       >
        
-       {location?.map((locationItem : Location) => (<SwiperSlide className="slide"><Cards key={locationItem.id} location={locationItem}/></SwiperSlide>))}
+       {location?.map((locationItem : Location) => (<SwiperSlide className="slide"><LocationCard key={locationItem.id} location={locationItem}/></SwiperSlide>))}
       </Swiper>
       <div className="line2"></div>
     </div>
