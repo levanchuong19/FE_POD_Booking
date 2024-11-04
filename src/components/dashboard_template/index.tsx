@@ -12,6 +12,7 @@ export interface Column {
   title: string;
   dataIndex: string;
   key: string;
+
   render?: (value: any) => any;
 }
 
@@ -40,9 +41,10 @@ function DashboardTemplate({
   const fetchData = async () => {
     try {
       const response = await api.get(apiURI);
+      console.log(response.data);
+
       setDatas(response.data);
       setFetching(false);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast.error(`Error fetching ${title}`);
     }
@@ -59,15 +61,14 @@ function DashboardTemplate({
         console.log(fileList[0].originFileObj);
         const img = await uploadFile(fileList[0].originFileObj);
         console.log(img);
-        values.imageUrl = img; // Set uploaded image URL
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        values.image = img;
+        values.imageUrl = img;
       } catch (error) {
         toast.error("Image upload failed!");
-        return; // Stop submission if image upload fails
+        return;
       }
     }
 
-    // Optional: Format date if using DatePicker
     if (values.dateOfBirthday) {
       const dateFormatted = moment(values.dateOfBirthday).format("DD-MM-YYYY");
       values.dateOfBirthday = dateFormatted;
@@ -87,9 +88,9 @@ function DashboardTemplate({
         toast.success("Successfully created!");
       }
 
-      fetchData(); // Refresh data after successful operation
-      form.resetFields(); // Clear form
-      setShowModal(false); // Close modal
+      fetchData();
+      form.resetFields();
+      setShowModal(false);
     } catch (error) {
       console.error(error);
       toast.error("An error occurred.");

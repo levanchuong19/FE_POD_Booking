@@ -113,8 +113,8 @@ function Profile() {
                 <strong>Last Name:</strong> {profile.lastName}
               </p>
               <p>
-                <strong>User Name:</strong>
-                {profile.firstName + profile.lastName}
+                <strong>User Name: </strong>
+                {profile.firstName + "  x]=gyht" + profile.lastName}
               </p>
               <p>
                 <strong>Phone Number:</strong> {profile.phoneNumber}
@@ -123,24 +123,19 @@ function Profile() {
                 <strong>Address:</strong> {profile.address}
               </p>
 
-              <Button type="primary" onClick={handleUpdateClick}>
-                Update Profile
-              </Button>
-              <Button
-                style={{ marginLeft: "10px" }}
-                onClick={handleLogout}
-                className="logout-button"
-                type="primary"
-                danger
-              >
-                Logout
-              </Button>
-              <span
-                onClick={handleOnclick}
-                style={{ paddingLeft: "20px", cursor: "pointer" }}
-              >
-                Lịch sử điểm thưởng !
-              </span>
+              <div style={{ display: "flex", gap: "20px" }}>
+                <Button type="primary" onClick={handleUpdateClick}>
+                  Update Profile
+                </Button>
+                <Button
+                  type="default"
+                  danger
+                  onClick={handleLogout}
+                  className="logout-button"
+                >
+                  Logout
+                </Button>
+              </div>
             </div>
           )
         )}

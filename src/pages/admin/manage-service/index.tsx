@@ -13,7 +13,7 @@ import DashboardTemplate from "../../../components/dashboard_template";
 import { useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 
-function ManageDevice() {
+function ManageService() {
   const title = "services";
   const columns = [
     {
@@ -120,7 +120,7 @@ function ManageDevice() {
   return (
     <div>
       <DashboardTemplate
-        fileList={"fileList"}
+        fileList={fileList}
         title={title}
         columns={columns}
         formItems={formItems}
@@ -130,4 +130,4 @@ function ManageDevice() {
   );
 }
 
-export default ManageDevice;
+export default ManageService;
