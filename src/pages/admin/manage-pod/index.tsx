@@ -10,8 +10,8 @@ import {
   UploadFile,
   UploadProps,
 } from "antd";
-import DashboardTemplate from "../../../components/dashboard_template";
-import { useEffect, useState } from "react";
+
+import { useEffect } from "react";
 import DashboardTemplate, {
   Column,
 } from "../../../components/dashboard_template";

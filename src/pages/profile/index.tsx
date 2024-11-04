@@ -18,12 +18,6 @@ function Profile() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    toast.success("Đăng xuất tài khoản thành công");
-    navigate("/");
-  };
-
   const fetchUserData = async () => {
     const token = localStorage.getItem("accessToken");
     if (token) {
