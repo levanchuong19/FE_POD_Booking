@@ -8,8 +8,9 @@ import { Autoplay, Pagination, Navigation } from "swiper/modules";
 export default function Carousel() {
   return (
     <>
-      <div className="session"></div>
-      <div className="line"></div>
+      <div className="session">
+        <div className="line"></div>
+      </div>
       <Swiper
         spaceBetween={30}
         centeredSlides={true}

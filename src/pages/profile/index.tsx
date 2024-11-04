@@ -114,7 +114,7 @@ function Profile() {
               </p>
               <p>
                 <strong>User Name: </strong>
-                {profile.firstName + "  x]=gyht" + profile.lastName}
+                {profile.firstName + " " + profile.lastName}
               </p>
               <p>
                 <strong>Phone Number:</strong> {profile.phoneNumber}
@@ -123,24 +123,32 @@ function Profile() {
                 <strong>Address:</strong> {profile.address}
               </p>
 
-              <div style={{ display: "flex", gap: "20px" }}>
+              <div
+                style={{ display: "flex", gap: "20px", alignItems: "center" }}
+              >
                 <Button type="primary" onClick={handleUpdateClick}>
                   Update Profile
                 </Button>
                 <Button
-                  type="default"
+                  type="primary"
                   danger
                   onClick={handleLogout}
                   className="logout-button"
                 >
                   Logout
                 </Button>
+                <span
+                  style={{ cursor: "pointer", alignItems: "center" }}
+                  onClick={handleOnclick}
+                >
+                  Lịch sử điểm thưởng !
+                </span>
               </div>
             </div>
           )
         )}
 
-        <div style={{ width: 900 }}>
+        <div style={{ width: 900, padding: "0px 800px" }}>
           <Modal
             style={{ width: 900 }}
             open={showModal}
@@ -148,7 +156,7 @@ function Profile() {
             onCancel={() => setShowModal(false)}
           >
             <Table
-              style={{ width: 900 }}
+              style={{ width: "900px" }}
               columns={columns}
               dataSource={isPoint}
               rowKey="id"
