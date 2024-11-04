@@ -20,12 +20,16 @@ function Register() {
     };
 
     try {
-      await api.post("authentication/register", formattedValues);
+      const response = await api.post(
+        "authentication/register",
+        formattedValues
+      );
+      console.log(response.data);
       toast.success("Register Success!!");
       navigate("/ConfirmRegister");
     } catch (error) {
       console.log(error);
-      toast.error("error.response.data");
+      toast.error("Register failed");
     }
   };
 

@@ -5,17 +5,21 @@ import {
   Image,
   Input,
   InputNumber,
+  Select,
   Upload,
   UploadFile,
   UploadProps,
 } from "antd";
+
+import { useEffect } from "react";
 import DashboardTemplate, {
   Column,
 } from "../../../components/dashboard_template";
 import { useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
+import api from "../../../components/config/api";
 
-function ManageLocation() {
+function ManagePod() {
   const title = "pods";
 
   const columns: Column[] = [
@@ -36,11 +40,13 @@ function ManageLocation() {
       render: (img: string | undefined) => <Image src={img} />,
     },
     { title: "PricePerHour", dataIndex: "pricePerHour", key: "pricePerHour" },
-    { title: "LocationId", dataIndex: "locationId", key: "locationId" },
-    { title: "DeviceId", dataIndex: "deviceId", key: "deviceId" },
+    { title: "Location", dataIndex: "locationName", key: "locationName" },
+    { title: "DeviceId", dataIndex: "deviceType", key: "deviceType" },
   ];
 
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [location, setLocation] = useState([]);
+  const [devices, setDevices] = useState([]);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
 
@@ -71,6 +77,32 @@ function ManageLocation() {
       <div style={{ marginTop: 8 }}>Upload</div>
     </button>
   );
+
+  const fetchDataLocation = async () => {
+    const response = await api.get("locations");
+    console.log(response.data);
+    setLocation(response.data);
+  };
+  const fetchDataDevices = async () => {
+    const response = await api.get("devices");
+    console.log(response.data);
+    setDevices(response.data);
+  };
+  useEffect(() => {
+    fetchDataLocation();
+    fetchDataDevices();
+  }, []);
+
+  const optionLocation = location?.map((item) => ({
+    key: item?.id,
+    value: item?.id,
+    label: item?.name,
+  }));
+  const optionDevices = devices?.map((item) => ({
+    key: item?.id,
+    value: item?.id,
+    label: item?.roomType,
+  }));
 
   const formItems = (
     <>
@@ -129,7 +161,6 @@ function ManageLocation() {
       {/* Image Upload */}
       <Form.Item name="imageUrl" label="Image">
         <Upload
-          // action="http://localhost:5088/api/upload"
           listType="picture-card"
           fileList={fileList}
           onPreview={handlePreview}
@@ -152,15 +183,16 @@ function ManageLocation() {
 
       {/*  LocationId */}
       <Form.Item label="LocationId" name="locationId">
-        <Input />
+        <Select options={optionLocation} />
       </Form.Item>
 
       {/*  DeviceId */}
       <Form.Item label="DeviceId" name="deviceId">
-        <Input />
+        <Select options={optionDevices} />
       </Form.Item>
     </>
   );
+
   return (
     <div>
       <DashboardTemplate
@@ -174,4 +206,4 @@ function ManageLocation() {
   );
 }
 
-export default ManageLocation;
+export default ManagePod;

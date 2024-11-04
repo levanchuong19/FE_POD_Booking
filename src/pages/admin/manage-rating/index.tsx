@@ -2,10 +2,22 @@
 import { useEffect, useState } from "react";
 import { RATING } from "../../../components/modal/rating";
 import api from "../../../components/config/api";
-import { Table } from "antd";
+import { Button, Popconfirm, Table } from "antd";
+import { toast } from "react-toastify";
 
 function ManageRating() {
   const [rating, setRating] = useState<RATING[]>();
+
+  const handleDelete = async (id: string) => {
+    try {
+      await api.delete(`ratings/${id}`);
+      toast.success("Success deleted!!!");
+      fetchRating();
+    } catch (error) {
+      console.log(error);
+      toast.error("delete error");
+    }
+  };
 
   const columns = [
     {
@@ -33,6 +45,28 @@ function ManageRating() {
       title: "Customer ID",
       dataIndex: "customerId",
       key: "customerId",
+    },
+    {
+      title: "Action",
+      dataIndex: "id",
+      key: "id",
+      render: (id: string) => (
+        <>
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "10px" }}
+          >
+            <Popconfirm
+              title="Delete"
+              description="Do you want to delete"
+              onConfirm={() => handleDelete(id)}
+            >
+              <Button type="primary" danger>
+                Delete
+              </Button>
+            </Popconfirm>
+          </div>
+        </>
+      ),
     },
   ];
 

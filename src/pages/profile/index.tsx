@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button, Spin } from "antd";
+import { Button, Modal, Spin, Table } from "antd";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -9,14 +9,49 @@ import api from "../../components/config/api";
 import { jwtDecode } from "jwt-decode";
 import { User } from "../../components/modal/user";
 import "./index.scss";
+import dayjs from "dayjs";
+import { RewardPoints } from "../../components/modal/rewardpoints";
 
 interface JwtPayload {
   userId: any;
 }
 function Profile() {
   const [profile, setProfile] = useState<User>();
+  const [isPoint, setIsPoint] = useState<RewardPoints[]>();
   const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
+
+  const columns = [
+    {
+      title: "No",
+      key: "index",
+      render: (_text: any, _record: any, index: number) => index + 1,
+    },
+    {
+      title: "Transaction Date",
+      dataIndex: "transactionDate",
+      key: "transactionDate",
+      render: (transactionDate: any) => {
+        return dayjs(transactionDate).format("DD/MM/YYYY");
+      },
+    },
+    {
+      title: "Points",
+      dataIndex: "points",
+      key: "points",
+    },
+    {
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
+    },
+  ];
+
+  const handleOnclick = () => {
+    setShowModal(true);
+    console.log("point", isPoint);
+  };
 
   const fetchUserData = async () => {
     const token = localStorage.getItem("accessToken");
@@ -24,8 +59,13 @@ function Profile() {
       try {
         const decodedToken: JwtPayload = jwtDecode(token);
         const userId = decodedToken.userId;
-        const response = await api.get(`accounts/${userId}`);
+        const [response, point] = await Promise.all([
+          api.get(`accounts/${userId}`),
+          api.get(`rewardpoints?AccountId=${userId}`),
+        ]);
         setProfile(response.data.data);
+        setIsPoint(point.data);
+        console.log(point.data);
         setLoading(false);
       } catch (error) {
         toast.error("Failed to fetch user data.");
@@ -73,8 +113,8 @@ function Profile() {
                 <strong>Last Name:</strong> {profile.lastName}
               </p>
               <p>
-                <strong>User Name:</strong>
-                {profile.firstName + profile.lastName}
+                <strong>User Name: </strong>
+                {profile.firstName + " " + profile.lastName}
               </p>
               <p>
                 <strong>Phone Number:</strong> {profile.phoneNumber}
@@ -83,21 +123,46 @@ function Profile() {
                 <strong>Address:</strong> {profile.address}
               </p>
 
-              <Button type="primary" onClick={handleUpdateClick}>
-                Update Profile
-              </Button>
-              <Button
-                style={{ marginLeft: "10px" }}
-                onClick={handleLogout}
-                className="logout-button"
-                type="primary"
-                danger
+              <div
+                style={{ display: "flex", gap: "20px", alignItems: "center" }}
               >
-                Logout
-              </Button>
+                <Button type="primary" onClick={handleUpdateClick}>
+                  Update Profile
+                </Button>
+                <Button
+                  type="primary"
+                  danger
+                  onClick={handleLogout}
+                  className="logout-button"
+                >
+                  Logout
+                </Button>
+                <span
+                  style={{ cursor: "pointer", alignItems: "center" }}
+                  onClick={handleOnclick}
+                >
+                  Lịch sử điểm thưởng !
+                </span>
+              </div>
             </div>
           )
         )}
+
+        <div style={{ width: 900, padding: "0px 800px" }}>
+          <Modal
+            style={{ width: 900 }}
+            open={showModal}
+            onOk={() => setShowModal(false)}
+            onCancel={() => setShowModal(false)}
+          >
+            <Table
+              style={{ width: "900px" }}
+              columns={columns}
+              dataSource={isPoint}
+              rowKey="id"
+            />
+          </Modal>
+        </div>
       </div>
     </div>
   );

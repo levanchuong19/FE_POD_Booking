@@ -46,6 +46,7 @@ const getItem = (
 
 const allItems: MenuItem[] = [
   getItem("Dashboard", "statistical", <BarChartOutlined />),
+  getItem("Manage Revenue", "Revenue", <PieChartOutlined />),
   getItem("Manage Location", "locations", <ProfileOutlined />),
   getItem("Manage Pod", "pods", <ProfileOutlined />),
   getItem("Manage Service", "services", <ProfileOutlined />),
