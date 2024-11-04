@@ -118,6 +118,7 @@ const ReservationCard: React.FC<ReservationCardProps> = ({
             <img
               style={{ borderRadius: "10px" }}
               width={350}
+              height={250}
               src={pods?.imageUrl}
               alt="Pod Image"
             />
@@ -127,6 +128,7 @@ const ReservationCard: React.FC<ReservationCardProps> = ({
                 key={service.serviceId}
                 style={{ borderRadius: "10px" }}
                 width={350}
+                height={250}
                 src={service.imageUrl}
                 alt="Service Image"
               />
@@ -221,6 +223,10 @@ const ReservationCard: React.FC<ReservationCardProps> = ({
                   <p>Giá: {formatVND(service.totalPrice)}</p>
                 </div>
               ))}
+              <p>
+                Sử dụng cho: {booking.podName},{" "}
+                {formatDate(new Date(booking.startTime))}
+              </p>
               <p>
                 <strong>Tổng: </strong>
                 {formatVND(booking.totalPrice)}
