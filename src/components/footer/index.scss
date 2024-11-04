@@ -4,13 +4,15 @@
     &__tren{
         margin-left: 10px;
         display: flex;
+        flex-wrap: wrap;
         color: #fff;
         justify-content: center;
-        gap: 170px;
+        gap: 240px;
+        width: 98.5%;
         padding: 30px;
         &__left{
           display: flex;
-            width: 600px;
+            // width: 600px;
             gap: 30px;
             .content_left{
                 display: flex;

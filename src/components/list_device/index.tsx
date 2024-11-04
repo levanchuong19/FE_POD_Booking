@@ -71,31 +71,33 @@ export default function ListDevice({ numberOfSlides = 3, autoplay = false }) {
         {" "}
         <BarsOutlined /> Các loại thiết bị
       </h3>
-      <div className="slideLocation">
-        <Swiper
-          slidesPerView={numberOfSlides}
-          // spaceBetween={20}
-          autoplay={{
-            delay: 2000,
-            disableOnInteraction: false,
-          }}
-          // navigation={true}
-          modules={autoplay ? [Autoplay, Navigation] : [Pagination]}
-          className={`carousel ${numberOfSlides > 1 ? "multi-item" : ""}`}
-        >
-          {locations?.map((locationItem: Location) => (
-            <SwiperSlide>
-              <div
-                onClick={() => handleLocationClick(locationItem.id)}
-                className={
-                  selectedSlide === locationItem?.id ? "active-slide" : ""
-                }
-              >
-                {locationItem.name}{" "}
-              </div>
-            </SwiperSlide>
-          ))}
-        </Swiper>
+      <div className="SlideLocation">
+        <div className="slideLocation">
+          <Swiper
+            slidesPerView={numberOfSlides}
+            // spaceBetween={20}
+            autoplay={{
+              delay: 2000,
+              disableOnInteraction: false,
+            }}
+            // navigation={true}
+            modules={autoplay ? [Autoplay, Navigation] : [Pagination]}
+            className={`carousel ${numberOfSlides > 1 ? "multi-item" : ""}`}
+          >
+            {locations?.map((locationItem: Location) => (
+              <SwiperSlide>
+                <div
+                  onClick={() => handleLocationClick(locationItem.id)}
+                  className={
+                    selectedSlide === locationItem?.id ? "active-slide" : ""
+                  }
+                >
+                  {locationItem.name}{" "}
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
       </div>
       <div
         style={{
