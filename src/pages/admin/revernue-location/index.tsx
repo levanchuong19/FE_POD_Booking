@@ -54,7 +54,7 @@ const RevenueLocation: React.FC = () => {
           <BarChart labels={barChartLabelsPOD} data={barChartDataPOD} />
         </div>
       </div>
-      <div className="chart">
+      <div style={{ width: 650, margin: "50px 240px" }} className="chart">
         <div className="chart-title">Dịch vụ được sử dụng</div>
         <BarChart labels={barChartLabelsService} data={barChartDataService} />
       </div>

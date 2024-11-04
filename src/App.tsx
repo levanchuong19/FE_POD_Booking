@@ -100,7 +100,7 @@ function App() {
           element: <ManageRewardPoint />,
         },
         {
-          path: "revenueLocation",
+          path: "revenue",
           element: <RevenueLocation />,
         },
       ],

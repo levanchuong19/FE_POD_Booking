@@ -15,7 +15,7 @@ import { useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 
 function ManageLocation() {
-  const title = "locatios";
+  const title = "locations";
   const columns: Column[] = [
     {
       title: "No",
