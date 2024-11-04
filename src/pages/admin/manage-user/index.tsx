@@ -17,7 +17,7 @@ import dayjs from "dayjs";
 import { useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 
-function ManageDevice() {
+function ManageUser() {
   const title = "accounts";
   const columns: Column[] = [
     {
@@ -81,7 +81,7 @@ function ManageDevice() {
   );
 
   const formItems = (
-    <>
+    <div style={{ padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
       <Form.Item
         label="First Name"
         name="firstName"
@@ -154,24 +154,25 @@ function ManageDevice() {
           onPreview={handlePreview}
           onChange={handleChange}
         >
-          {fileList.length >= 8 ? null : uploadButton}
+          {fileList.length === 1 ? null : uploadButton}
         </Upload>
-        {previewImage && (
-          <Image
-            wrapperStyle={{ display: "none" }}
-            preview={{
-              visible: previewOpen,
-              onVisibleChange: (visible) => setPreviewOpen(visible),
-              afterOpenChange: (visible) => !visible && setPreviewImage(""),
-            }}
-            src={previewImage}
-          />
-        )}
       </Form.Item>
-    </>
+      {previewImage && (
+        <Image
+          wrapperStyle={{ display: "none" }}
+          preview={{
+            visible: previewOpen,
+            onVisibleChange: (visible) => setPreviewOpen(visible),
+            afterOpenChange: (visible) => !visible && setPreviewImage(""),
+          }}
+          src={previewImage}
+        />
+      )}
+    </div>
   );
+
   return (
-    <div>
+    <div style={{ overflowX: "auto" }}>
       <DashboardTemplate
         fileList={fileList}
         title={title}
@@ -183,4 +184,4 @@ function ManageDevice() {
   );
 }
 
-export default ManageDevice;
+export default ManageUser;

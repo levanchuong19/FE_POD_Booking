@@ -12,6 +12,12 @@ function Profile() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    toast.success("Đăng xuất tài khoản thành công");
+    navigate("/");
+  };
+
   const fetchUserData = async () => {
     const token = localStorage.getItem("accessToken");
     if (token) {
@@ -61,8 +67,8 @@ function Profile() {
                 <strong>Last Name:</strong> {profile.lastName}
               </p>
               <p>
-                <strong>User Name:</strong>
-                {profile.firstName + profile.lastName}
+                <strong>User Name: </strong>
+                {profile.firstName + "  x]=gyht" + profile.lastName}
               </p>
               <p>
                 <strong>Phone Number:</strong> {profile.phoneNumber}
@@ -71,9 +77,19 @@ function Profile() {
                 <strong>Address:</strong> {profile.address}
               </p>
 
-              <Button type="primary" onClick={handleUpdateClick}>
-                Update Profile
-              </Button>
+              <div style={{ display: "flex", gap: "20px" }}>
+                <Button type="primary" onClick={handleUpdateClick}>
+                  Update Profile
+                </Button>
+                <Button
+                  type="default"
+                  danger
+                  onClick={handleLogout}
+                  className="logout-button"
+                >
+                  Logout
+                </Button>
+              </div>
             </div>
           )
         )}
