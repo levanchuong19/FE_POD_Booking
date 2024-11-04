@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Form, Modal, Popconfirm, Table } from "antd";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -49,7 +51,11 @@ function DashboardTemplate({
   };
 
   //CREATE OR UPDATE
-  const handleSubmit = async (values) => {
+  const handleSubmit = async (values: {
+    imageUrl: string;
+    dateOfBirthday: moment.MomentInput;
+    id: any;
+  }) => {
     if (fileList && fileList.length > 0) {
       try {
         console.log(fileList[0].originFileObj);
@@ -87,7 +93,7 @@ function DashboardTemplate({
       setShowModal(false);
     } catch (error) {
       console.error(error);
-      toast.error(error.response?.data || "An error occurred.");
+      toast.error("An error occurred.");
     } finally {
       setLoading(false);
     }
@@ -100,7 +106,8 @@ function DashboardTemplate({
       toast.success("Success deleted!!!");
       fetchData();
     } catch (error) {
-      toast.error(error.response.data);
+      console.log(error);
+      toast.error("delete error");
     }
   };
 
@@ -113,33 +120,38 @@ function DashboardTemplate({
       title: "Action",
       dataIndex: "id",
       key: "id",
-      render: (id, record) => (
-        <div style={{ display: "flex", gap: "10px" }}>
-          <Button
-            type="primary"
-            onClick={() => {
-              const recordValiDate = {
-                ...record,
-                dateOfBirthday: record.dateOfBirth
-                  ? moment(record.dateOfBirth, "DD-MM-YYYY")
-                  : null,
-              };
-              form.setFieldsValue(recordValiDate);
-              setShowModal(true);
-            }}
+      render: (record: { dateOfBirth: moment.MomentInput; id: string }) => (
+        <>
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "10px" }}
           >
-            Update
-          </Button>
-          <Popconfirm
-            title="Delete"
-            description="Do you want to delete"
-            onConfirm={() => handleDelete(record.id)}
-          >
-            <Button type="primary" danger>
-              Delete
+            <Button
+              type="primary"
+              onClick={() => {
+                const recordValiDate = {
+                  ...record,
+                  dateOfBirthday: record.dateOfBirth
+                    ? moment(record.dateOfBirth, "DD-MM-YYYY HH:mm")
+                    : null,
+                };
+                form.setFieldsValue(recordValiDate);
+                setShowModal(true);
+                // form.resetFields();
+              }}
+            >
+              Update
             </Button>
-          </Popconfirm>
-        </div>
+            <Popconfirm
+              title="Delete"
+              description="Do you want to delete"
+              onConfirm={() => handleDelete(record.id)}
+            >
+              <Button type="primary" danger>
+                Delete
+              </Button>
+            </Popconfirm>
+          </div>
+        </>
       ),
     },
   ];

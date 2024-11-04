@@ -11,8 +11,8 @@ export type Booking = {
     code: string;
     podId: string;
     accountId: string;
-    startTime: Date;
-    endTime: Date;
+    startTime: Date| number;
+    endTime: Date |number;
     pricePerHour:number;
     totalPrice: number;
     paymentStatus: number | string;

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Form,
   GetProp,
@@ -11,17 +12,21 @@ import {
 } from "antd";
 import DashboardTemplate from "../../../components/dashboard_template";
 import { useEffect, useState } from "react";
+import DashboardTemplate, {
+  Column,
+} from "../../../components/dashboard_template";
+import { useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import api from "../../../components/config/api";
 
 function ManagePod() {
   const title = "pods";
 
-  const columns = [
+  const columns: Column[] = [
     {
       title: "No",
       key: "index",
-      render: (text, record, index) => index + 1,
+      render: (_text: any, _record: any, index: number) => index + 1,
     },
     { title: "ID", dataIndex: "id", key: "id" },
     { title: "Name", dataIndex: "name", key: "name" },
@@ -32,7 +37,7 @@ function ManagePod() {
       title: "Image",
       dataIndex: "imageUrl",
       key: "imageUrl",
-      render: (img) => <Image src={img} />,
+      render: (img: string | undefined) => <Image src={img} />,
     },
     { title: "PricePerHour", dataIndex: "pricePerHour", key: "pricePerHour" },
     { title: "Location", dataIndex: "locationName", key: "locationName" },

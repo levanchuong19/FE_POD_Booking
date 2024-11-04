@@ -1,3 +1,7 @@
+/* eslint-disable prefer-const */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { POD } from "../../components/modal/pod";
 import api from "../../components/config/api";
@@ -20,12 +24,33 @@ import { toast } from "react-toastify";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import { RATING } from "../../components/modal/rating";
+
+// import type { GetProps } from "antd";
 import dayjs from "dayjs";
+// import customParseFormat from "dayjs/plugin/customParseFormat";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 import isBetween from "dayjs/plugin/isBetween";
 dayjs.extend(isBetween);
+interface JwtPayload {
+  userId: string;
+}
+
+// type RangePickerProps = GetProps<typeof DatePicker.RangePicker>;
+
+// dayjs.extend(customParseFormat);
+
+// const { RangePicker } = DatePicker;
+
+// const range = (start: number, end: number) => {
+//   const result = [];
+//   for (let i = start; i < end; i++) {
+//     result.push(i);
+//   }
+//   return result;
+// };
+
 export default function Bookings({ numberOfSlides = 4, autoplay = false }) {
   const [pods, setPod] = useState<POD>();
   const { id } = useParams();
@@ -33,16 +58,13 @@ export default function Bookings({ numberOfSlides = 4, autoplay = false }) {
   const [form] = useForm();
   const [service, setService] = useState<Service[]>([]);
   const [showModal, setShowModal] = useState(false);
-  const [selectedServices, setSelectedServices] = useState([]);
+  const [selectedServices, setSelectedServices] = useState<Service[]>([]);
   const desc = ["terrible", "bad", "normal", "good", "wonderful"];
   const [highestRating, setHighestRating] = useState(1);
   const [startTime, setStartTime] = useState<Dayjs | null>(null);
   const [endTime, setEndTime] = useState<Dayjs | null>(null);
   const [bookedSlots, setBookedSlots] = useState([]);
   const [isChecked, setIsChecked] = useState(false);
-  const [checkedStates, setCheckedStates] = useState<{
-    [key: string]: boolean;
-  }>({});
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [podsPerPage] = useState(6);
@@ -51,7 +73,7 @@ export default function Bookings({ numberOfSlides = 4, autoplay = false }) {
     const fetchBookedTimes = async () => {
       try {
         const response = await api.get(`bookings/${id}/booked-times`);
-        console.log(response.data.data);
+        console.log("booked-times", response.data.data);
         setBookedSlots(response.data.data);
       } catch (error) {
         console.error("Error fetching booked times:", error);
@@ -60,55 +82,60 @@ export default function Bookings({ numberOfSlides = 4, autoplay = false }) {
     fetchBookedTimes();
   }, []);
 
-  const disabledDate = (
-    current: string | number | Date | Dayjs | null | undefined
-  ) => {
-    const currentDayjs = dayjs(current);
-    return bookedSlots.some((slot) => {
-      const bookedStart = dayjs(slot.startTime);
-      const bookedEnd = dayjs(slot.endTime);
+  const disabledDate = (current: Dayjs | null) => {
+    if (!current) return false;
+    const isPastDate = current.isBefore(dayjs(), "day");
 
-      return currentDayjs.isBetween(bookedStart, bookedEnd, "day", "[]");
+    // Kiểm tra nếu ngày hiện tại nằm giữa khoảng booking (trừ ngày đầu và ngày cuối)
+    const isFullyBookedMidDay = bookedSlots.some((slot) => {
+      const start = dayjs(slot.startTime);
+      const end = dayjs(slot.endTime);
+      return current.isAfter(start, "day") && current.isBefore(end, "day");
     });
+
+    return isPastDate || isFullyBookedMidDay;
   };
 
-  const disabledTime = (
-    date: string | number | Date | Dayjs | null | undefined
-  ) => {
-    const bookedTimes = bookedSlots.filter((slot) =>
-      dayjs(slot.startTime).isSame(date, "day")
-    );
+  const disabledTime = (current: Dayjs, _type: string) => {
+    const now = dayjs(); // Giờ hiện tại
+    let disabledHours: number[] = [];
+
+    bookedSlots.forEach((slot) => {
+      const start = dayjs(slot.startTime);
+      const end = dayjs(slot.endTime);
+      const isSameStartDay = current.isSame(start, "day");
+      const isSameEndDay = current.isSame(end, "day");
+      if (isSameStartDay && isSameEndDay) {
+        // Bôi đen các giờ từ giờ bắt đầu đến giờ kết thúc
+        disabledHours.push(
+          ...Array.from(
+            { length: end.hour() - start.hour() + 1 },
+            (_, i) => i + start.hour()
+          )
+        );
+      } else if (isSameStartDay) {
+        disabledHours.push(
+          ...Array.from(
+            { length: 24 - start.hour() },
+            (_, i) => i + start.hour()
+          )
+        );
+      } else if (isSameEndDay) {
+        disabledHours.push(
+          ...Array.from({ length: end.hour() + 1 }, (_, i) => i)
+        );
+      }
+    });
+
+    // Bôi đen giờ đã trôi qua trong ngày hiện tại
+    if (current.isSame(now, "day")) {
+      disabledHours.push(
+        ...Array.from({ length: now.hour() + 1 }, (_, i) => i)
+      );
+    }
 
     return {
-      disabledHours: () => {
-        const hoursToDisable: number[] = [];
-        bookedTimes.forEach(({ startTime, endTime }) => {
-          const start = dayjs(startTime).hour();
-          const end = dayjs(endTime).hour();
-          for (let hour = start; hour < end; hour++) {
-            hoursToDisable.push(hour);
-          }
-        });
-        return hoursToDisable;
-      },
-      disabledMinutes: (selectedHour: number) => {
-        const minutesToDisable: number[] = [];
-        bookedTimes.forEach(({ startTime, endTime }) => {
-          const start = dayjs(startTime);
-          const end = dayjs(endTime);
-          if (selectedHour === start.hour()) {
-            for (let minute = 0; minute < start.minute(); minute++) {
-              minutesToDisable.push(minute);
-            }
-          }
-          if (selectedHour === end.hour()) {
-            for (let minute = end.minute(); minute < 60; minute++) {
-              minutesToDisable.push(minute);
-            }
-          }
-        });
-        return minutesToDisable;
-      },
+      disabledHours: () => [...new Set(disabledHours)],
     };
   };
 
@@ -123,17 +150,25 @@ export default function Bookings({ numberOfSlides = 4, autoplay = false }) {
       setEndTime(null);
     }
   };
-
   const handleSubmit = async () => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      toast.error("Vui lòng đăng nhập trước khi thực hiện !");
+      navigate("/login");
+      return;
+    }
+    const decodedToken: JwtPayload = jwtDecode(token);
+    const userId = decodedToken.userId;
+    console.log("id:", userId);
     if (!startTime || !endTime) {
       toast.error("Vui lòng lựa chọn khoảng thời gian đặt POD");
       return;
     }
-    const token = localStorage.getItem("accessToken");
-    const decodedToken = jwtDecode(token);
-    const userId = decodedToken.userId;
-    console.log("id:", userId);
-
+    const durationInHours = endTime.diff(startTime, "hour");
+    if (durationInHours < 1) {
+      toast.error("Thời gian đặt phòng phải ít nhất 1 tiếng !");
+      return;
+    }
     const bookingData = {
       accountId: userId,
       podId: pods?.id,
@@ -141,7 +176,7 @@ export default function Bookings({ numberOfSlides = 4, autoplay = false }) {
       endTime: endTime.format("YYYY-MM-DDTHH:mm:ss"),
 
       paymentMethod: 0,
-      bookingServices: selectedServices.map((service) => ({
+      bookingServices: selectedServices.map((service: Service) => ({
         serviceId: service.id,
         quantity: service.quantity,
       })),
@@ -157,42 +192,22 @@ export default function Bookings({ numberOfSlides = 4, autoplay = false }) {
       setSelectedServices([]);
       navigate(`/confirmBooking/${createdBooking?.id}`);
     } catch (err) {
-      console.error(err.response.data);
-      toast.error("Vui lòng lựa chọn khoảng thời gian khác");
+      toast.error("Vui lòng lựa chọn khoảng thời gian khác !");
       console.log(err);
     }
   };
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // const handleServiceSelection = (serviceId: any, quantity: any, isChecked) => {
-  //   setSelectedServices((prevServices) => {
-  //     const existingService = prevServices.find(
-  //       (service) => service.id === serviceId
-  //     );
-  //     if (existingService) {
-  //       return prevServices.map((service) =>
-  //         service.id === serviceId
-  //           ? { ...service, quantity: quantity }
-  //           : service
-  //       );
-  //     } else {
-  //       return [...prevServices, { id: serviceId, quantity: quantity }];
-  //     }
-  //   });
-  // };
   const handleServiceSelection = (
     serviceId: any,
     quantity: any,
     isChecked: boolean
   ) => {
-    setSelectedServices((prevServices) => {
+    setSelectedServices((prevServices: any) => {
       if (isChecked) {
-        // Nếu checkbox được chọn, thêm hoặc cập nhật số lượng dịch vụ
         const existingService = prevServices.find(
-          (service) => service.id === serviceId
+          (service: Service) => service.id === serviceId
         );
         if (existingService) {
-          return prevServices.map((service) =>
+          return prevServices.map((service: Service) =>
             service.id === serviceId
               ? { ...service, quantity: quantity }
               : service
@@ -202,7 +217,9 @@ export default function Bookings({ numberOfSlides = 4, autoplay = false }) {
         }
       } else {
         // Nếu checkbox bị bỏ chọn, xóa dịch vụ khỏi danh sách
-        return prevServices.filter((service) => service.id !== serviceId);
+        return prevServices.filter(
+          (service: Service) => service.id !== serviceId
+        );
       }
     });
   };
@@ -299,10 +316,9 @@ export default function Bookings({ numberOfSlides = 4, autoplay = false }) {
         <div className="booking__content">
           <div className="booking__content1">
             <h1>{pods?.name}</h1>
-            <p className="price">{formatVND(pods?.pricePerHour)}/giờ</p>
+            <p className="price">{formatVND(pods?.pricePerHour ?? 0)}/giờ</p>
           </div>
           <Flex>
-            {" "}
             <Rate tooltips={desc} value={highestRating} />
           </Flex>
           <div className="booking__content2">
@@ -326,9 +342,16 @@ export default function Bookings({ numberOfSlides = 4, autoplay = false }) {
             >
               <DatePicker.RangePicker
                 disabledDate={disabledDate}
-                showTime={{ disabledTime }}
+                disabledTime={disabledTime}
+                showTime={{
+                  hideDisabledOptions: false,
+                  defaultValue: [
+                    dayjs("00:00:00", "HH:mm"),
+                    dayjs("11:59:59", "HH:mm"),
+                  ],
+                }}
                 format="YYYY-MM-DD HH:mm"
-                onChange={(value) => handleTimeChange(value)}
+                onChange={(value: any) => handleTimeChange(value)}
               />
             </FormItem>
           </Form>
@@ -349,9 +372,10 @@ export default function Bookings({ numberOfSlides = 4, autoplay = false }) {
           <h2>Tiện ích</h2>
           <div
             style={{
-              width: "100%",
+              width: "580px",
               backgroundColor: "rgb(235, 235, 235)",
               height: "90px",
+              borderRadius: "50px",
             }}
           >
             <Swiper
@@ -360,6 +384,9 @@ export default function Bookings({ numberOfSlides = 4, autoplay = false }) {
               autoplay={{
                 delay: 2000,
                 disableOnInteraction: false,
+              }}
+              style={{
+                borderRadius: "10px",
               }}
               // navigation={true}
               modules={autoplay ? [Autoplay, Navigation] : [Pagination]}
@@ -537,7 +564,7 @@ export default function Bookings({ numberOfSlides = 4, autoplay = false }) {
             <ServiceCard
               key={serviceItem.id}
               service={serviceItem}
-              isChecked={checkedStates[service.id] || false}
+              // isChecked={checkedStates[service.id] || false}
               onSelect={handleServiceSelection}
             />
           ))}

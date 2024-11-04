@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { UnorderedListOutlined } from "@ant-design/icons";
@@ -13,12 +14,16 @@ import { jwtDecode } from "jwt-decode";
 import { useNotification } from "../NotificationContext";
 import { v4 as uuidv4 } from "uuid";
 
+interface JwtPayload {
+  userId: any;
+}
+
 export default function Reservation({ numberOfSlides = 1, autoplay = false }) {
   const [reservation, setReservation] = useState<Booking[]>();
   const [selectedStatus, setSelectedStatus] = useState<string>("On Going");
   const [activeSlide, setActiveSlide] = useState<string>("On Going");
   const [showRatings, setShowRatings] = useState(false);
-  const [currentPodId, setCurrentPodId] = useState([]);
+  const [currentPodId, setCurrentPodId] = useState();
   const [showPaymentSuccessModal, setShowPaymentSuccessModal] = useState(false);
   const [paymentBookingCode, setPaymentBookingCode] = useState<string | null>(
     null
@@ -38,17 +43,19 @@ export default function Reservation({ numberOfSlides = 1, autoplay = false }) {
     const fetchOnGoingBookings = async () => {
       try {
         const token = localStorage.getItem("accessToken");
-        const decodedToken = jwtDecode(token);
-        const userId = decodedToken.userId;
-        const response = await api.get(`bookings?AccountId=${userId}`);
-        console.log("response", response.data);
-        const bookings = response.data || [];
-        const userBookings = bookings.filter(
-          (booking: Booking) => booking.accountId === userId
-        );
-        setReservation(userBookings);
-        setSelectedStatus("OnGoing");
-        setActiveSlide("OnGoing");
+        if (token) {
+          const decodedToken: JwtPayload = jwtDecode(token);
+          const userId = decodedToken.userId;
+          const response = await api.get(`bookings?AccountId=${userId}`);
+          console.log("response", response.data);
+          const bookings = response.data || [];
+          const userBookings = bookings.filter(
+            (booking: Booking) => booking.accountId === userId
+          );
+          setReservation(userBookings);
+          setSelectedStatus("OnGoing");
+          setActiveSlide("OnGoing");
+        }
       } catch (error) {
         console.error("Error fetching bookings:", error);
       }
@@ -66,7 +73,7 @@ export default function Reservation({ numberOfSlides = 1, autoplay = false }) {
     setActiveSlide(status);
   };
 
-  const handleAddRating = (podId) => {
+  const handleAddRating = (podId: any) => {
     console.log(`Adding rating for pod ID: ${podId}`);
     setCurrentPodId(podId);
     setShowRatings(true);

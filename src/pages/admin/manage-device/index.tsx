@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Form,
   GetProp,
@@ -8,17 +9,19 @@ import {
   UploadFile,
   UploadProps,
 } from "antd";
-import DashboardTemplate from "../../../components/dashboard_template";
+import DashboardTemplate, {
+  Column,
+} from "../../../components/dashboard_template";
 import { useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 
 function ManageDevice() {
   const title = "devices";
-  const columns = [
+  const columns: Column[] = [
     {
       title: "No",
       key: "index",
-      render: (text, record, index) => index + 1,
+      render: (_text: any, _record: any, index: number) => index + 1,
     },
     { title: "ID", dataIndex: "id", key: "id" },
     { title: "RoomType", dataIndex: "roomType", key: "roomType" },
@@ -28,7 +31,7 @@ function ManageDevice() {
       title: "ImageUrl",
       dataIndex: "imageUrl",
       key: "imageUrl",
-      render: (img) => <Image src={img} width={200} />,
+      render: (img: string | undefined) => <Image src={img} width={200} />,
     },
   ];
 

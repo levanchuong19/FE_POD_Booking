@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Form, Input } from "antd";
 import { toast } from "react-toastify";
 import api from "../../components/config/api";
@@ -6,14 +8,14 @@ import "./index.scss";
 
 function ResetPassword() {
   const navigate = useNavigate();
-  const handleResetPassword = async (values) => {
+  const handleResetPassword = async (values: any) => {
     try {
-      console.log(values)
-      await api.post(`authentication/password/reset`,values);
+      console.log(values);
+      await api.post(`authentication/password/reset`, values);
       toast.success("Your password has been reset successfully!");
       navigate("/login");
     } catch (error) {
-      toast.error(error.response.data);
+      toast.error("error.response.data");
     }
   };
 
@@ -28,9 +30,7 @@ function ResetPassword() {
         <Form.Item
           label="Email"
           name="email"
-          rules={[
-            { required: true, message: "Please enter your email!" },
-          ]}
+          rules={[{ required: true, message: "Please enter your email!" }]}
         >
           <Input placeholder="Enter your email" />
         </Form.Item>
@@ -65,9 +65,7 @@ function ResetPassword() {
         <Form.Item
           label="Code"
           name="token"
-          rules={[
-            { required: true, message: "Please enter your code!" },
-          ]}
+          rules={[{ required: true, message: "Please enter your code!" }]}
         >
           <Input placeholder="Enter your code!" />
         </Form.Item>

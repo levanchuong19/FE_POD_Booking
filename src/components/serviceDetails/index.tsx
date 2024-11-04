@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import api from "../../components/config/api";
 import { Service } from "../../components/modal/service";
@@ -10,6 +11,9 @@ import { toast } from "react-toastify";
 import BookingCard from "../bookingCard";
 import { useNavigate } from "react-router-dom";
 
+interface JwtPayload {
+  userId: string;
+}
 function ServiceDetails() {
   const [service, setService] = useState<Service[]>([]);
   const [selectedServices, setSelectedServices] = useState([]);
@@ -38,23 +42,25 @@ function ServiceDetails() {
   const fetchBooking = async () => {
     try {
       const token = localStorage.getItem("accessToken");
-      const decodedToken = jwtDecode(token);
-      const userId = decodedToken.userId;
-      console.log("userId:", userId);
-      const response = await api.get("bookings");
-      console.log("response", response.data);
-      const bookings = response.data || [];
-      const userBookings = bookings.filter(
-        (booking: Booking) =>
-          booking.accountId === userId &&
-          (booking.paymentStatus === "OnGoing" ||
-            booking.paymentStatus === "UpComing")
-      );
-      setReservation(userBookings);
-      const activeBooking = userBookings.length > 0 ? userBookings[0] : null;
-      console.log(activeBooking);
-      if (activeBooking) {
-        setActiveBookingId(activeBooking.id);
+      if (token) {
+        const decodedToken: JwtPayload = jwtDecode(token);
+        const userId = decodedToken.userId;
+        console.log("userId:", userId);
+        const response = await api.get(`bookings?AccountId=${userId}`);
+        console.log("response", response.data);
+        const bookings = response.data || [];
+        const userBookings = bookings.filter(
+          (booking: Booking) =>
+            booking.accountId === userId &&
+            (booking.paymentStatus === "OnGoing" ||
+              booking.paymentStatus === "UpComing")
+        );
+        setReservation(userBookings);
+        const activeBooking = userBookings.length > 0 ? userBookings[0] : null;
+        console.log(activeBooking);
+        if (activeBooking) {
+          setActiveBookingId(activeBooking.id);
+        }
       }
     } catch (err) {
       console.log(err);
@@ -86,7 +92,7 @@ function ServiceDetails() {
     }
     const bookingData = {
       bookingId: activeBookingId,
-      bookingServices: selectedServices.map((service) => ({
+      bookingServices: selectedServices.map((service: Service) => ({
         serviceId: service.id,
         quantity: service.quantity,
       })),
@@ -105,7 +111,6 @@ function ServiceDetails() {
     }
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleServiceSelection = (
     serviceId: any,
     quantity: any,
@@ -115,10 +120,10 @@ function ServiceDetails() {
       if (isChecked) {
         // Nếu checkbox được chọn, thêm hoặc cập nhật số lượng dịch vụ
         const existingService = prevServices.find(
-          (service) => service.id === serviceId
+          (service: Service) => service.id === serviceId
         );
         if (existingService) {
-          return prevServices.map((service) =>
+          return prevServices.map((service: Service) =>
             service.id === serviceId
               ? { ...service, quantity: quantity }
               : service
@@ -128,13 +133,16 @@ function ServiceDetails() {
         }
       } else {
         // Nếu checkbox bị bỏ chọn, xóa dịch vụ khỏi danh sách
-        return prevServices.filter((service) => service.id !== serviceId);
+        return prevServices.filter(
+          (service: Service) => service.id !== serviceId
+        );
       }
     });
   };
   const indexOfLastPod = currentPage * podsPerPage;
   const indexOfFirstPod = indexOfLastPod - podsPerPage;
   const currentPods = service?.slice(indexOfFirstPod, indexOfLastPod);
+  const current = reservation?.slice(indexOfFirstPod, indexOfLastPod);
 
   const handleChangePage = (page: number) => {
     setCurrentPage(page);
@@ -159,7 +167,7 @@ function ServiceDetails() {
             style={{
               display: "flex",
               justifyContent: "flex-end",
-              marginBottom: "20px",
+              marginBottom: "5px",
               marginLeft: "960px",
             }}
           />
@@ -185,7 +193,7 @@ function ServiceDetails() {
         width={"80%"}
         onOk={handleSubmit}
       >
-        {reservation?.map((item: Booking) => (
+        {current?.map((item: Booking) => (
           <BookingCard key={item.id} booking={item} />
         ))}
 

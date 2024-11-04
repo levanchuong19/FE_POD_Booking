@@ -15,19 +15,21 @@ import Dashboard from "./components/dashboard";
 import ManageLocation from "./pages/admin/manage-location";
 import ManagePod from "./pages/admin/manage-pod";
 import ManageService from "./pages/admin/manage-service";
+import Profile from "./pages/profile";
 import ManageDevice from "./pages/admin/manage-device";
 import ManageUser from "./pages/admin/manage-user";
 import UserProfile from "./pages/userProfile";
-import Profile from "./pages/profile";
 import ConfirmBooking from "./pages/confirmBooking";
-// import DeviceDetails from "./pages/deviceDetails";
-// import BookingService from "./pages/bookingService";
-// import NotificationPage from "./pages/NotificationPage";
+import DeviceDetails from "./pages/deviceDetails";
+import BookingService from "./pages/bookingService";
 import { NotificationProvider } from "./pages/NotificationContext";
-import ManageRating from "./pages/admin/manager-rating";
 import ManageBooking from "./pages/admin/manage-booking";
 import ManageRewardPoint from "./pages/admin/manage-rewardBooking";
 import DashboardChard from "./components/dashboardChart";
+import Bookings from "./pages/booking";
+import UpdateBooking from "./pages/updateBooking";
+import ManageRating from "./pages/admin/manage-rating";
+import RevenueLocation from "./pages/admin/revernue-location";
 
 function App() {
   const router = createBrowserRouter([
@@ -48,9 +50,12 @@ function App() {
         { path: "/userProfile/:id", element: <UserProfile /> },
         { path: "/profile/:id", element: <Profile /> },
         { path: "/locationDetails/:id", element: <LocationDetails /> },
-        { path: "/booking/:id", element: <ConfirmBooking /> },
+        { path: "/deviceDetails", element: <DeviceDetails /> },
+        { path: "/booking/:id", element: <Bookings /> },
         { path: "/profile/:id", element: <Profile /> },
+        { path: "/bookingService/:id", element: <BookingService /> },
         { path: "/confirmBooking/:id", element: <ConfirmBooking /> },
+        { path: "/updatebooking/:id", element: <UpdateBooking /> },
       ],
     },
 
@@ -93,6 +98,10 @@ function App() {
         {
           path: "rewardpoints",
           element: <ManageRewardPoint />,
+        },
+        {
+          path: "revenueLocation",
+          element: <RevenueLocation />,
         },
       ],
     },

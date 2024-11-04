@@ -8,7 +8,10 @@ import "./index.scss";
 function Register() {
   const navigate = useNavigate();
 
-  const handleRegister = async (values) => {
+  const handleRegister = async (values: {
+    dateOfBirth: moment.MomentInput;
+  }) => {
+    // set ngày tháng năm đúng form
     const formattedValues = {
       ...values,
       dateOfBirth: values.dateOfBirth
