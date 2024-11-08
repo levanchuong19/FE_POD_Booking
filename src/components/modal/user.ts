@@ -8,6 +8,6 @@ export interface User{
     image: string;
     email:string;
     phoneNumber: string;
-    role:"ADMIN" | "MANAGER" |"STAFF" | "CUSTOMER" ;
+    role:"Admin" | "Manager" |"Staff" | "Customer" ;
 
 }

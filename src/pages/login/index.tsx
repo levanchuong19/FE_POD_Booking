@@ -41,8 +41,9 @@ function Login() {
   const handleLogin = async (values: any) => {
     try {
       const response = await api.post("authentication/login", values);
-      const { accessToken } = response.data.data;
+      const { accessToken, refreshToken } = response.data.data;
       localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
       toast.success("Login success!");
 
       const decodedToken: JwtPayload = jwtDecode(accessToken);

@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import formatVND from "../../utils/currency";
 import { Booking } from "../modal/booking";
 import { POD } from "../modal/pod";
-import "./index.scss";
 import api from "../config/api";
 import { LayoutOutlined, UserOutlined } from "@ant-design/icons";
 import { format } from "date-fns";
 import { CheckboxProps, Radio } from "antd";
+import "./index.scss";
 
 export type ReservationCardProps = {
   booking: Booking;
@@ -103,8 +103,18 @@ const BookingCard: React.FC<ReservationCardProps> = ({ booking }) => {
   const pricePerHour = usageHours > 0 ? adjustedTotalPrice / usageHours : 0;
 
   return (
-    <div>
-      <div className="reser" style={{ width: "100%" }}>
+    <div className="CardSer">
+      <div
+        className="ser"
+        style={{
+          width: "100%",
+          // display: "flex",
+          // gap: "70px",
+          // margin: "50px",
+          // border: " 1px solid rgb(215, 215, 215)",
+          // borderRadius: "5px",
+        }}
+      >
         <div className="reservation__left">
           <img
             style={{ borderRadius: "10px" }}
