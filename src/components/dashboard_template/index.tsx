@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Form, Modal, Popconfirm, Table } from "antd";
@@ -5,15 +6,21 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useForm } from "antd/es/form/Form";
 import api from "../config/api";
-import moment from "moment";
+import dayjs from "dayjs";
 import uploadFile from "../../utils/upload";
+import { jwtDecode } from "jwt-decode";
 
 export interface Column {
   title: string;
   dataIndex: string;
   key: string;
 
-  render?: (value: any) => any;
+  render?: (text: any, record: any, index: number) => any;
+}
+
+interface JwtPayload {
+  userId: any;
+  "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": string;
 }
 
 interface DashboardTemplateProps {
@@ -22,6 +29,7 @@ interface DashboardTemplateProps {
   apiURI: string;
   formItems: React.ReactElement;
   fileList: any;
+  data: any[];
 }
 
 function DashboardTemplate({
@@ -30,19 +38,24 @@ function DashboardTemplate({
   apiURI,
   title,
   fileList,
+  data,
 }: DashboardTemplateProps) {
-  const [datas, setDatas] = useState([]);
+  const [datas, setDatas] = useState(data || []);
   const [showModal, setShowModal] = useState(false);
   const [form] = useForm();
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
 
+  useEffect(() => {
+    if (data) {
+      setDatas(data);
+    }
+  }, [data]);
   //GET
   const fetchData = async () => {
     try {
       const response = await api.get(apiURI);
       console.log(response.data);
-
       setDatas(response.data);
       setFetching(false);
     } catch (error) {
@@ -52,8 +65,10 @@ function DashboardTemplate({
 
   //CREATE OR UPDATE
   const handleSubmit = async (values: {
+    image: string;
+    role: number | string;
     imageUrl: string;
-    dateOfBirthday: moment.MomentInput;
+    dateOfBirth: dayjs.Dayjs | string;
     id: any;
   }) => {
     if (fileList && fileList.length > 0) {
@@ -69,15 +84,32 @@ function DashboardTemplate({
       }
     }
 
-    if (values.dateOfBirthday) {
-      const dateFormatted = moment(values.dateOfBirthday).format("DD-MM-YYYY");
-      values.dateOfBirthday = dateFormatted;
+    if (values.dateOfBirth) {
+      const dateFormatted = dayjs(values.dateOfBirth).format("YYYY-MM-DD");
+      values.dateOfBirth = dateFormatted;
     }
 
     try {
-      console.log("Submitting form...");
+      console.log("Submitting form...", values);
       setLoading(true);
-
+      const token = localStorage.getItem("accessToken");
+      const decodedToken: JwtPayload = jwtDecode(token || "");
+      const userRole =
+        decodedToken[
+          "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+        ];
+      console.log("role", userRole);
+      if (userRole === "Staff" || userRole === "Manager") {
+        // Preserve the original role from the record
+        const originalRecord = datas.find((item) => item.id === values.id);
+        if (originalRecord) {
+          values.role = originalRecord.role; // Set role back to the original record's role
+        }
+      }
+      if (values.role === "Customer") {
+        values.role = 3;
+      }
+      console.log(values);
       if (values.id) {
         console.log("Updating item with ID:", values.id);
         await api.put(`${apiURI}/${values.id}`, values);
@@ -120,7 +152,10 @@ function DashboardTemplate({
       title: "Action",
       dataIndex: "id",
       key: "id",
-      render: (record: { dateOfBirth: moment.MomentInput; id: string }) => (
+      render: (
+        id: string,
+        record: { dateOfBirth: dayjs.Dayjs | string; id: string; role: string }
+      ) => (
         <>
           <div
             style={{ display: "flex", flexDirection: "column", gap: "10px" }}
@@ -130,13 +165,14 @@ function DashboardTemplate({
               onClick={() => {
                 const recordValiDate = {
                   ...record,
-                  dateOfBirthday: record.dateOfBirth
-                    ? moment(record.dateOfBirth, "DD-MM-YYYY HH:mm")
+                  dateOfBirth: record.dateOfBirth
+                    ? dayjs(record.dateOfBirth, "YYYY-MM-DD ")
                     : null,
+                  role: record.role,
                 };
+                console.log("record", recordValiDate);
                 form.setFieldsValue(recordValiDate);
                 setShowModal(true);
-                // form.resetFields();
               }}
             >
               Update
@@ -144,7 +180,7 @@ function DashboardTemplate({
             <Popconfirm
               title="Delete"
               description="Do you want to delete"
-              onConfirm={() => handleDelete(record.id)}
+              onConfirm={() => handleDelete(id)}
             >
               <Button type="primary" danger>
                 Delete
