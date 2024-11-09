@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import api from "../../components/config/api";
@@ -37,6 +38,7 @@ function ServiceDetails() {
   };
   useEffect(() => {
     fetchService();
+    fetchBooking();
   }, []);
 
   const fetchBooking = async () => {
@@ -69,7 +71,7 @@ function ServiceDetails() {
 
   useEffect(() => {
     fetchBooking();
-  }, []);
+  }, [currentPage]);
 
   const handleModal = async () => {
     if (selectedServices.length === 0) {
@@ -142,7 +144,7 @@ function ServiceDetails() {
   const indexOfLastPod = currentPage * podsPerPage;
   const indexOfFirstPod = indexOfLastPod - podsPerPage;
   const currentPods = service?.slice(indexOfFirstPod, indexOfLastPod);
-  const current = reservation?.slice(indexOfFirstPod, indexOfLastPod);
+  // const current = reservation?.slice(indexOfFirstPod, indexOfLastPod);
 
   const handleChangePage = (page: number) => {
     setCurrentPage(page);
@@ -193,7 +195,7 @@ function ServiceDetails() {
         width={"80%"}
         onOk={handleSubmit}
       >
-        {current?.map((item: Booking) => (
+        {reservation?.map((item: Booking) => (
           <BookingCard key={item.id} booking={item} />
         ))}
 
