@@ -92,7 +92,7 @@ function LocationDetails() {
             <EnvironmentOutlined /> {locations?.address}
           </p>
           <p>
-            <ClockCircleOutlined /> Mở cửa : 07:00 - 22:00{" "}
+            <ClockCircleOutlined /> Mở cửa : 24 / 7{" "}
           </p>
           <p>
             <MailOutlined /> info@workflow.com.vn

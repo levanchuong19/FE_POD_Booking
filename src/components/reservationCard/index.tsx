@@ -123,16 +123,17 @@ const ReservationCard: React.FC<ReservationCardProps> = ({
               alt="Pod Image"
             />
           ) : (
-            booking.bookingServices.map((service) => (
+            // booking.bookingServices.map((service) => (
+            booking.bookingServices.length > 0 && (
               <img
-                key={service.serviceId}
+                // key={service.serviceId}
                 style={{ borderRadius: "10px" }}
                 width={350}
                 height={250}
-                src={service.imageUrl}
+                src={booking.bookingServices[0].imageUrl}
                 alt="Service Image"
               />
-            ))
+            )
           )}
         </div>
 
