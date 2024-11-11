@@ -2,20 +2,17 @@ import { Button, DatePicker, Form, Input, Select, Row, Col } from "antd";
 import api from "../../components/config/api";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import moment from "moment";
+import dayjs from "dayjs";
 import "./index.scss";
 
 function Register() {
   const navigate = useNavigate();
 
-  const handleRegister = async (values: {
-    dateOfBirth: moment.MomentInput;
-  }) => {
-    // set ngày tháng năm đúng form
+  const handleRegister = async (values: { dateOfBirth: dayjs.ConfigType }) => {
     const formattedValues = {
       ...values,
       dateOfBirth: values.dateOfBirth
-        ? moment(values.dateOfBirth).format("DD-MM-YYYY")
+        ? dayjs(values.dateOfBirth).toISOString()
         : null,
     };
 
@@ -76,9 +73,9 @@ function Register() {
               ]}
             >
               <Select>
-                <Select.Option value={0}>Male</Select.Option>
-                <Select.Option value={1}>Female</Select.Option>
-                <Select.Option value={2}>Other</Select.Option>
+                <Select.Option value={1}>Male</Select.Option>
+                <Select.Option value={2}>Female</Select.Option>
+                <Select.Option value={0}>Other</Select.Option>
               </Select>
             </Form.Item>
           </Col>

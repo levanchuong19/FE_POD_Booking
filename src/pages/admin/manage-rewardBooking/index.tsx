@@ -36,12 +36,6 @@ function ManageRewardPoint() {
       dataIndex: "description",
       key: "description",
     },
-    {
-      title: "Transaction Date",
-      dataIndex: "transactionDate",
-      key: "transactionDate",
-      render: (text: string | number | Date) => new Date(text).toLocaleString(),
-    },
   ];
   const fetchRewardPoint = async () => {
     try {

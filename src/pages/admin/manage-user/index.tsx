@@ -173,9 +173,9 @@ function ManageUser() {
 
       <Form.Item label="Gender" name="gender" rules={[{ required: true }]}>
         <Select>
-          <Select.Option value={0}>Male</Select.Option>
-          <Select.Option value={1}>Female</Select.Option>
-          <Select.Option value={2}>Other</Select.Option>
+          <Select.Option value={1}>Male</Select.Option>
+          <Select.Option value={2}>Female</Select.Option>
+          <Select.Option value={0}>Other</Select.Option>
         </Select>
       </Form.Item>
 
@@ -209,6 +209,35 @@ function ManageUser() {
         ]}
       >
         <Input placeholder="Enter your email" />
+      </Form.Item>
+      <Form.Item
+        label="Password"
+        name="password"
+        rules={[{ required: true, message: "Please input your password!" }]}
+      >
+        <Input placeholder="Enter your password" />
+      </Form.Item>
+
+      <Form.Item
+        label="Confirm Password"
+        name="confirmPassword"
+        dependencies={["password"]}
+        hasFeedback
+        rules={[
+          { required: true, message: "Please confirm your password!" },
+          ({ getFieldValue }) => ({
+            validator(_, value) {
+              if (!value || getFieldValue("password") === value) {
+                return Promise.resolve();
+              }
+              return Promise.reject(
+                new Error("The two passwords do not match!")
+              );
+            },
+          }),
+        ]}
+      >
+        <Input.Password placeholder="Confirm your password" />
       </Form.Item>
 
       <Form.Item
