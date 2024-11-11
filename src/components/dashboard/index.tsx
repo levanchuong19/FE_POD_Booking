@@ -127,6 +127,7 @@ const Dashboard: React.FC = () => {
             item?.key === "pods" ||
             item?.key === "accounts" ||
             item?.key === "bookings" ||
+            item?.key === "services" ||
             item?.key === "rewardpoints"
         );
       default:
