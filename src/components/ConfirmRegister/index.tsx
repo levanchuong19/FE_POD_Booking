@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Form, Input } from "antd";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";

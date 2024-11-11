@@ -339,7 +339,7 @@ function ConfirmBooking() {
               <Popconfirm
                 title={
                   isRewardpoints >= 400
-                    ? `Bạn đang có ${isRewardpoints} điểm !`
+                    ? `Bạn đang có ${isRewardpoints} điểm. Bạn có muốn sử dụng không !`
                     : "Bạn cần tối thiểu 400 điểm để sử dụng."
                 }
                 description={

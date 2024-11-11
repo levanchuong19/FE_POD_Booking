@@ -67,6 +67,7 @@ function DashboardTemplate({
   const handleSubmit = async (values: {
     image: string;
     role: number | string;
+    gender: number | string;
     imageUrl: string;
     dateOfBirth: dayjs.Dayjs | string;
     id: any;
@@ -85,7 +86,7 @@ function DashboardTemplate({
     }
 
     if (values.dateOfBirth) {
-      const dateFormatted = dayjs(values.dateOfBirth).format("YYYY-MM-DD");
+      const dateFormatted = dayjs(values.dateOfBirth).toISOString();
       values.dateOfBirth = dateFormatted;
     }
 
@@ -100,14 +101,28 @@ function DashboardTemplate({
         ];
       console.log("role", userRole);
       if (userRole === "Staff" || userRole === "Manager") {
-        // Preserve the original role from the record
         const originalRecord = datas.find((item) => item.id === values.id);
         if (originalRecord) {
-          values.role = originalRecord.role; // Set role back to the original record's role
+          values.role = originalRecord.role;
         }
       }
       if (values.role === "Customer") {
         values.role = 3;
+      }
+      if (values.role === "Manager") {
+        values.role = 1;
+      }
+      if (values.role === "Staff") {
+        values.role = 2;
+      }
+      if (values.gender === "Male") {
+        values.gender = 1;
+      }
+      if (values.gender === "Female") {
+        values.role = 2;
+      }
+      if (values.role === "Unknown") {
+        values.role = 0;
       }
       console.log(values);
       if (values.id) {
