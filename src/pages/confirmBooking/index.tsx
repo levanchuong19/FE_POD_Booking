@@ -148,42 +148,6 @@ function ConfirmBooking() {
                     ${formatTime(startDate)} - ${formatTime(endDate)}`;
     }
   };
-
-  // const calculateDurationInHours = (startTime: Date, endTime: Date) => {
-  //   const openingHour = 7;
-  //   const closingHour = 22;
-  //   let totalHours = 0;
-  //   let currentDate = new Date(startTime);
-  //   while (currentDate <= endTime) {
-  //     const startOfDay = new Date(currentDate);
-  //     const endOfDay = new Date(currentDate);
-  //     startOfDay.setHours(openingHour, 0, 0, 0);
-  //     endOfDay.setHours(closingHour, 0, 0, 0);
-  //     const actualStart = currentDate > startOfDay ? currentDate : startOfDay;
-  //     const actualEnd = endTime < endOfDay ? endTime : endOfDay;
-  //     const hoursForThisDay =
-  //       (actualEnd.getTime() - actualStart.getTime()) / (1000 * 60 * 60);
-  //     if (hoursForThisDay > 0) {
-  //       totalHours += hoursForThisDay;
-  //     }
-  //     currentDate = new Date(currentDate.setDate(currentDate.getDate() + 1));
-  //     currentDate.setHours(openingHour, 0, 0, 0);
-  //   }
-
-  //   return totalHours;
-  // };
-  // const calculateTime = (
-  //   startTime: string | number | Date,
-  //   endTime: string | number | Date
-  // ) => {
-  //   const start = new Date(startTime);
-  //   const end = new Date(endTime);
-  //   const totalHours = calculateDurationInHours(start, end);
-  //   const hours = Math.floor(totalHours);
-  //   const minutes = Math.round((totalHours % 1) * 60);
-
-  //   return `${hours} giờ ${minutes} phút`;
-  // };
   const calculateDuration = (startTime: Date, endTime: Date) => {
     const durationInMinutes =
       (endTime.getTime() - startTime.getTime()) / (1000 * 60);
@@ -293,7 +257,7 @@ function ConfirmBooking() {
                 : "Không có thông tin thời gian"}
             </p>
             <p>
-              {formatVND(isBooking?.pricePerHour)} x{" "}
+              {formatVND(isBooking?.pricePerHour ?? 0)} x{" "}
               {isBooking?.startTime && isBooking?.endTime
                 ? calculateTime(
                     new Date(isBooking.startTime),
@@ -328,7 +292,7 @@ function ConfirmBooking() {
             </div>
             <div style={{ display: "flex", gap: "190px", fontSize: "20px" }}>
               <h4>Tổng cộng:</h4>
-              <h4>{formatVND(isBooking?.totalPrice)}</h4>
+              <h4>{formatVND(isBooking?.totalPrice ?? 0)}</h4>
             </div>
             <span
               style={{ height: "0.8px", backgroundColor: "black" }}

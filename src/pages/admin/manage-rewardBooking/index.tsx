@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
-import { RewardPoint } from "../../../components/modal/rewardPoint";
 import api from "../../../components/config/api";
 import { Table, Input, Button, Modal } from "antd";
+import { RewardPoints } from "../../../components/modal/rewardpoints";
 
 function ManageRewardPoint() {
-  const [point, setPoint] = useState<RewardPoint[]>();
+  const [point, setPoint] = useState<RewardPoints[]>();
   const [accountId, setAccountId] = useState<string>("");
   const [totalPoints, setTotalPoints] = useState<any>();
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
