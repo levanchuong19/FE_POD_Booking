@@ -4,6 +4,7 @@ import api from "../../components/config/api";
 import { jwtDecode } from "jwt-decode";
 import moment from "moment";
 import { RATING } from "../modal/rating";
+import { toast } from "react-toastify";
 
 const { TextArea } = Input;
 
@@ -63,6 +64,7 @@ const Ratings: React.FC<{ podId: string }> = ({ podId }) => {
         await api.post("ratings", newComment);
         setShowRating([...showRating, newComment]);
         console.log("Rating added successfully:", newComment);
+        toast.success("Cảm ơn bạn đã để lại đánh giá !");
       } catch (error) {
         console.error("Error adding comment:", error);
       }
