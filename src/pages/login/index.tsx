@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable react-hooks/rules-of-hooks */
 import { Button, Form, Input } from "antd";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
