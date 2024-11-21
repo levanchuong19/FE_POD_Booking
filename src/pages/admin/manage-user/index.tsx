@@ -50,6 +50,18 @@ function ManageUser() {
       },
     },
     {
+      title: "Active",
+      dataIndex: "isDeleted",
+      key: "isDeleted",
+      render: (text: any) => {
+        const isDelete: { [key: string]: string } = {
+          false: "False",
+          true: "True",
+        };
+        return isDelete[text] || "Unknown";
+      },
+    },
+    {
       title: "Role",
       dataIndex: "role",
       key: "role",
@@ -178,6 +190,12 @@ function ManageUser() {
           <Select.Option value={0}>Other</Select.Option>
         </Select>
       </Form.Item>
+      <Form.Item label="Active" name="isDeleted" rules={[{ required: true }]}>
+        <Select placeholder="Enter your active">
+          <Select.Option value={false}>False</Select.Option>
+          <Select.Option value={true}>True</Select.Option>
+        </Select>
+      </Form.Item>
 
       <Form.Item
         label="Date of Birth"
@@ -289,6 +307,7 @@ function ManageUser() {
   return (
     <div style={{ overflowX: "auto" }}>
       <DashboardTemplate
+        isCustom
         fileList={fileList}
         title={title}
         columns={columns}

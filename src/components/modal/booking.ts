@@ -7,6 +7,7 @@ export type BookingService = {
 };
 
 export type Booking = {
+    status(status: any): unknown;
     id: string;
     code: string;
     podId: string;

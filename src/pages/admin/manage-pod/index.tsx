@@ -33,6 +33,7 @@ function ManagePod() {
     { title: "Capacity", dataIndex: "capacity", key: "capacity" },
     { title: "Area", dataIndex: "area", key: "area" },
     { title: "Description", dataIndex: "description", key: "description" },
+
     {
       title: "Image",
       dataIndex: "imageUrl",
@@ -42,6 +43,18 @@ function ManagePod() {
     { title: "PricePerHour", dataIndex: "pricePerHour", key: "pricePerHour" },
     { title: "Location", dataIndex: "locationName", key: "locationName" },
     { title: "DeviceId", dataIndex: "deviceType", key: "deviceType" },
+    {
+      title: "Active",
+      dataIndex: "isDeleted",
+      key: "isDeleted",
+      render: (text: any) => {
+        const isDelete: { [key: string]: string } = {
+          false: "False",
+          true: "True",
+        };
+        return isDelete[text] || "Unknown";
+      },
+    },
   ];
 
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -138,6 +151,12 @@ function ManagePod() {
           min={0}
           style={{ width: "100%" }}
         />
+      </Form.Item>
+      <Form.Item label="Active" name="isDeleted" rules={[{ required: true }]}>
+        <Select placeholder="Enter your active">
+          <Select.Option value={false}>False</Select.Option>
+          <Select.Option value={true}>True</Select.Option>
+        </Select>
       </Form.Item>
 
       {/* Description */}
