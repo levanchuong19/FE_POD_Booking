@@ -9,6 +9,8 @@ import api from "../config/api";
 import dayjs from "dayjs";
 import uploadFile from "../../utils/upload";
 import { jwtDecode } from "jwt-decode";
+import { Booking } from "../modal/booking";
+import { POD } from "../modal/pod";
 
 export interface Column {
   title: string;
@@ -30,6 +32,7 @@ interface DashboardTemplateProps {
   formItems: React.ReactElement;
   fileList: any;
   data: any[];
+  isCustom?: boolean;
 }
 
 function DashboardTemplate({
@@ -38,6 +41,7 @@ function DashboardTemplate({
   apiURI,
   title,
   fileList,
+  isCustom = false,
   data,
 }: DashboardTemplateProps) {
   const [datas, setDatas] = useState(data || []);
@@ -45,6 +49,23 @@ function DashboardTemplate({
   const [form] = useForm();
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
+
+  const [bookings, setBookings] = useState([]);
+
+  const fetchBookings = async () => {
+    try {
+      const response = await api.get("bookings"); // Gọi API lấy bookings
+      setBookings(response.data);
+    } catch (error) {
+      console.error("Error fetching bookings:", error);
+      toast.error("Failed to fetch bookings!");
+    }
+  };
+
+  // Gọi hàm fetchBookings khi component được render
+  useEffect(() => {
+    fetchBookings();
+  }, []);
 
   useEffect(() => {
     if (data) {
@@ -62,6 +83,9 @@ function DashboardTemplate({
       toast.error(`Error fetching ${title}`);
     }
   };
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   //CREATE OR UPDATE
   const handleSubmit = async (values: {
@@ -126,9 +150,15 @@ function DashboardTemplate({
       }
       console.log(values);
       if (values.id) {
-        console.log("Updating item with ID:", values.id);
-        await api.put(`${apiURI}/${values.id}`, values);
-        toast.success("Update successfully");
+        if (!isCustom) {
+          console.log("Updating item with ID:", values.id);
+          await api.put(`${apiURI}/${values.id}`, values);
+          toast.success("Update successfully");
+        } else {
+          // doi api di
+          await api.put(`${apiURI}/${values.id}/restore`, values);
+          toast.success("Update successfully");
+        }
       } else {
         console.log("Creating new item");
         await api.post(apiURI, values);
@@ -147,20 +177,95 @@ function DashboardTemplate({
   };
 
   //DELETE
-  const handleDelete = async (id: string) => {
+  // const handleDelete = async (id: string) => {
+  //   try {
+  //     await api.delete(`${apiURI}/${id}`);
+  //     toast.success("Success deleted!!!");
+  //     fetchData();
+  //   } catch (error) {
+  //     console.log(error);
+  //     toast.error("delete error");
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   fetchData();
+  // }, []);
+
+  // const handleDelete = async (
+  //   id: string,
+  //   type: "pods" | "accounts" | "services" | "locations" | "ratings"
+  // ) => {
+  //   try {
+  //     const restrictedStatuses = ["Pending", "OnGoing", "UpComing"];
+
+  //     // Hàm kiểm tra bookings liên quan
+  //     const hasRelatedBookings = (type: string, id: string) => {
+  //       return bookings.some((booking: Booking) =>
+  //         type === "pods"
+  //           ? booking.podId === id &&
+  //             restrictedStatuses.includes(booking.paymentStatus)
+  //           : booking.accountId === id &&
+  //             restrictedStatuses.includes(booking.paymentStatus)
+  //       );
+  //     };
+
+  //     // Kiểm tra nếu type là "pods" hoặc "accounts"
+  //     if (type === "pods" || type === "accounts") {
+  //       if (hasRelatedBookings(type, id)) {
+  //         toast.error("Đang tồn tại booking. Vui lòng thử lại sau!");
+  //         return;
+  //       }
+  //     }
+
+  //     // Nếu type không phải "pods" hoặc "accounts", hoặc không liên quan bookings => xóa
+  //     await api.delete(`${apiURI}/${id}`);
+  //     toast.success("Successfully deleted!");
+  //     fetchData(); // Làm mới dữ liệu
+  //   } catch (error) {
+  //     console.error("Error during deletion:", error);
+  //     toast.error("An error occurred during deletion.");
+  //   }
+  // };
+
+  const handleDelete = async (
+    id: string,
+    type: "pods" | "accounts" | "services" | "locations" | "ratings"
+  ) => {
     try {
+      const restrictedStatuses = ["Pending", "OnGoing", "UpComing"];
+
+      // Hàm kiểm tra bookings liên quan
+      const hasRelatedBookings = (type: string, id: string) => {
+        return bookings.some((booking: Booking) =>
+          type === "pods"
+            ? booking.podId === id &&
+              ["Pending", "OnGoing", "UpComing"].includes(booking.paymentStatus)
+            : type === "accounts"
+            ? booking.accountId === id &&
+              ["Pending", "OnGoing", "UpComing"].includes(booking.paymentStatus)
+            : false
+        );
+      };
+
+      // Kiểm tra nếu type là "pods" hoặc "accounts"
+      if (type === "pods" || type === "accounts") {
+        if (hasRelatedBookings(type, id)) {
+          toast.error("Đang tồn tại booking. Vui lòng thử lại sau!");
+          return;
+        }
+      }
+
+      // Nếu type không phải "pods" hoặc "accounts", hoặc không liên quan bookings => xóa
       await api.delete(`${apiURI}/${id}`);
-      toast.success("Success deleted!!!");
-      fetchData();
+      toast.success("Successfully deleted!");
+      fetchData(); // Làm mới dữ liệu
     } catch (error) {
-      console.log(error);
-      toast.error("delete error");
+      console.error("Error during deletion:", error);
+      toast.error("An error occurred during deletion.");
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
   const tableColumn = [
     ...columns,
     {
@@ -169,7 +274,12 @@ function DashboardTemplate({
       key: "id",
       render: (
         id: string,
-        record: { dateOfBirth: dayjs.Dayjs | string; id: string; role: string }
+        record: {
+          podId: string;
+          dateOfBirth: dayjs.Dayjs | string;
+          id: string;
+          role: string;
+        }
       ) => (
         <>
           <div
@@ -194,8 +304,46 @@ function DashboardTemplate({
             </Button>
             <Popconfirm
               title="Delete"
-              description="Do you want to delete"
-              onConfirm={() => handleDelete(id)}
+              description="Do you want to delete?"
+              onConfirm={() => {
+                // Tìm kiếm booking có podId hoặc accountId khớp với id
+                const booking = bookings.find(
+                  (booking) => booking.podId === id || booking.accountId === id
+                );
+
+                if (booking) {
+                  // Kiểm tra loại bản ghi (pod hay account)
+                  if (booking.accountId === id) {
+                    // Nếu là accountId, kiểm tra nếu account này đang bị liên kết với bất kỳ booking nào
+                    const isAccountLinked = bookings.some(
+                      (b) => b.accountId === id && b.podId !== undefined
+                    );
+                    if (isAccountLinked) {
+                      // Nếu account vẫn còn liên kết với pod, không thể xóa account
+                      console.log(
+                        "Account is still linked with a booking. Cannot delete."
+                      );
+                      toast.error(
+                        "Tài khoản đang tồn tại booking. Vui lòng thử lại sau!."
+                      );
+                    } else {
+                      // Nếu account không còn liên kết với booking nào, có thể xóa
+                      console.log("Deleting account with ID:", id);
+                      handleDelete(id, "accounts");
+                    }
+                  } else if (booking.podId === id) {
+                    // Nếu là podId, xóa pod
+                    console.log("Deleting pod with ID:", id);
+                    handleDelete(id, "pods");
+                  }
+                } else {
+                  // Nếu không tìm thấy booking khớp, xóa trực tiếp
+                  console.log(
+                    "No matching record found, proceeding with direct delete."
+                  );
+                  handleDelete(id, "direct");
+                }
+              }}
             >
               <Button type="primary" danger>
                 Delete
